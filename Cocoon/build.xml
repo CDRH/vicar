@@ -1,0 +1,82 @@
+
+<project name="Total" default="all" basedir=".">
+	<description> simple example build file </description>
+
+<!--LAPTOP-->
+	<property name="cocoonpath" location="/Users/franksmutniak/ImportedSoftware/cocoon-2.1.11" />
+	<property name="builddir" location="${cocoonpath}/build/webapp/WEB-INF/classes/"/>
+	<property name="libdir" location="${cocoonpath}/build/webapp/WEB-INF/lib/"/>
+	<property name="corelibdir" location="${cocoonpath}/lib/core/"/>
+
+<!--ABBOT-->
+<!--
+	<property name="cocoonpath" location="/var/lib/tomcat-7/" />
+	<property name="builddir" location="${cocoonpath}/webapps/cocoon/WEB-INF/classes/"/>
+	<property name="libdir" location="${cocoonpath}/webapps/cocoon/WEB-INF/lib/"/>
+	<property name="corelibdir" location="/usr/share/tomcat-7/lib/"/>
+-->
+
+
+	<path id="CP">
+		<pathelement path="${libdir}/excalibur-pool-api-2.1.jar"/>
+		<pathelement path="${libdir}/excalibur-datasource-2.1.jar"/>
+		<pathelement path="${libdir}/avalon-framework-api-4.3.jar"/>
+		<pathelement path="${libdir}/avalon-framework-impl-4.3.jar"/>
+		<pathelement path="${libdir}/commons-lang-2.3.jar"/>
+		<pathelement path="${libdir}/cocoon-2.1.11.jar"/>
+
+		<pathelement path="${libdir}/JOpenId-1.08.jar"/>
+
+<!--LAPTOP-->
+		<pathelement path="${corelibdir}/servlet_2_2.jar"/>
+<!--ABBOT-->
+<!--
+		<pathelement path="${corelibdir}/servlet-api.jar"/>
+-->
+	</path>
+
+	<path id="CLASS_DIR">
+		<pathelement path="${builddir}"/>
+	</path>
+
+	<target name="clean" description="clean up" >
+		<delete dir="${builddir}/OpenSignin"/>
+		<delete dir="${builddir}/Core"/>
+	</target>
+
+	<target name="init">
+		<!--
+		<tstamp/>
+		<mkdir dir="classes"/>
+		-->
+	</target>
+
+	<target name="all" depends="clean,compile"> </target>
+
+	<target name="compile" depends="compile_OpenSignin,compile_Core"> </target>
+
+	<target name="archive" description="make code archive" >
+		<tar destfile="Archive.tar" basedir="." includes="build.xml,sitemap.xmap,All.html,OpenSignin/*,Core/*" />
+	</target>
+
+	<target name="archive_specific" description="make code archive" >
+		<tar destfile="Archive_specific.tar" basedir="." includes="Core/*" />
+	</target>
+
+	<target name="compile_OpenSignin" depends="init" description="compile core" >
+		<javac deprecation="on" srcdir="OpenSignin" destdir="${builddir}" includeantruntime="false">
+			<classpath refid = "CP"/>
+			<compilerarg value="-Xlint"/>
+		</javac>
+	</target>
+
+	<target name="compile_Core" depends="init" description="compile core" >
+		<javac deprecation="on" srcdir="Core" destdir="${builddir}" includeantruntime="false">
+			<classpath refid = "CP"/>
+			<compilerarg value="-Xlint"/>
+		</javac>
+	</target>
+
+</project>
+
+
