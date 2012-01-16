@@ -1,0 +1,45 @@
+
+<project name="Total" default="all" basedir=".">
+	<description>
+		simple example build file
+	</description>
+	<property environment="env" />
+	<property name="tomcatpath" location="${env.CATALINA_HOME}" />
+	<property name="libdir" location="${tomcatpath}/lib/" />
+	<property name="classdir" location="./WEB-INF/classes/"/>
+
+
+	<path id="CP">
+		<pathelement path="${libdir}/servlet-api.jar"/>
+	</path>
+
+	<target name="clean" description="clean up" >
+		<delete>
+			<fileset dir="${classdir}" includes="*.class" />
+		</delete>
+	</target>
+
+	<target name="all" depends="clean,compile,makewar,copy" >
+	</target>
+
+	<target name="copy">
+		<copy file="Html5Upload.war" todir="${tomcatpath}/webapps/"/>
+	</target>
+
+	<target name="makewar">
+		<delete file="Html5Upload.war" />
+ 		<jar destfile="Html5Upload.war" basedir="." includes="**" />
+	</target>
+
+	<target name="compile" depends="compile_Html5Upload">
+	</target>
+
+	<target name="compile_Html5Upload" description="compile" >
+		<javac deprecation="on" srcdir="./" destdir="WEB-INF/classes/" includeantruntime="false">
+			<classpath refid = "CP"/>
+			<compilerarg value="-Xlint"/>
+		</javac>
+	</target>
+</project>
+
+
