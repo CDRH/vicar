@@ -61,6 +61,7 @@ private String m_DirStr;
 
 	public void setup(SourceResolver resolver, Map objectModel,
 			String src, Parameters par) {
+		System.out.println("\nCALLING FileUpload SETUP");
 		Request request = ObjectModelHelper.getRequest(objectModel);
 		m_session = request.getSession();
 
@@ -70,16 +71,18 @@ private String m_DirStr;
 	}
 
 	public void generate() throws SAXException, ProcessingException {
+		System.out.println("FileUpload:generate()");
 		String fileName = "";
 		String fileType = "";
 		if(m_DirStr==null){
-			//System.out.println("NEW DIR");
+			System.out.println("NEW DIR");
 		}else{
 			if(m_filePart!=null){ //ADD_IMAGE
 				try {
 					InputStream fis = m_filePart.getInputStream();
 					fileName = m_filePart.getFileName();
 					fileType = m_filePart.getMimeType();
+					System.out.println("FN<"+fileName+"> FT<"+fileType+"> PUT IN DIR<"+m_DirStr+">");
 					int len = 0;
 					byte buf[] = new byte[1024];
 					File outfile = new File(FileManager.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/"+fileName);
