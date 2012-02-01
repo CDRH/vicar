@@ -138,38 +138,3 @@ private int m_msgcode = 0;
 	}
 ***/
 
-
-/****
-		if(m_mode == -1){
-			m_EmailAddr = null;
-			session.setAttribute("emailaddr",null);
-			session.invalidate();
-		}else{
-			m_EmailAddr = (String)session.getAttribute("emailaddr");
-			m_Password = m_request.getParameter("pwd");
-			//m_msg = "PWD<"+m_Password+">";
-			if(m_EmailAddr==null){
-				m_EmailAddr = m_request.getParameter("emailaddr");
-				if(m_EmailAddr==null){
-				}else if(m_Password==null){
-				}else if((m_EmailAddr.endsWith("@unl.edu")&&(m_Password.trim().toLowerCase().startsWith("tinpln")))){
-					session.setAttribute("emailaddr",m_EmailAddr);
-				}else{
-					m_EmailAddr = null;
-				}
-			}
-			if(m_EmailAddr == null){
-				m_msg = "Please enter a valid email address.  This address must reflect your particular institution.  i.e. it should end in '@[institution].edu'";
-				m_msgcode = 2;
-				m_mode = 0;
-			}else if(m_mode == 0){
-				m_mode = 1;
-			}
-		}
-		if(session!=null){
-			m_SessionID = session.getId();
-		}else{
-			m_SessionID = "";
-		}
-****/
-

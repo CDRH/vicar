@@ -49,8 +49,8 @@ static final long TEN_HOUR = ONE_HOUR * 10L;
 static final String ATTR_MAC = "openid_mac";
 static final String ATTR_ALIAS = "openid_alias";
 
-private String URL_BASE = "http://127.0.0.1:8888";
-//private String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
+//private String URL_BASE = "http://127.0.0.1:8888";
+private String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
 private String URL_LOGIN_SFX = "/blueorchid/OpenSignin/OpenSignin.html";
 private String URL_APPL = "../Core/Simple.html";
 private String URL_APPL_LOGOUT = "../Core/Simple.html?mode=-1";
@@ -125,7 +125,11 @@ private int m_loginstatus = 0;
 					String op_email = m_request.getParameter("openid."+alias+".value.email");
 					String op_lang = m_request.getParameter("openid."+alias+".value.language");
 
-					m_OwnerID = "FRANK"; //LOOK UP IN LOCAL DATABASE USING op_email
+					if(op_email==null){
+						m_OwnerID = "ANONYMOUS";
+					}else{
+						m_OwnerID = op_email.replace("@","__");
+					}
 					m_session.setAttribute("userid",m_OwnerID);
 
 					String fn = "";

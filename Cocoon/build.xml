@@ -3,18 +3,18 @@
 	<description> simple example build file </description>
 
 <!--LAPTOP-->
+<!--
 	<property name="cocoonpath" location="/Users/franksmutniak/ImportedSoftware/cocoon-2.1.11" />
 	<property name="builddir" location="${cocoonpath}/build/webapp/WEB-INF/classes/"/>
 	<property name="libdir" location="${cocoonpath}/build/webapp/WEB-INF/lib/"/>
 	<property name="corelibdir" location="${cocoonpath}/lib/core/"/>
+-->
 
 <!--ABBOT-->
-<!--
 	<property name="cocoonpath" location="/var/lib/tomcat-7/" />
 	<property name="builddir" location="${cocoonpath}/webapps/cocoon/WEB-INF/classes/"/>
 	<property name="libdir" location="${cocoonpath}/webapps/cocoon/WEB-INF/lib/"/>
 	<property name="corelibdir" location="/usr/share/tomcat-7/lib/"/>
--->
 
 
 	<path id="CP">
@@ -26,13 +26,17 @@
 		<pathelement path="${libdir}/cocoon-2.1.11.jar"/>
 
 		<pathelement path="${libdir}/JOpenId-1.08.jar"/>
+<!--
+		<pathelement path="${libdir}/abbot-0.3.3.jar"/>
+-->
+		<pathelement path="${libdir}/abbot-0.3.3-standalone.jar"/>
 
 <!--LAPTOP-->
-		<pathelement path="${corelibdir}/servlet_2_2.jar"/>
-<!--ABBOT-->
 <!--
-		<pathelement path="${corelibdir}/servlet-api.jar"/>
+		<pathelement path="${corelibdir}/servlet_2_2.jar"/>
 -->
+<!--ABBOT-->
+		<pathelement path="${corelibdir}/servlet-api.jar"/>
 	</path>
 
 	<path id="CLASS_DIR">
@@ -56,7 +60,7 @@
 	<target name="compile" depends="compile_OpenSignin,compile_Core"> </target>
 
 	<target name="archive" description="make code archive" >
-		<tar destfile="Archive.tar" basedir="." includes="build.xml,sitemap.xmap,All.html,OpenSignin/*,Core/*" />
+		<tar destfile="Archive.tar" basedir="." includes="build.xml,sitemap.xmap,NOTES.txt,OpenSignin/*,Core/*" />
 	</target>
 
 	<target name="archive_specific" description="make code archive" >

@@ -23,12 +23,29 @@
 <body>
 	<xsl:if test="@mode &lt; 1">
 		<!--NOT LOGGED IN-->
+<!--
 		<span style="margin:0.75em;font-size:120%;position:relative;float:right;">
 			<span style="color:green;">Sign in using a:</span>
 			<a style="color:blue;margin:0 0.5em;" href="../OpenSignin/OpenSignin.html?op=Google">Google ID</a>
 			<span style="color:green;"> or </span>
 			<a style="color:blue;margin:0 0.5em;" href="../OpenSignin/OpenSignin.html?op=Yahoo">Yahoo! ID</a>
 		</span>
+-->
+<!--x-->
+		<div align="right" style="border:0px;margin:8px;padding:0px 25px 0px 0px;">
+			<div style="padding:25px 0px 25px 0px;">
+				<a name="signin" href="../OpenSignin/OpenSignin.html?op=Yahoo" style="color:blue;text-decoration:none;margin:0px;padding:0px;">
+					<img src="../OpenSignin/YahooOpenID_13.png" alt="Sign In With Yahoo" />
+				</a>
+			</div>
+			<div style="padding:0px 0px 8px 0px;">
+				<a name="signin" href="../OpenSignin/OpenSignin.html?op=Google" valign="bottom" style="font-size:82%;font-weight:bold;background:lightgrey;color:#222;border:1px solid #7D7D7D;text-decoration:none;margin:0px;padding:3px 1px 4px 2px;">
+					<img src="../OpenSignin/GoogleGImage.png" height="20px;" style="margin:0px;padding:0px;vertical-align:middle;" />
+					<span style="margin:4px;padding:0px;">Sign In through Google</span>
+				</a>
+			</div>
+		</div>
+<!--x-->
 		<span style="font-size:140%;margin:0.5em;position:fixed;top:30px;">
 			<xsl:if test="@mode &lt; 0">
 				<div style="color:red;">You have successfuly logged out of this site, but still likely need to log out of your identity provider (Google or Yahoo) account.</div>
@@ -58,9 +75,7 @@
 			<div style="padding:1.0em 0em;">
 				<a class="menu_on" href="Simple.html?mode=1">Intro</a>
 				<a class="menu_off" href="Simple.html?mode=2">Upload Files via HTML5</a>
-				<a class="menu_off" href="Simple.html?mode=3">Specify Conversions</a>
-				<a class="menu_off" href="Simple.html?mode=4">Process Files</a>
-				<a class="menu_off" href="Simple.html?mode=5">Download Files</a>
+				<a class="menu_off" href="Simple.html?mode=3">Use Abbot</a>
 			</div>
 			<div style="padding:1.0em 0em;">
 				<span style="font-size:12pt;">Introduction.</span>
@@ -71,12 +86,11 @@
 			<div style="padding:1.0em 0em;">
 				<a class="menu_off" href="Simple.html?mode=1">Intro</a>
 				<a class="menu_on" href="Simple.html?mode=2">Upload Files via HTML5</a>
-				<a class="menu_off" href="Simple.html?mode=3">Specify Conversions</a>
-				<a class="menu_off" href="Simple.html?mode=4">Process Files</a>
-				<a class="menu_off" href="Simple.html?mode=5">Download Files</a>
+				<a class="menu_off" href="Simple.html?mode=3">Use Abbot</a>
 			</div>
 			<div style="padding:1.0em 0em;">
 				<span style="font-size:12pt;">Upload multiple files using HTML5.</span>
+				<span style="font-size:12pt;color:red;"> (Not currently connected to other parts so the servlet and generators could be debugged separately.)</span>
 <!--
 				<iframe src="http://abbot.unl.edu:8080/Html5Upload/upload.html" width="95%" height="500px" />
 -->
@@ -88,15 +102,15 @@
 			<div style="padding:1.0em 0em;">
 				<a class="menu_off" href="Simple.html?mode=1">Intro</a>
 				<a class="menu_off" href="Simple.html?mode=2">Upload Files via HTML5</a>
-				<a class="menu_on" href="Simple.html?mode=3">Specify Conversions</a>
-				<a class="menu_off" href="Simple.html?mode=4">Process Files</a>
-				<a class="menu_off" href="Simple.html?mode=5">Download Files</a>
+				<a class="menu_on" href="Simple.html?mode=3">Use Abbot</a>
 			</div>
 			<div style="padding:1.0em 0em;">
-				<span style="font-size:12pt;">Specify Conversions.</span>
+				<span style="font-size:12pt;">Use Abbot</span>
+
+				<iframe src="FileManager.html" width="95%" height="500px" />
 			</div>
 		</xsl:if>
-
+<!--
 		<xsl:if test="@mode = 4">
 			<div style="padding:1.0em 0em;">
 				<a class="menu_off" href="Simple.html?mode=1">Intro</a>
@@ -107,6 +121,7 @@
 			</div>
 			<div style="padding:1.0em 0em;">
 				<span style="font-size:12pt;">Process your files.</span>
+				<iframe src="FileManager.xml" width="95%" height="500px" />
 			</div>
 		</xsl:if>
 
@@ -122,6 +137,7 @@
 				<span style="font-size:12pt;">Download your processed files.</span>
 			</div>
 		</xsl:if>
+-->
 	</xsl:if>
 </body>
 </xsl:template>
@@ -130,4 +146,5 @@
 </xsl:template>
 
 </xsl:stylesheet>
+
 

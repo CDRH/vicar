@@ -1,3 +1,5 @@
+//This is an attempt to build a servlet to handle html5 multiple uploads so there need not be a separate servlets dir and war file in this project. 
+
 //Upload.java
 
 package Core;
