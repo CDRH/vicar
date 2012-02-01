@@ -74,7 +74,6 @@ private int m_isnew = 0;
 			m_OwnerID = "FRANK"; //If not set in OpenSignin.  This is to enable testing outside of Simple or OpenID
 			session.setAttribute("userid",m_OwnerID);
 		}
-		System.out.println("FILEMANAGER OWNERID<"+m_OwnerID+">");
 		m_isnew = 0;
 
 		m_DirStr = m_request.getParameter("dir");
@@ -96,7 +95,6 @@ private int m_isnew = 0;
 			if(m_DirStr!=null){
 				String resp = removeDir(BASE_USER_DIR,m_OwnerID,m_DirStr);
 				if(resp==null){
-					System.out.println("NOT DELETED");
 				}else{
 					System.out.println("DELETED<"+resp+">");
 					m_DirStr = null; //GO TO LISTING
@@ -104,7 +102,6 @@ private int m_isnew = 0;
 			}
 		}else if(m_ActStr.equalsIgnoreCase("unzip")){
 			if((m_DirStr!=null)&&(m_FilenameStr!=null)){
-				System.out.println("UNZIP FN<"+m_FilenameStr+">");
 				String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
 				ZipUtil zu = new ZipUtil();
 				if(zu.unzip(dirpath+m_FilenameStr,dirpath)>=0){
@@ -115,7 +112,6 @@ private int m_isnew = 0;
 			if(m_DirStr!=null){
 				String indir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
 				String outdir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
-				System.out.println("CONVERT FILES IN <"+indir+"> and put in <"+outdir+">");
 				Abbot abbot = new Abbot();
 				abbot.convert(indir,outdir);
 			}
@@ -127,6 +123,7 @@ private int m_isnew = 0;
 				zu.zip(outdir,"xml",outdir+"/"+m_DirStr+".zip");
 			}
 		}else if(m_ActStr.equalsIgnoreCase("get")){
+			//moved to FileDownload.java
 			if((m_DirStr!=null)&&(m_FilenameStr!=null)){
 				System.out.println("DOWNLOAD FN<"+m_FilenameStr+">");
 			}
@@ -170,7 +167,6 @@ private int m_isnew = 0;
 						m_isnew = 1;
 					}
 				}else{
-					//System.out.println("CANCELLING NEW COLLECTiON");
 					String resp = removeDir(BASE_USER_DIR,m_OwnerID,m_DirStr);
 					mydirs = listDirs(BASE_USER_DIR,m_OwnerID);
 					m_DirStr = null;
@@ -280,7 +276,6 @@ private int m_isnew = 0;
 		String oldpath = the_base+"/"+the_owner+"/"+the_oldname;
 		String newpath = the_base+"/"+the_owner+"/"+the_newname;
 
-		System.out.println("RENAME<"+oldpath+"> TO <"+newpath+">");
 		File fo = new File(oldpath);
 		File fn = new File(newpath);
 		boolean fr = fo.renameTo(fn);
@@ -297,12 +292,12 @@ private int m_isnew = 0;
 				File userdirlist[] = f.listFiles();
 				for (File userdir: userdirlist){
 					if(userdir.isDirectory()){
-						System.out.println("DIR<"+userdir.getName()+">");
+						//System.out.println("DIR<"+userdir.getName()+">");
 						int inputcnt = 0;
 						int outputcnt = 0;
 						File subdirlist[] = userdir.listFiles();
 						for (File subdir : subdirlist){
-							System.out.println("\tSUBDIR<"+subdir.getName()+">");
+							//System.out.println("\tSUBDIR<"+subdir.getName()+">");
 							String subfiles[] = subdir.list();
 							if(subdir.getName().equalsIgnoreCase("input")){
 								inputcnt = subfiles.length;
@@ -311,7 +306,7 @@ private int m_isnew = 0;
 							}
 						}
 						dir.add(new FileData(m_OwnerID,userdir.getName(),inputcnt));
-						System.out.println("INPUT CNT<"+inputcnt+"> OUTPUT CNT<"+outputcnt+">");
+						//System.out.println("INPUT CNT<"+inputcnt+"> OUTPUT CNT<"+outputcnt+">");
 						//userfile.lastModified();
 					}
 				}
@@ -334,16 +329,10 @@ private int m_isnew = 0;
 				File dirlist[] = f.listFiles();
 //CURRENTLY NOT RECURSIVE FOR SAFETY
 				for (File userdir : dirlist){
-					System.out.println("\tDELETE IN DIR<"+userdir.getName()+"> ISDIR<"+userdir.isDirectory()+">");
 					if(userdir.isDirectory()){
 						File subdirlist[] = userdir.listFiles();
 						System.out.println("LEN<"+subdirlist.length+">");
 						for (File subdir : subdirlist){
-							System.out.println("\t\tDELETING SUBDIR<"+subdir.getName()+">");
-							//File filelist[] = subdir.listFiles();
-							//for (File sf : filelist){
-							//	System.out.println("\t\t\tDEL SUBDIR FILE?"+sf.delete()+">");
-							//}
 							System.out.println("\t\tDEL SUBDIR?"+subdir.delete()+">");
 							boolean df = subdir.delete();
 						}

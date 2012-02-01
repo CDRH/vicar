@@ -67,7 +67,6 @@ private String m_FilenameStr;
 
 	public void setup(SourceResolver resolver, Map objectModel,
 			String src, Parameters par) {
-		System.out.println("\nCALLING FileDownload SETUP");
 		Request request = ObjectModelHelper.getRequest(objectModel);
 		response = ObjectModelHelper.getResponse(objectModel);
 		m_session = request.getSession();
@@ -78,7 +77,6 @@ private String m_FilenameStr;
 	}
 
 	public void generate() throws SAXException, ProcessingException {
-		System.out.println("FileDownload:generate()");
 
 	try {
 		HttpResponse res = (HttpResponse)response;
@@ -104,47 +102,4 @@ private String m_FilenameStr;
 	}
 	}
 }
-/****
 
-			if(m_filePart!=null){ //ADD_IMAGE
-				try {
-					InputStream fis = m_filePart.getInputStream();
-					fileName = m_filePart.getFileName();
-					fileType = m_filePart.getMimeType();
-					System.out.println("FN<"+fileName+"> FT<"+fileType+"> PUT IN DIR<"+m_DirStr+">");
-					int len = 0;
-					byte buf[] = new byte[1024];
-					File outfile = new File(FileManager.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/"+fileName);
-					FileOutputStream fos = new FileOutputStream(outfile);
-					while((len=fis.read(buf))>0){
-						fos.write(buf,0,len);
-					}
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
-			}
-		}
-
-		try {
-			contentHandler.startDocument();
-				AttributesImpl uploadAttr = new AttributesImpl();
-				uploadAttr.addAttribute("","filename","filename","CDATA",""+fileName);
-				uploadAttr.addAttribute("","filetype","filetype","CDATA",""+fileType);
-				if(m_DirStr==null){
-					uploadAttr.addAttribute("","dir","dir","CDATA","null");
-				}else{
-					uploadAttr.addAttribute("","dir","dir","CDATA",""+m_DirStr);
-				}
-				contentHandler.startElement("","fileupload","fileupload",uploadAttr);
-				contentHandler.endElement("","fileupload","fileupload");
-			contentHandler.endDocument();
-		}catch(Exception e){ 
-			e.printStackTrace();
-		}
-	}
-
-	public long generateKey() {
-		// Default non-caching behaviour. We will implement this later.
-		return 0;
-	}
-****/
