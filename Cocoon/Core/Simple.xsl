@@ -90,11 +90,11 @@
 			</div>
 			<div style="padding:1.0em 0em;">
 				<span style="font-size:12pt;">Upload multiple files using HTML5.</span>
-				<span style="font-size:12pt;color:red;"> (Not currently connected to other parts so the servlet and generators could be debugged separately.)</span>
+				<span style="font-size:12pt;color:red;"> Not available at this time! (Not currently connected to other parts so the servlet and generators could be debugged separately.)</span>
 <!--
 				<iframe src="http://abbot.unl.edu:8080/Html5Upload/upload.html" width="95%" height="500px" />
--->
 				<iframe src="http://127.0.0.1:8080/Html5Upload/upload.html?usersession={@SessionID}" width="95%" height="500px" />
+-->
 			</div>
 		</xsl:if>
 

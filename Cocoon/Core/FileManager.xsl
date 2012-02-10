@@ -118,7 +118,12 @@
 <xsl:template match="outputfiles">
 	<xsl:if test="count(file) &gt; 0">
 		<div>Output</div>
-		<a href="FileManager.html?dir={@dirname}&amp;act=zip">Package these into a zip file</a>
+		<div>
+			<a href="FileManager.html?dir={@dirname}&amp;act=zip">Package these into a zip file</a>
+		</div>
+		<div>
+			<a href="FileManager.html?dir={@dirname}&amp;act=targz">Package these into a tar.gz file</a>
+		</div>
 	</xsl:if>
 	<xsl:apply-templates />
 </xsl:template>
@@ -131,21 +136,22 @@
 			</span>
 		</xsl:if>
 		<xsl:if test="@op = 1">
-<!--
-			<a href="FileDownload.xml?dir={../@dirname}&amp;fn={@name}">
-				<xsl:value-of select="@name" />
-			</a>
--->
+			<!--DOWNLOADABLE-->
 			<a style="color:blue;text-decoration:none;" href="{@name}?dir={../@dirname}&amp;fn={@name}">
 				<xsl:value-of select="@name" />
 			</a>
 		</xsl:if>
-
 		<xsl:if test="@zip = 0">
 			<span style="margin:0px 10px;color:red;">xml?</span>
 		</xsl:if>
 		<xsl:if test="@zip = 2">
 			<a style="color:blue;text-decoration:none;margin:5px 10px;" href="FileManager.html?act=unzip&amp;dir={../@dirname}&amp;fn={@name}">Unzip this file</a>
+		</xsl:if>
+		<xsl:if test="@zip = 3">
+			<a style="color:blue;text-decoration:none;margin:5px 10px;" href="FileManager.html?act=untar&amp;dir={../@dirname}&amp;fn={@name}">Untar this file</a>
+		</xsl:if>
+		<xsl:if test="@zip = 4">
+			<a style="color:blue;text-decoration:none;margin:5px 10px;" href="FileManager.html?act=untargz&amp;dir={../@dirname}&amp;fn={@name}">Ungzip and Untar this file</a>
 		</xsl:if>
 	</div>
 </xsl:template>

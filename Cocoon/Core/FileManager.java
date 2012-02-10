@@ -84,7 +84,7 @@ private int m_isnew = 0;
 	}
 
 	public void generate() throws SAXException, ProcessingException {
-		System.out.println("***********");
+		//System.out.println("***********");
 		String RemoteHost = m_request.getRemoteHost();
 		String RemoteAddr = m_request.getRemoteAddr();
 
@@ -108,6 +108,28 @@ private int m_isnew = 0;
 					String resp = removeFile(BASE_USER_DIR,m_OwnerID,m_DirStr,"input",m_FilenameStr);
 				}
 			}
+		}else if(m_ActStr.equalsIgnoreCase("untar")){
+			if((m_DirStr!=null)&&(m_FilenameStr!=null)&&(m_FilenameStr.endsWith(".tar"))){
+				String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
+				ZipUtil zu = new ZipUtil();
+				if(zu.untar(dirpath+m_FilenameStr,dirpath)>=0){
+					String resp = removeFile(BASE_USER_DIR,m_OwnerID,m_DirStr,"input",m_FilenameStr);
+				}
+			}
+		}else if(m_ActStr.equalsIgnoreCase("untargz")){
+			if((m_DirStr!=null)&&(m_FilenameStr!=null)&&(m_FilenameStr.endsWith(".tar.gz"))){
+				String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
+				ZipUtil zu = new ZipUtil();
+				if(zu.ungzip(dirpath+m_FilenameStr,dirpath)>=0){
+					String resp = removeFile(BASE_USER_DIR,m_OwnerID,m_DirStr,"input",m_FilenameStr);
+					int indx = m_FilenameStr.indexOf(".gz");
+					m_FilenameStr = m_FilenameStr.substring(0,indx);
+					if(zu.untar(dirpath+m_FilenameStr,dirpath)>=0){
+						resp = removeFile(BASE_USER_DIR,m_OwnerID,m_DirStr,"input",m_FilenameStr);
+						resp = removeFile(BASE_USER_DIR,m_OwnerID,m_DirStr,"input",m_FilenameStr+".gz");
+					}
+				}
+			}
 		}else if(m_ActStr.equalsIgnoreCase("conv")){
 			if(m_DirStr!=null){
 				String indir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
@@ -119,14 +141,24 @@ private int m_isnew = 0;
 			if(m_DirStr!=null){
 				String outdir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
 				ZipUtil zu = new ZipUtil();
-					//zip(String the_sourcedir,String the_suffix,String the_destfile){
 				zu.zip(outdir,"xml",outdir+"/"+m_DirStr+".zip");
 			}
-		}else if(m_ActStr.equalsIgnoreCase("get")){
-			//moved to FileDownload.java
-			if((m_DirStr!=null)&&(m_FilenameStr!=null)){
-				System.out.println("DOWNLOAD FN<"+m_FilenameStr+">");
+		}else if(m_ActStr.equalsIgnoreCase("targz")){
+			if(m_DirStr!=null){
+				String outdir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
+				ZipUtil zu = new ZipUtil();
+				String newtar = outdir+"/"+m_DirStr+".tar";
+				zu.tar(outdir,".xml",newtar);
+				if(zu.gzip(newtar,newtar+".gz")>=0){
+					System.out.println("REMOVAL OF INTERMEDIATE TAR<"+newtar+"> HAPPENING?");
+					String resp = removeFile(BASE_USER_DIR,m_OwnerID,m_DirStr,"output",newtar);
+				}
 			}
+		//}else if(m_ActStr.equalsIgnoreCase("get")){
+		//	//moved to FileDownload.java
+		//	if((m_DirStr!=null)&&(m_FilenameStr!=null)){
+		//		System.out.println("DOWNLOAD FN<"+m_FilenameStr+">");
+		//	}
 		}
 
 		//PRODUCE OUTPUT
@@ -220,6 +252,10 @@ private int m_isnew = 0;
 								fileAttr.addAttribute("","zip","zip","CDATA","1");
 							}else if(filename.endsWith(".zip")){
 								fileAttr.addAttribute("","zip","zip","CDATA","2");
+							}else if(filename.endsWith(".tar")){
+								fileAttr.addAttribute("","zip","zip","CDATA","3");
+							}else if(filename.endsWith(".tar.gz")){
+								fileAttr.addAttribute("","zip","zip","CDATA","4");
 							}else{
 								fileAttr.addAttribute("","zip","zip","CDATA","0");
 							}
@@ -238,16 +274,6 @@ private int m_isnew = 0;
 							AttributesImpl fileAttr = new AttributesImpl();
 							fileAttr.addAttribute("","name","name","CDATA",""+filename);
 							fileAttr.addAttribute("","op","op","CDATA","1");
-/***
-							if(filename==null){
-							}else if(filename.endsWith(".xml")){
-								fileAttr.addAttribute("","zip","zip","CDATA","1");
-							}else if(filename.endsWith(".zip")){
-								fileAttr.addAttribute("","zip","zip","CDATA","2");
-							}else{
-								fileAttr.addAttribute("","zip","zip","CDATA","0");
-							}
-***/
 							contentHandler.startElement("","file","file",fileAttr);
 							contentHandler.endElement("","file","file");
 						}
@@ -386,14 +412,16 @@ private int m_isnew = 0;
 
 	public String removeFile(String the_base,String the_owner,String the_DirStr,String the_sub,String the_Filename){
 		String filepath = the_base+"/"+the_owner+"/"+the_DirStr+"/"+the_sub+"/"+the_Filename;
-
-		File f = new File(filepath);
-		boolean df = f.delete();
-		if(df){
-			return filepath;
-		}else{
-			return null;
+		String retval = null;
+		try{
+			File f = new File(filepath);
+			if(f.delete()){
+				retval = filepath;
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
+		return retval;
 	}
 
 }

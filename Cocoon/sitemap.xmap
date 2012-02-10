@@ -121,6 +121,18 @@
 		</map:generate>
 		<map:serialize type="zip" mime-type="application/octet-stream" />
 	</map:match>
+	<map:match pattern="Core/*.tar" >
+		<map:generate type="filedownload">
+			<map:parameter name="fn" value="{1}" />
+		</map:generate>
+		<map:serialize mime-type="application/octet-stream" />
+	</map:match>
+	<map:match pattern="Core/*.tar.gz" >
+		<map:generate type="filedownload">
+			<map:parameter name="fn" value="{1}" />
+		</map:generate>
+		<map:serialize mime-type="application/octet-stream" />
+	</map:match>
 <!--
 	<map:match pattern="Core/FileDownload.xml" >
 		<map:generate type="filedownload"/>

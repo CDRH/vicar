@@ -30,6 +30,7 @@
 		<pathelement path="${libdir}/abbot-0.3.3.jar"/>
 -->
 		<pathelement path="${libdir}/abbot-0.3.3-standalone.jar"/>
+		<pathelement path="${libdir}/commons-compress-1.3.jar"/>
 
 <!--LAPTOP-->
 <!--
