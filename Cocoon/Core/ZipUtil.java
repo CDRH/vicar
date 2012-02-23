@@ -1,9 +1,10 @@
 //ZipUtil.java
 
-//zip functionality adapted from http://java.sun.com/developer/technicalArticles/Programming/compression/
-//tar functionality from apache commons compress
 
 package Core;
+
+import org.junit.*;
+import static org.junit.Assert.*;
 
 import java.util.zip.*;
 import java.util.Vector;
@@ -15,11 +16,19 @@ import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 
+/**
+* Utilities for zip/unzip, gzip/gunzip, and tar/untar.  Tar/untar relies on commons-compress-1.3.jar from http://commons.apache.org/compress/  
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.1, 2/15/2012
+*/
 
 public class ZipUtil {
 
 private static final int BUFFER = 2048;
-
+/**
+* For testing only.
+*/
 	public static void main(String args[]){
 		String dir = "/Users/franksmutniak/Desktop/userdata/tmp/";
 		ZipUtil z = new ZipUtil();
@@ -53,22 +62,25 @@ private static final int BUFFER = 2048;
 	public ZipUtil(){
 	}
 
+@Test public void testziputil(){
+	assertTrue(true);
+}
+
+/**
+* Zip all files in sourcedir with suffix and place result into destfile.
+*/
 	public int zip(String the_sourcedir,String the_suffix,String the_destfile){
 		try {
 			FileOutputStream dest = new FileOutputStream(the_destfile);
 			CheckedOutputStream checksum = new CheckedOutputStream(dest, new Adler32());
 			ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(checksum));
-			//out.setMethod(ZipOutputStream.DEFLATED);
 			byte data[] = new byte[BUFFER];
-			// get a list of files from current directory
 			File f = new File(the_sourcedir);
 			String files[] = f.list();
 			for(String fs : files){
 				if(fs.endsWith(the_suffix)){
-					//FileInputStream fi = new FileInputStream(the_sourcedir+files[i]);
 					FileInputStream fi = new FileInputStream(the_sourcedir+fs);
 					BufferedInputStream origin = new BufferedInputStream(fi, BUFFER);
-					//ZipEntry entry = new ZipEntry(files[i]);
 					ZipEntry entry = new ZipEntry(fs);
 					out.putNextEntry(entry);
 					int count;
@@ -88,6 +100,9 @@ private static final int BUFFER = 2048;
 		return 0;
 	}
 
+/**
+* Return a Vector of all filenames in zip sourcefile.
+*/
 	public Vector<String> listzip(String the_sourcefile){
 		Vector<String> retList = new Vector<String>();
 		try {
@@ -107,6 +122,9 @@ private static final int BUFFER = 2048;
 		return retList;
 	}
 
+/**
+* Unzip all files in sourcefile and place into destdir.
+*/
 	public int unzip(String the_sourcefile,String the_destdir){
 		int retval = 0;
 		try {
@@ -114,10 +132,8 @@ private static final int BUFFER = 2048;
 			ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
 			ZipEntry entry;
 			while((entry = zis.getNextEntry()) != null) {
-				//System.out.println("Extracting: " +entry.getName()+" ISDIR<"+entry.isDirectory()+">");
 				int count;
 				byte data[] = new byte[BUFFER];
-				// write the files to the disk
 				FileOutputStream fos = new FileOutputStream(the_destdir+entry.getName());
 				BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
 				while ((count = zis.read(data, 0, BUFFER)) != -1) {
@@ -136,15 +152,16 @@ private static final int BUFFER = 2048;
 		return retval;
 	}
 
-//FSS
 //gzip only compresses a single file, not multiple files like zip
 
+/**
+* Gzip sourcefile and place in destfile.
+*/
 	public int gzip(String the_sourcefile,String the_destfile){
 		try {
 			FileOutputStream dest = new FileOutputStream(the_destfile);
 			CheckedOutputStream checksum = new CheckedOutputStream(dest, new Adler32());
 			GZIPOutputStream out = new GZIPOutputStream(new BufferedOutputStream(checksum));
-			//out.setMethod(ZipOutputStream.DEFLATED);
 			byte data[] = new byte[BUFFER];
 					FileInputStream fi = new FileInputStream(the_sourcefile);
 					BufferedInputStream origin = new BufferedInputStream(fi, BUFFER);
@@ -163,6 +180,9 @@ private static final int BUFFER = 2048;
 		return 0;
 	}
 
+/**
+* Gunzip the file in sourcefile and place into destdir.
+*/
 	public int ungzip(String the_sourcefile,String the_destdir){
 		int retval = 0;
 		try {
@@ -170,7 +190,6 @@ private static final int BUFFER = 2048;
 			GZIPInputStream zis = new GZIPInputStream(new BufferedInputStream(fis));
 			int count;
 			byte data[] = new byte[BUFFER];
-			// write the files to the disk
 			int indx = the_sourcefile.indexOf(".gz");
 			if(indx>0){
 				the_sourcefile = the_sourcefile.substring(0,indx).trim();
@@ -198,6 +217,9 @@ private static final int BUFFER = 2048;
 		return retval;
 	}
 
+/**
+* Tar all files in sourcedir with suffix and place result into destfile.
+*/
 	public long tar(String the_sourcedir,String the_suffix,String the_destfile){
 		try {
 			if((the_sourcedir==null)||(the_destfile==null)){
@@ -207,9 +229,7 @@ private static final int BUFFER = 2048;
 			OutputStream os = new FileOutputStream(fo);
 			ArchiveOutputStream aos = new ArchiveStreamFactory().createArchiveOutputStream("tar",os);
 
-			//System.out.println("TARRING <"+the_sourcedir+">");
 			File fi = new File(the_sourcedir);
-			//System.out.println("TAR ISDIR<"+fi.isDirectory()+">");
 			if((fi!=null)&&(fi.isDirectory())){
 				File flist[] = fi.listFiles();
 				for (File datafile : flist){
@@ -254,6 +274,9 @@ private static final int BUFFER = 2048;
 		return 0;
 	}
 
+/**
+* Unzip all files in sourcefile and place into destdir.
+*/
 	public int untar(String the_sourcefile,String the_destdir){
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;

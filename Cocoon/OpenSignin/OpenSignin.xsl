@@ -24,18 +24,6 @@
 	<link rel="stylesheet" type="text/css" href="OpenSignin.css"></link>
 </head>
 <body>
-<!--
-	<div style="padding:1.0em 0em;">
-		<span>Your session ID is </span>
-		<xsl:value-of select="@SessionID" />
-	</div>
-	<xsl:if test="url/text() !='null'">
-		<h2>
-			<xsl:text>REDIR_</xsl:text>
-			<xsl:value-of select="url/text()" />
-		</h2>
-	</xsl:if>
--->
 	<xsl:if test="url/text()='null'">
 		<xsl:if test="@loginstatus &lt; 1">
 			<xsl:if test="@loginstatus &lt; 0">

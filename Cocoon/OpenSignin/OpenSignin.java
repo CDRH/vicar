@@ -2,19 +2,15 @@
 
 package OpenSignin;
 
-import java.sql.*;
 import java.util.Vector;
-import java.util.Date;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import org.apache.cocoon.generation.ServiceableGenerator;
@@ -25,21 +21,24 @@ import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.Session;
 
 import org.apache.avalon.framework.service.ServiceManager;
-import org.apache.avalon.framework.service.ServiceSelector;
 import org.apache.avalon.framework.service.ServiceException;
 import org.apache.avalon.framework.parameters.Parameters;
-import org.apache.avalon.framework.parameters.ParameterException;
 import org.apache.avalon.framework.activity.Disposable;
-import org.apache.avalon.excalibur.datasource.DataSourceComponent;
 
 //JOpenId
 import org.expressme.openid.Association;
-import org.expressme.openid.Authentication;
 import org.expressme.openid.Endpoint;
-import org.expressme.openid.OpenIdException;
 import org.expressme.openid.OpenIdManager;
+//import org.expressme.openid.Authentication;
+//import org.expressme.openid.OpenIdException;
 
-
+/**
+* Requires JOpenId-1.08.jar from http://code.google.com/p/jopenid/
+* This file is based in part on OpenIdServlet.java from the sample code.
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.1, 2/15/2012
+*/
 public class OpenSignin extends ServiceableGenerator implements Disposable {
 
 static final long ONE_HOUR = 3600000L;
@@ -49,8 +48,9 @@ static final long TEN_HOUR = ONE_HOUR * 10L;
 static final String ATTR_MAC = "openid_mac";
 static final String ATTR_ALIAS = "openid_alias";
 
-//private String URL_BASE = "http://127.0.0.1:8888";
-private String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
+private String URL_BASE = "http://127.0.0.1:8888";
+//private String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
+
 private String URL_LOGIN_SFX = "/blueorchid/OpenSignin/OpenSignin.html";
 private String URL_APPL = "../Core/Simple.html";
 private String URL_APPL_LOGOUT = "../Core/Simple.html?mode=-1";
@@ -72,8 +72,6 @@ private int m_loginstatus = 0;
 
 	public void dispose() {
 		super.dispose();
-		//manager.release(m_dataSource);
-		//m_dataSource = null;
 	}
 
 	public void recycle() {
@@ -82,9 +80,6 @@ private int m_loginstatus = 0;
 
 	public void service(ServiceManager manager) throws ServiceException{
 		super.service(manager);
-		ServiceSelector selector = (ServiceSelector)
-				manager.lookup(DataSourceComponent.ROLE+"Selector");
-		//m_dataSource = (DataSourceComponent)selector.select("dbname");
 
 		//OPENIDMANAGER
 		oimanager = new OpenIdManager();
@@ -109,7 +104,7 @@ private int m_loginstatus = 0;
 		String m_url = null;
 
 		if(m_OwnerID==null){
-			System.out.println("NOT LOGGED IN");
+			//System.out.println("NOT LOGGED IN");
 			m_loginstatus = 0;
 			if(m_op==null){
 				//System.out.println("NONCE<"+m_nonce+">");
@@ -152,11 +147,11 @@ private int m_loginstatus = 0;
 				m_url = oimanager.getAuthenticationUrl(endpoint, association);
 			}
 		}else{
-			System.out.println("LOGGED IN");
+			//System.out.println("LOGGED IN");
 			m_loginstatus = 1;
 			if(m_op==null){
 			}else if(m_op.equalsIgnoreCase("logout")){
-				System.out.println("LOGGING OUT");
+				//System.out.println("LOGGING OUT");
 				m_OwnerID = null;
 				m_session.setAttribute("userid",null);
 				m_session.invalidate();
@@ -172,7 +167,8 @@ private int m_loginstatus = 0;
 		return 0;
 	}
 
-	public void OpenLoginXML(ContentHandler contentHandler,int the_loginstatus,String the_RemoteAddr,String the_SessionID,String the_url) throws SAXException, ProcessingException {
+	public void OpenLoginXML(ContentHandler contentHandler,int the_loginstatus,String the_RemoteAddr,String the_SessionID,String the_url)
+			throws SAXException, ProcessingException {
 		try {
 			contentHandler.startDocument();
 			AttributesImpl openidAttr = new AttributesImpl();
@@ -196,87 +192,52 @@ private int m_loginstatus = 0;
 		}
 	}
 
-    private int checkNonce(String nonce) {
-	//System.out.println("INCOMING NONCE<"+nonce+">");
-        // check response_nonce to prevent replay-attack:
-        if (nonce==null || nonce.length()<20){
-		return -1;
-	}
-            //throw new OpenIdException("Verify failed.");
-        // make sure the time of server is correct:
-        long nonceTime = getNonceTime(nonce);
-	//System.out.println("INCOMING NONCE LONG<"+nonceTime+">");
-        long diff = Math.abs(System.currentTimeMillis() - nonceTime);
-        if (diff > SIX_HOUR){
-	//	System.out.println("PTA");
-            //throw new OpenIdException("Bad nonce time.");
-		return -2;
-	}
-        if (isNonceExist(nonce)){
-            //throw new OpenIdException("Verify nonce failed.");
-	//	System.out.println("PTB");
-		return -3;
-	}
-        //storeNonce(nonce, nonceTime + TWO_HOUR);
-        storeNonce(nonce, nonceTime + TEN_HOUR); //BECAUSE OF ABBOTS OFF CLOCK
-	return 1;
-    }
-
-    // simulate a database that store all nonce:
-    private Set<String> nonceDb = new HashSet<String>();
-
-    // check if nonce is exist in database:
-    boolean isNonceExist(String nonce) {
-	//System.out.println("EXISTS? "+nonce);
-	//for(String n : nonceDb){
-	//	System.out.println("INDB "+n);
-	//}
-        return nonceDb.contains(nonce);
-    }
-
-    // store nonce in database:
-    void storeNonce(String nonce, long expires) {
-        nonceDb.add(nonce);
-    }
-
-    long getNonceTime(String nonce) {
-        try {
-            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                    .parse(nonce.substring(0, 19) + "+0000")
-                    .getTime();
-        }
-        catch(ParseException e) {
-            throw new OpenIdException("Bad nonce time.");
-        }
-    }
-
-	public static int getIntFromString(String the_str){
-		int ret = 0;
-		if(the_str==null){
-			return ret;
+/**
+* Modified from sample code.
+*/
+	private int checkNonce(String nonce) {
+		// check response_nonce to prevent replay-attack:
+		if (nonce==null || nonce.length()<20){
+			return -1;
 		}
-		try{
-			ret = Integer.decode(the_str).intValue();
-		}catch(Exception ex){
+		//throw new OpenIdException("Verify failed.");
+		// make sure the time on server is correct:
+		long nonceTime = getNonceTime(nonce);
+		//System.out.println("INCOMING NONCE LONG<"+nonceTime+">");
+		long diff = Math.abs(System.currentTimeMillis() - nonceTime);
+		if (diff > SIX_HOUR){
+			//throw new OpenIdException("Bad nonce time.");
+			return -2;
 		}
-		return ret;
-	}       
+		if (isNonceExist(nonce)){
+			//throw new OpenIdException("Verify nonce failed.");
+			return -3;
+		}
+		//storeNonce(nonce, nonceTime + TWO_HOUR);
+		storeNonce(nonce, nonceTime + TEN_HOUR); //BECAUSE OF ABBOTS OFF CLOCK
+		return 1;
+	}
+
+	// simulate a database that stores all nonce:
+	private Set<String> nonceDb = new HashSet<String>();
+
+	// check if nonce exists in database:
+	boolean isNonceExist(String nonce) {
+		return nonceDb.contains(nonce);
+	}
+
+	// store nonce in database:
+	void storeNonce(String nonce, long expires) {
+		nonceDb.add(nonce);
+	}
+
+	long getNonceTime(String nonce) {
+		try {
+			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").parse(nonce.substring(0, 19) + "+0000").getTime();
+		} catch(ParseException e) {
+			return 0;
+			//throw new OpenIdException("Bad nonce time.");
+		}
+	}
 }
-
-/***
-	public CacheValidity generateValidity() {
-		// Default non-caching behaviour. We will implement this later.
-		return null;
-	}
-***/
-
-/****
-			AttributesImpl msgAttr = new AttributesImpl();
-			msgAttr.addAttribute("","code","code","CDATA",""+m_msgcode);
-			contentHandler.startElement("","msg","msg",msgAttr);
-			if(m_msg!=null){
-				contentHandler.characters(m_msg.toCharArray(),0,m_msg.length());
-			}
-			contentHandler.endElement("","msg","msg");
-****/
 

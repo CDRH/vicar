@@ -3,4 +3,6 @@ There are currently two components to vicar; the Servlets code and the Cocoon co
 
 The Cocoon directory contains the core project which is built as a cocoon generator with xslt processing of the generator output.  This core callsd a small servlet component to read the html5 upload of multiple files.  This code is packaged as a tomcat war file in the Servlets directory.
 
+The servlet may well go away as it's functionality is moved to the cocoon based project.  For this reason the documentation has been moved to the Cocoon dir. 
+
  

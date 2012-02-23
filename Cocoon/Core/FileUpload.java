@@ -2,18 +2,15 @@
 
 package Core;
 
-//import General.*;
+//NEED TO CLEAN OUT OLD IMPORTS
 
-import java.io.InputStream;
-import java.sql.*;
-import java.util.Vector;
-import java.util.Date;
 import java.util.Map;
+import java.io.InputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import org.apache.cocoon.generation.ServiceableGenerator;
@@ -24,19 +21,20 @@ import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.Session;
 
 import org.apache.avalon.framework.service.ServiceManager;
-import org.apache.avalon.framework.service.ServiceSelector;
 import org.apache.avalon.framework.service.ServiceException;
 import org.apache.avalon.framework.parameters.Parameters;
-import org.apache.avalon.framework.parameters.ParameterException;
 import org.apache.avalon.framework.activity.Disposable;
-import org.apache.avalon.excalibur.datasource.DataSourceComponent;
 
 import org.apache.cocoon.servlet.multipart.Part;
 
+/**
+* Upload single files pending integration of existing multiple file upload servlet using HTML5.
+* Not intended to be more than a temporary solution to facilitate testing.  It has no error checking nor reporting back to the user.
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.1, 2/15/2012
+*/
 public class FileUpload extends ServiceableGenerator implements Disposable {
-
-private DataSourceComponent m_dataSource;
-private ServiceSelector m_selector;
 
 private String m_OwnerID;
 private Part m_filePart;
@@ -45,8 +43,6 @@ private String m_DirStr;
 
 	public void dispose() {
 		super.dispose();
-		manager.release(m_dataSource);
-		m_dataSource = null;
 	}
 
 	public void recycle() {
@@ -54,11 +50,12 @@ private String m_DirStr;
 	}
 
 	public void service(ServiceManager manager) throws ServiceException{
-		//System.out.println("CALLING FileUpload SERVICE");
 		super.service(manager);
-		m_selector = (ServiceSelector)manager.lookup(DataSourceComponent.ROLE+"Selector");
 	}
 
+/**
+* Receives dir name and file for upload.  This is the only http POST command in all of Vicar.
+*/
 	public void setup(SourceResolver resolver, Map objectModel,
 			String src, Parameters par) {
 		Request request = ObjectModelHelper.getRequest(objectModel);
@@ -109,10 +106,5 @@ private String m_DirStr;
 		}catch(Exception e){ 
 			e.printStackTrace();
 		}
-	}
-
-	public long generateKey() {
-		// Default non-caching behaviour. We will implement this later.
-		return 0;
 	}
 }

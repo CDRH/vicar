@@ -1,0 +1,6 @@
+
+package Core;
+
+public @Documented @interface ClassPreamble {
+	String author();
+}
