@@ -2,7 +2,7 @@ The Feb 1 update of vicar lets a user upload input xml files, convert them using
 
 Vicar is running on abbot at;
 
-http://abbot.unl.edu:8080/cocoon/blueorchid/Core/Simple.html
+http://abbot.unl.edu:8080/cocoon/vicar/Core/Simple.html
 
 It is intended to serve as a proof of concept for the final web product.  It is not pretty in form nor in code and needs significant refactoring and annotation.
 It's purpose is not yet to be a design for vicar but to be a framework on which to display and test various components.  Vicar's useful form will be designed and built at a later time.

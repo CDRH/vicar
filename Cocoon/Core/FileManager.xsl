@@ -19,8 +19,15 @@
 	<meta name="description" content="Collection" />
 	<meta name="robots" content="noindex,nofollow" />
 	<link rel="stylesheet" type="text/css" href="Simple.css"></link>
+	<script type="text/javascript" language="JavaScript" src="AjaxClient.js"></script>
+	<script type="text/javascript" language="JavaScript" src="AjaxUpload.js"></script>
+	<style type="text/css">
+		#progbox {margin:10px;border:1px solid blue;min-width:200px;width:auto !important;min-height:15px;height:auto !important;text-align:center;}
+		#msgbox {margin:10px;border:1px solid blue;min-width:200px;width:auto !important;min-height:15px;height:auto !important;}
+		progress {background-color:white;width:99%;margin:10px;border:1px solid blue;}
+	</style>
 </head>
-<body style="margin:10px;">
+<body onload="Init()" style="margin:10px;">
 	<xsl:apply-templates />
 </body>
 </xsl:template>
@@ -83,11 +90,25 @@
 		</form>
 	</xsl:if>
 	<xsl:if test="@new=0">
-		<form style="padding:10px;margin:10px;" action="FileUpload.html?dir={@dirname}" method="post" enctype="multipart/form-data">
+		<noscript>
+			<div style="color:red;margin:10px 0px;">If javascript were enabled you would be able to upload multiple files at once by selecting them or by dragging and dropping them into the drop box.</div>
+		</noscript>
+		<div id="progbox">
+		</div>
+		<div id="msgbox">
+			<b>Drag and drop files here</b>
+			<noscript>
+				<b style="color:red;"> once you enable javascript!</b>
+			</noscript>
+		</div>
+		<form style="padding:10px;margin:10px;" action="FileManager.html?dir={@dirname}" method="post" enctype="multipart/form-data">
 			<div>
 				<span>Add files to this collection</span>
-				<input type="file" name="uploaded_file" />
-				<input type="submit" name="perform" value="Upload" />
+				<input type="hidden" id="dirname" name="dirname" value="{@dirname}" />
+				<input type="file" id="file_upload" name="file_upload" multiple="multiple" />
+				<noscript>
+					<input type="submit" id="perform" name="perform" value="Upload" />
+				</noscript>
 			</div>
 		</form>
 	</xsl:if>

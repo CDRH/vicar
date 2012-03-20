@@ -7,6 +7,8 @@ import edu.unl.abbot.Abbot;
 import java.util.Vector;
 import java.util.Map;
 import java.io.File;
+import java.io.InputStream;
+import java.io.FileOutputStream;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -23,6 +25,8 @@ import org.apache.avalon.framework.service.ServiceManager;
 import org.apache.avalon.framework.service.ServiceException;
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.avalon.framework.activity.Disposable;
+
+import org.apache.cocoon.servlet.multipart.Part;
 
 /**
 * Implements the collections structure in a unix directory and provides a way for the user to invoke Abbot.
@@ -46,6 +50,8 @@ private String m_RenStr = null;
 private String m_FilenameStr = null;
 private String m_performStr = null;
 private int m_isnew = 0;
+
+private Part m_filePart;
 
 	public void dispose() {
 		super.dispose();
@@ -74,10 +80,16 @@ private int m_isnew = 0;
 		m_RenStr = request.getParameter("ren");
 		m_FilenameStr = request.getParameter("fn");
 		m_performStr = request.getParameter("perform");
+
+		//if(m_performStr==null){
+		//}else{
+			m_filePart = (Part)request.get("file_upload");
+		//}
 	}
 
 	public void generate() throws SAXException, ProcessingException {
 		String msg = null;
+		//GET commands
 		if(m_ActStr==null){
 		}else if(m_ActStr.equalsIgnoreCase("del")){
 			if(m_DirStr!=null){
@@ -123,8 +135,11 @@ private int m_isnew = 0;
 			if(m_DirStr!=null){
 				String indir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
 				String outdir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
+				//String config = "/Users/franksmutniak/Desktop/Github/CDRH/abbot/target/tei-xl.rng";
+				//String config = "http://abbot.unl.edu/tei-xl.rng";
 				Abbot abbot = new Abbot();
 				abbot.convert(indir,outdir);
+				//abbot.convert(indir,outdir,config);
 			}
 		}else if(m_ActStr.equalsIgnoreCase("zip")){
 			if(m_DirStr!=null){
@@ -169,15 +184,21 @@ private int m_isnew = 0;
 				}
 			}else{
 				if(m_performStr==null){
-				}else if(m_performStr.equalsIgnoreCase("Save")){
+				}else if(m_performStr.equalsIgnoreCase("Save")){ //POST command
 					if(m_RenStr.matches("[a-zA-Z]+$")){ //FILTERING FOR NON DIR COMPATIBLE OR NEFARIOUS (i.e.'../' OR ESCAPE) CHAR.
-//NEED TO CHECK THAT RenStr IS UNIQUE SO IT DOESNT WRITE OVER EXISTING COLLECTION
-						renameDir(BASE_USER_DIR+"/"+m_OwnerID,"NEW",m_RenStr);
-						m_DirStr = m_RenStr;
-						String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/";
+//NEED TO CHECK THAT RenStr IS UNIQUE SO IT DOESNT WRITE OVER AN EXISTING COLLECTION
+						String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_RenStr+"/";
+						if(isDir(dirpath) == false){
+							renameDir(BASE_USER_DIR+"/"+m_OwnerID,"NEW",m_RenStr);
+							m_DirStr = m_RenStr;
+							dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/";
+							msg = "A collection by that name already exists.";
+							m_isnew = 0;
+						}else{
+							m_isnew = 1;
+						}
 						inputfiles = listFiles(dirpath+"input");
 						outputfiles = listFiles(dirpath+"output");
-						m_isnew = 0;
 					}else{
 						msg = "Names can only contain letters a-z and A-Z with no spaces.";
 						m_DirStr = "new";
@@ -195,6 +216,28 @@ private int m_isnew = 0;
 			}
 		}else{ //LIST FILES IN THE DIRECTORY
 			String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/";
+			if(m_performStr==null){
+			}else if(m_performStr.equalsIgnoreCase("Upload")){ //POST command
+				if(m_filePart!=null){ //ADD_IMAGE
+					try {
+						InputStream fis = m_filePart.getInputStream();
+						String fileName = m_filePart.getFileName();
+						String fileType = m_filePart.getMimeType();
+						System.out.println("UPLOAD FN<"+fileName+"> TYPE<"+fileType+"> TO DIR<"+m_DirStr+">");
+						int len = 0;
+						byte buf[] = new byte[1024];
+						File outfile = new File(dirpath+"/input/"+fileName);
+						FileOutputStream fos = new FileOutputStream(outfile);
+						while((len=fis.read(buf))>0){
+							fos.write(buf,0,len);
+						}
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+				}else{
+					System.out.println("NULL");
+				}
+			}
 			inputfiles = listFiles(dirpath+"input");
 			outputfiles = listFiles(dirpath+"output");
 		}
@@ -294,6 +337,21 @@ private int m_isnew = 0;
 		File fn = new File(newpath);
 		boolean fr = fo.renameTo(fn);
 		return newpath;
+	}
+
+	public boolean isDir(String the_dirpath){
+		boolean isdir = false;
+		if(the_dirpath!=null){
+			try {
+				File f = new File(the_dirpath);
+				if(f!=null){
+					isdir = true;
+				}
+			}catch(Exception e){ 
+				e.printStackTrace();
+			}
+		}
+		return isdir;
 	}
 
 	public Vector<FileData> listDirs(String the_dirpath){
