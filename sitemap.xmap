@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+<map:components>
+
+	<map:generators default="file">
+		<!--OPENSIGNIN-->
+		<map:generator name="opensignin" src="OpenSignin.OpenSignin"/>
+		<!--CORE-->
+		<map:generator name="simple" src="Core.Simple"/>
+		<map:generator name="filemanager" src="Core.FileManager"/>
+		<map:generator name="filedownload" src="Core.FileDownload"/>
+		<map:generator name="ajax-upload" src="Core.AjaxServer"/>
+<!--
+		<map:generator name="fileupload" src="Core.FileUpload"/>
+-->
+	</map:generators>
+
+
+	<map:transformers default="xslt"/>
+	<map:readers default="resource"/>
+
+	<map:serializers default="html">
+		<map:serializer
+			logger="sitemap.serializer.xhtml"
+			mime-type="text/html" name="xhtml-MobileProfile"
+			pool-grow="2" pool-max="64" pool-min="2"
+			src="org.apache.cocoon.serialization.XMLSerializer">
+			<doctype-public>-//WAPFORUM//DTD XHTML Mobile 1.0//EN</doctype-public>
+			<doctype-system>http://www.wapforum.org/DTD/xhtml-mobile10.dtd</doctype-system>
+			<encoding>ISO-8859-1</encoding>
+		</map:serializer>
+		<map:serializer
+			mime-type="text/html" name="html5"
+			pool-grow="2" pool-max="64" pool-min="2"
+			src="org.apache.cocoon.serialization.XMLSerializer">
+			<doctype-public>about:legacy-compat</doctype-public>
+			<doctype-system></doctype-system>
+			<encoding>UTF-8</encoding>
+			<indent>yes</indent>
+		</map:serializer>
+	</map:serializers>
+
+	<map:actions />
+
+	<map:selectors default="browser"/>
+	<map:matchers default="wildcard"/>
+</map:components>
+
+
+<map:pipelines>
+<map:pipeline>
+
+<!--TOP-->
+<map:match pattern="" >
+	<!--GO TO INDEX.HTML UNDER APACHE-->
+	<map:redirect-to uri="../"/>
+</map:match>
+<map:match pattern="/" >
+	<!--GO TO INDEX.HTML UNDER APACHE-->
+	<map:redirect-to uri="../"/>
+</map:match>
+
+<!--OPENSIGNIN-->
+<map:match pattern="OpenSignin/**">
+	<map:match pattern="OpenSignin/OpenSignin.html" >
+		<map:generate type="opensignin"/>
+		<map:transform src="OpenSignin/OpenSignin.xsl"/>
+		<map:serialize type="html"/>
+	</map:match>
+	<map:match pattern="OpenSignin/OpenSignin.xml" >
+		<map:generate type="opensignin"/>
+		<map:serialize type="xml"/>
+	</map:match>
+	<map:match pattern="OpenSignin/*.png">
+		<map:read mime-type="image/png" src="OpenSignin/{1}.png" />
+	</map:match>
+	<map:match pattern="OpenSignin/OpenSignin.css">
+		<map:read mime-type="text/css" src="OpenSignin/OpenSignin.css"/>
+	</map:match>
+<!--
+	<map:match pattern="OpenSignin/OpenSignin.js" >
+		<map:read mime-type="text/javascript" src="OpenSignin/OpenSignin.js" />
+	</map:match>
+-->
+</map:match>
+
+
+
+<!--CORE-->
+<map:match pattern="Core/**">
+	<map:match pattern="Core/Simple.html" >
+		<map:generate type="simple"/>
+		<map:transform src="Core/Simple.xsl"/>
+		<map:serialize type="html"/>
+	</map:match>
+	<map:match pattern="Core/Simple.xml" >
+		<map:generate type="simple"/>
+		<map:serialize type="xml"/>
+	</map:match>
+
+	<map:match pattern="Core/FileManager.html" >
+		<map:generate type="filemanager"/>
+		<map:transform src="Core/FileManager.xsl"/>
+		<map:serialize type="html"/>
+	</map:match>
+	<map:match pattern="Core/FileManager.xml" >
+		<map:generate type="filemanager"/>
+		<map:serialize type="xml"/>
+	</map:match>
+
+	<map:match pattern="Core/AjaxUpload.js">
+		<map:read mime-type="text/javascript" src="Core/AjaxUpload.js"/>
+	</map:match>
+	<map:match pattern="Core/AjaxClient.js" >
+		<map:read mime-type="text/javascript" src="Core/AjaxClient.js"/>
+	</map:match>
+
+	<map:match pattern="Core/AjaxServer.xml" >
+		<map:generate type="ajax-upload"/>
+		<map:serialize type="xml"/>
+	</map:match>
+<!--
+	<map:match pattern="Core/FileUpload.html" >
+		<map:generate type="fileupload"/>
+		<map:transform src="Core/FileUpload.xsl"/>
+		<map:serialize type="html"/>
+	</map:match>
+	<map:match pattern="Core/FileUpload.xml" >
+		<map:generate type="fileupload"/>
+		<map:serialize type="xml"/>
+	</map:match>
+-->
+	<!--DOWNLOADS-->
+	<map:match pattern="Core/*.xml" >
+		<map:generate type="filedownload">
+			<map:parameter name="fn" value="{1}" />
+		</map:generate>
+		<map:serialize type="xml" mime-type="application/octet-stream" />
+	</map:match>
+	<map:match pattern="Core/*.zip" >
+		<map:generate type="filedownload">
+			<map:parameter name="fn" value="{1}" />
+		</map:generate>
+		<map:serialize type="zip" mime-type="application/octet-stream" />
+	</map:match>
+	<map:match pattern="Core/*.tar" >
+		<map:generate type="filedownload">
+			<map:parameter name="fn" value="{1}" />
+		</map:generate>
+		<map:serialize mime-type="application/octet-stream" />
+	</map:match>
+	<map:match pattern="Core/*.tar.gz" >
+		<map:generate type="filedownload">
+			<map:parameter name="fn" value="{1}" />
+		</map:generate>
+		<map:serialize mime-type="application/octet-stream" />
+	</map:match>
+	<map:match pattern="Core/Simple.css">
+		<map:read mime-type="text/css" src="Core/Simple.css"/>
+	</map:match>
+<!--
+	<map:match pattern="Core/Simple.js" >
+		<map:read mime-type="text/javascript" src="Core/Simple.js" />
+	</map:match>
+-->
+</map:match>
+
+
+
+
+
+<map:match pattern="protected/Signin/**">
+	<map:match pattern="protected/Signin/Timeout.html">
+		<map:read mime-type="text/html" src="Signin/Timeout.html"/>
+	</map:match>
+</map:match>
+
+<!--ERROR - Send all erroneous paths in this domain to the Login page.-->
+<map:handle-errors>
+	<map:select type="exception">
+		<map:when test="not-found">
+			<map:read mime-type="text/html" src="Signin/Timeout.html"/>
+		</map:when>
+		<map:when test="invalid-session">
+			<map:read mime-type="text/html" src="Signin/Timeout.html"/>
+		</map:when>
+		<map:otherwise>
+			<map:read mime-type="text/html" src="Signin/Timeout.html"/>
+		</map:otherwise>
+	</map:select>
+</map:handle-errors>
+
+</map:pipeline>
+</map:pipelines>
+</map:sitemap>
+
+
