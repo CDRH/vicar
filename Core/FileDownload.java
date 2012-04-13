@@ -99,8 +99,32 @@ private String m_FilenameStr;
 				res.setContentType("text/html");
 				sos.println("<html><head><title>Filename Needed</title></head><body><h2>Filename Needed</h2></body></html>");
 			}else{
+/**NEED TO CHECK IF 'dirty' i.e. HAS Abbot BEEN RUN SINCE LAST COMPRESSED FILE WAS MADE? THEN REGENERATE**/
+
 				res.setContentType("xml");
-				File f = new File(FileManager.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/"+m_FilenameStr);
+				String downloadfiledir = FileManager.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
+				String downloadfilename = downloadfiledir+m_FilenameStr;
+				if(m_FilenameStr.endsWith(".zip")){
+					System.out.println("GENERATING ZIP DIR<"+m_DirStr+"> FN<"+m_FilenameStr+">");
+					if(m_DirStr!=null){
+						downloadfilename = downloadfiledir+"/"+m_DirStr+".zip";
+						ZipUtil zu = new ZipUtil();
+						zu.zip(downloadfiledir,"xml",downloadfilename);
+					}
+				}else if(m_FilenameStr.endsWith(".tar.gz")){
+					System.out.println("GENERATING TAR.GZ DIR<"+m_DirStr+"> FN<"+m_FilenameStr+">");
+					ZipUtil zu = new ZipUtil();
+					//String outdir = FileManager.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
+					downloadfilename = downloadfiledir+"/"+m_DirStr+".tar";
+					zu.tar(downloadfiledir,".xml",downloadfilename);
+					if(zu.gzip(downloadfilename,downloadfilename+".gz")>=0){
+						System.out.println("REMOVAL OF INTERMEDIATE TAR<"+downloadfilename+"> HAPPENING?");
+						//String resp = removeFile(downloadfilename);
+						downloadfilename+=".gz";
+					}
+				}
+
+				File f = new File(downloadfilename);
 				FileInputStream fis = new FileInputStream(f);
 				BufferedInputStream bis = new BufferedInputStream(fis);
 				int avail = bis.available();
@@ -114,4 +138,18 @@ private String m_FilenameStr;
 		}
 	}
 }
-
+/****
+	}else if(m_ActStr.equalsIgnoreCase("zip")){
+	}else if(m_ActStr.equalsIgnoreCase("targz")){
+		if(m_DirStr!=null){
+			String outdir = FileManager.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
+			ZipUtil zu = new ZipUtil();
+			String newtar = outdir+"/"+m_DirStr+".tar";
+			zu.tar(outdir,".xml",newtar);
+			if(zu.gzip(newtar,newtar+".gz")>=0){
+				System.out.println("REMOVAL OF INTERMEDIATE TAR<"+newtar+"> HAPPENING?");
+				String resp = removeFile(outdir+newtar);
+			}
+		}
+	}
+****/

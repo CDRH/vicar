@@ -36,7 +36,7 @@
 				</a>
 			</div>
 		</div>
-
+<!--
 		<span style="font-size:140%;margin:0.5em;position:fixed;top:30px;">
 			<xsl:if test="@mode &lt; 0">
 				<div style="color:red;">You have successfuly logged out of this site, but still likely need to log out of your identity provider (Google or Yahoo) account.</div>
@@ -44,6 +44,14 @@
 			<div>Welcome to a simple framework for testing components!</div>
 			<div>Other features and login options will follow.</div>
 		</span>
+-->
+		<div style="font-size:140%;margin:0.5em;">
+			<xsl:if test="@mode &lt; 0">
+				<div style="color:red;">You have successfuly logged out of this site, but still likely need to log out of your identity provider (Google or Yahoo) account.</div>
+			</xsl:if>
+			<div>Welcome to a simple framework for testing components!</div>
+			<div>Other features and login options will follow.</div>
+		</div>
 	</xsl:if>
 
 <!--LOGGED IN-->

@@ -52,9 +52,11 @@ private String URL_BASE = "http://127.0.0.1:8888";
 //private String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
 
 private String URL_LOGIN_SFX = "/vicar/OpenSignin/OpenSignin.html";
-private String URL_APPL = "../Core/Simple.html";
-private String URL_APPL_LOGOUT = "../Core/Simple.html?mode=-1";
+//private String URL_APPL = "../Core/Simple.html";
+//private String URL_APPL_LOGOUT = "../Core/Simple.html?mode=-1";
 
+private String URL_APPL = "../Core/FileManager.html";
+private String URL_APPL_LOGOUT = "../Core/FileManager.html?mode=-1";
 
 private Request m_request;
 private Session m_session;

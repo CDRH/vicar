@@ -1,3 +1,22 @@
+
+Current operation as of 4/13/2012
+
+Removed 'Simple' shell around FileManager as all currently available functionality fits togther well in FileManager.
+	(It may be resurrected if needed for buildout of other features.)
+	New URL is http://abbot.unl.edu:8080/cocoon/vicar/Core/FileManager.html
+
+Added ability to accept .rng files for control of translation.
+
+Added 'media queries' to adjust layout based on screen size.
+
+Changed zip and tar.gz create functions to 'download' functions which
+	create an up to date zip or tar.gz only if requested for download.
+
+Figured out how to get cocoon to serialize an HTML5 document.
+
+Have not yet tested on Internet Explorer
+
+################################################
 Current operation as of 3/22/2012
 
 Basic testing of major browsers as listed in http://www.w3schools.com/browsers/browsers_stats.asp

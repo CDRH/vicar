@@ -40,13 +40,19 @@ import org.apache.cocoon.servlet.multipart.Part;
 public class FileManager extends ServiceableGenerator implements Disposable {
 
 private String m_OwnerID;
+private String m_PersonName = null;
+private String m_PersonEmail = null;
+
+private String m_mode = "0";
 private String m_msg = null;
 private int m_msgcode = 0;
 
 public static String BASE_USER_DIR = "/tmp/vicar/";
+public static String CONVERT_SUFFIX = ".rng";
 private String m_DirStr = null;
 private String m_ActStr = null;
 private String m_RenStr = null;
+private String m_ConvStr = null;
 private String m_FilenameStr = null;
 private String m_performStr = null;
 private int m_isnew = 0;
@@ -69,25 +75,38 @@ private Part m_filePart;
 		Request request = ObjectModelHelper.getRequest(objectModel);
 		Session session = request.getSession();
 		m_OwnerID = (String)session.getAttribute("userid");
-		if(m_OwnerID==null){
-			m_OwnerID = "FRANK"; //If not set in OpenSignin.  This is to enable testing outside of Simple or OpenID
-			session.setAttribute("userid",m_OwnerID);
-		}
-		m_isnew = 0;
+		if(m_OwnerID!=null){
+			//m_OwnerID = "FRANK"; //If not set in OpenSignin.  This is to enable testing outside of Simple or OpenID
+			//session.setAttribute("userid",m_OwnerID);
 
-		m_DirStr = request.getParameter("dir");
-		m_ActStr = request.getParameter("act");
-		m_RenStr = request.getParameter("ren");
-		m_FilenameStr = request.getParameter("fn");
-		m_performStr = request.getParameter("perform");
+			m_PersonName = (String)session.getAttribute("personname");
+			m_PersonEmail = (String)session.getAttribute("personemail");
 
-		//if(m_performStr==null){
-		//}else{
+			m_DirStr = request.getParameter("dir");
+			m_ActStr = request.getParameter("act");
+			m_RenStr = request.getParameter("ren");
+			m_FilenameStr = request.getParameter("fn");
+			m_performStr = request.getParameter("perform");
+			m_ConvStr = request.getParameter("conv");
+			System.out.println("PERFORM<"+m_performStr+">");
+
 			m_filePart = (Part)request.get("file_upload");
-		//}
+			m_isnew = 0;
+		}
+		m_mode = request.getParameter("mode");
 	}
 
 	public void generate() throws SAXException, ProcessingException {
+		if(m_OwnerID == null){
+			contentHandler.startDocument();
+				AttributesImpl signinAttr = new AttributesImpl();
+				signinAttr.addAttribute("","mode","mode","CDATA",""+m_mode);
+				contentHandler.startElement("","signin","signin",signinAttr);
+				contentHandler.endElement("","signin","signin");
+			contentHandler.endDocument();
+			return;
+		}
+
 		String msg = null;
 		//GET commands
 		if(m_ActStr==null){
@@ -135,13 +154,24 @@ private Part m_filePart;
 			if(m_DirStr!=null){
 				String indir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
 				String outdir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
-				//String config = "/Users/franksmutniak/Desktop/Github/CDRH/abbot/config/abbot_config.xml";
-				//String config = "/Users/franksmutniak/Desktop/Github/CDRH/abbot/target/tei-xl.rng";
-				//String config = "http://abbot.unl.edu/tei-xl.rng";
+				String convdir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/convert/";
+				String config = "/Users/franksmutniak/Desktop/abbottestdata/tei-xl.rng";
+				String resp = cleanDir(outdir);
+				System.out.println("ABBOT CLEARED OUTPUT DIRECTORY<"+resp+">");
+				System.out.println("ABBOT USING CONFIG?");
+				System.out.println("ABBOT CONVERT BEGIN");
 				Abbot abbot = new Abbot();
-				abbot.convert(indir,outdir);
-				//abbot.convert(indir,outdir,config);
+				if((m_ConvStr==null)||(m_ConvStr.equals("default"))){
+					System.out.println("*****CONVERT USING DEFAULT");
+					abbot.convert(indir,outdir);
+				}else{
+					System.out.println("*****CONVERT USING <"+convdir+m_ConvStr+">");
+					abbot.convert(indir,outdir,convdir+m_ConvStr);
+				}
+				System.out.println("ABBOT CONVERT END");
 			}
+/****
+//NOW DONE IN FileDownload.java
 		}else if(m_ActStr.equalsIgnoreCase("zip")){
 			if(m_DirStr!=null){
 				String outdir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
@@ -159,11 +189,13 @@ private Part m_filePart;
 					String resp = removeFile(outdir+newtar);
 				}
 			}
+****/
 		}
 
 		//PRODUCE OUTPUT
 		Vector<FileData> mydirs = null;
 		Vector<String> inputfiles = null;
+		Vector<String> convertfiles = null;
 		Vector<String> outputfiles = null;
 		if(m_DirStr==null){ //LIST ALL DIRECTORIES FOR USER OwnerID
 			mydirs = listDirs(BASE_USER_DIR+"/"+m_OwnerID);
@@ -174,12 +206,13 @@ private Part m_filePart;
 					String dirpath = BASE_USER_DIR+"/"+m_OwnerID;
 					createDir(dirpath+"/NEW");
 					dirpath = dirpath+"/"+m_DirStr+"/";
-					inputfiles = listFiles(dirpath+"input");
-					outputfiles = listFiles(dirpath+"output");
+					inputfiles = listFiles(dirpath+"input",".xml");
+					convertfiles = listFiles(dirpath+"convert",CONVERT_SUFFIX);
+					outputfiles = listFiles(dirpath+"output",".xml");
 					m_isnew = 1;
 				}else{
 					//System.out.println("CANCELLING NEW COLLECTiON");
-					String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr;
+					String dirpath = BASE_USER_DIR+"/"+m_OwnerID;
 					String resp = removeDir(dirpath+"/"+m_DirStr);
 					mydirs = listDirs(dirpath);
 					m_DirStr = null;
@@ -203,14 +236,16 @@ private Part m_filePart;
 							msg = "A collection by that name already exists.";
 							m_isnew = 1;
 						}
-						inputfiles = listFiles(dirpath+"input");
-						outputfiles = listFiles(dirpath+"output");
+						inputfiles = listFiles(dirpath+"input",".xml");
+						convertfiles = listFiles(dirpath+"convert",CONVERT_SUFFIX);
+						outputfiles = listFiles(dirpath+"output",".xml");
 					}else{
 						msg = "Names can only contain letters a-z and A-Z with no spaces.";
 						m_DirStr = "new";
 						String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/";
-						inputfiles = listFiles(dirpath+"input");
-						outputfiles = listFiles(dirpath+"output");
+						inputfiles = listFiles(dirpath+"input",".xml");
+						convertfiles = listFiles(dirpath+"convert",CONVERT_SUFFIX);
+						outputfiles = listFiles(dirpath+"output",".xml");
 						m_isnew = 1;
 					}
 				}else{
@@ -232,7 +267,11 @@ private Part m_filePart;
 						System.out.println("UPLOAD FN<"+fileName+"> TYPE<"+fileType+"> TO DIR<"+m_DirStr+">");
 						int len = 0;
 						byte buf[] = new byte[1024];
-						File outfile = new File(dirpath+"/input/"+fileName);
+						String filedirpath = dirpath+"/input/";
+						if((fileName!=null)&&(fileName.toLowerCase().endsWith(CONVERT_SUFFIX))){
+							filedirpath = dirpath+"/convert/";
+						}
+						File outfile = new File(filedirpath+fileName);
 						FileOutputStream fos = new FileOutputStream(outfile);
 						while((len=fis.read(buf))>0){
 							fos.write(buf,0,len);
@@ -244,15 +283,18 @@ private Part m_filePart;
 					System.out.println("NULL");
 				}
 			}
-			inputfiles = listFiles(dirpath+"input");
-			outputfiles = listFiles(dirpath+"output");
+			inputfiles = listFiles(dirpath+"input",".xml");
+			convertfiles = listFiles(dirpath+"convert",CONVERT_SUFFIX);
+			outputfiles = listFiles(dirpath+"output",".xml");
 		}
 
 		int maxcount = 10;
 		try {
 			contentHandler.startDocument();
-				AttributesImpl simpleAttr = new AttributesImpl();
-				contentHandler.startElement("","simple","simple",simpleAttr);
+				AttributesImpl filemanagerAttr = new AttributesImpl();
+				filemanagerAttr.addAttribute("","personname","personname","CDATA",""+m_PersonName);
+				filemanagerAttr.addAttribute("","personemail","personemail","CDATA",""+m_PersonEmail);
+				contentHandler.startElement("","filemanager","filemanager",filemanagerAttr);
 				AttributesImpl msgAttr = new AttributesImpl();
 				if(msg!=null){
 					contentHandler.startElement("","msg","msg",msgAttr);
@@ -300,11 +342,40 @@ private Part m_filePart;
 						}
 						contentHandler.endElement("","inputfiles","inputfiles");
 					}
-					//THIS DIR ONLY CONTAINS ABBOT OUTPUT SO SHOULD ALWAYS BE .xml FILES OR TAR/TAR.GZ/ZIP FILES OF .xml FILES
+
+					if(convertfiles!=null){
+						AttributesImpl convertfilesAttr = new AttributesImpl();
+						convertfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
+						convertfilesAttr.addAttribute("","count","count","CDATA",""+convertfiles.size());
+						convertfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
+						if((m_ConvStr==null)||(m_ConvStr.equals("default"))){
+							convertfilesAttr.addAttribute("","last","last","CDATA","default");
+						}else{
+							convertfilesAttr.addAttribute("","last","last","CDATA",""+m_ConvStr);
+						}
+						contentHandler.startElement("","convertfiles","convertfiles",convertfilesAttr);
+						for(String filename : convertfiles){
+							AttributesImpl fileAttr = new AttributesImpl();
+							fileAttr.addAttribute("","name","name","CDATA",""+filename);
+							fileAttr.addAttribute("","op","op","CDATA","0");
+							contentHandler.startElement("","file","file",fileAttr);
+							contentHandler.endElement("","file","file");
+						}
+						//DEFAULT
+						AttributesImpl defaultAttr = new AttributesImpl();
+						defaultAttr.addAttribute("","name","name","CDATA","default");
+						defaultAttr.addAttribute("","op","op","CDATA","0");
+						contentHandler.startElement("","file","file",defaultAttr);
+						contentHandler.endElement("","file","file");
+
+						contentHandler.endElement("","convertfiles","convertfiles");
+					}
+
+					//THIS DIR ONLY CONTAINS ABBOT OUTPUT SO SHOULD ALWAYS BE .xml FILES
 					if(outputfiles!=null){
 						AttributesImpl outputfilesAttr = new AttributesImpl();
 						outputfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
-						outputfilesAttr.addAttribute("","count","count","CDATA",""+inputfiles.size());
+						outputfilesAttr.addAttribute("","count","count","CDATA",""+outputfiles.size());
 						outputfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
 						contentHandler.startElement("","outputfiles","outputfiles",outputfilesAttr);
 						for(String filename : outputfiles){
@@ -317,7 +388,7 @@ private Part m_filePart;
 						contentHandler.endElement("","outputfiles","outputfiles");
 					}
 				}
-				contentHandler.endElement("","simple","simple");
+				contentHandler.endElement("","filemanager","filemanager");
 			contentHandler.endDocument();
 		}catch(Exception e){ 
 			e.printStackTrace();
@@ -331,6 +402,7 @@ private Part m_filePart;
 
 		new File(the_dirpath).mkdirs();
 		new File(the_dirpath+"/input/").mkdirs();
+		new File(the_dirpath+"/convert/").mkdirs();
 		new File(the_dirpath+"/output/").mkdirs();
 		return the_dirpath;
 	}
@@ -401,26 +473,28 @@ private Part m_filePart;
 		if(f!=null){
 			if(f.isDirectory()){
 				//DIR MUST BE EMPTY BEFORE DELETION
-				System.out.println("DELETE DIR<"+f.getName()+">");
+				System.out.println("DELETE DIR X<"+f.getName()+">");
 				File dirlist[] = f.listFiles();
 //CURRENTLY NOT RECURSIVE FOR SAFETY
 				for (File userdir : dirlist){
+					System.out.println("DELETE DIR Y<"+userdir.getName()+">");
 					if(userdir.isDirectory()){
 						File subdirlist[] = userdir.listFiles();
 						System.out.println("LEN<"+subdirlist.length+">");
 						for (File subdir : subdirlist){
 							boolean df = subdir.delete();
-							//System.out.println("\t\t\tDEL SUBDIR?"+df+">");
+							System.out.println("\t\t\tDEL SUBDIR?"+df+">");
 						}
 					}else{
 						File filelist[] = userdir.listFiles();
 						for (File sf : filelist){
+							System.out.println("\t\t\tDEL FILE <"+sf.getName()+">");
 							boolean df = sf.delete();
-							//System.out.println("\t\t\tDEL SUBDIR?"+df+">");
+							System.out.println("\t\t\tDEL FILE?"+df+">");
 						}
 					}
 					boolean ddf = userdir.delete();
-					//System.out.println("\tDEL USRDIR?"+ddf+">");
+					System.out.println("\tDEL USRDIR?"+ddf+">");
 				}
 			}
 			boolean dddf = f.delete();
@@ -429,7 +503,27 @@ private Part m_filePart;
 		return the_dirpath;
 	}
 
-	public Vector<String> listFiles(String the_dirpath){
+	public String cleanDir(String the_dirpath){
+		System.out.println("CLEAN<"+the_dirpath+">");
+		File f = new File(the_dirpath);
+		if(f!=null){
+			if(f.isDirectory()){
+				System.out.println("CLEAN DIR X<"+f.getName()+">");
+				File dirlist[] = f.listFiles();
+				for (File userdir : dirlist){
+					System.out.println("CLEAN DIR Y<"+userdir.getName()+">");
+					boolean ddf = userdir.delete();
+					System.out.println("\tDEL USRDIR?"+ddf+">");
+				}
+			}
+		}
+		return the_dirpath;
+	}
+
+	public Vector<String> listFiles(String the_dirpath,String the_suffix){
+		if(the_suffix==null){
+			the_suffix = ".xml";
+		}
 		Vector<String> dir = new Vector<String>();
 		try {
 			File f = new File(the_dirpath);
@@ -437,7 +531,9 @@ private Part m_filePart;
 				String files[] = f.list();
 				if(files!=null){
 					for (int i=0; i<files.length; i++) {
-						dir.add(files[i]);
+						if(files[i].toLowerCase().endsWith(the_suffix)){
+							dir.add(files[i]);
+						}
 					}
 				}
 			}

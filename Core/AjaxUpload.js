@@ -7,19 +7,18 @@ var recvdbytes;
 var dirname;
 
 	function Init(){
-		//alert("INIT");
 		var fu = document.getElementById("file_upload");
 		if(fu!=null){
-		fu.addEventListener("change",FileSelectHandler,false);
+			fu.addEventListener("change",FileSelectHandler,false);
 
-		msgbox = document.getElementById("msgbox");
-		msgbox.addEventListener("dragenter",function(e){e.preventDefault();},false);
-		msgbox.addEventListener("dragover",function(e){e.preventDefault();},false);
-		msgbox.addEventListener("drop",FileSelectHandler,false);
+			msgbox = document.getElementById("msgbox");
+			msgbox.addEventListener("dragenter",function(e){e.preventDefault();},false);
+			msgbox.addEventListener("dragover",function(e){e.preventDefault();},false);
+			msgbox.addEventListener("drop",FileSelectHandler,false);
 
-		progbox = document.getElementById("progbox");
+			progbox = document.getElementById("progbox");
 
-		dirname = document.getElementById("dirname").value;
+			dirname = document.getElementById("dirname").value;
 		}
 	}
 
@@ -37,6 +36,7 @@ var dirname;
 	}
 
 	function uploadFile(file){
+		//alert('filetype '+file.type);
 		var reader = new FileReader();
 		reader.onload = function(e){
 			var sendurl = url+'?fn='+file.name+'&mt='+file.type+'&sz='+file.size+'&dir='+dirname;
@@ -46,6 +46,8 @@ var dirname;
 			reader.readAsText(file);
 		}else if(file.type.indexOf("image") == 0){
 			reader.readAsDataURL(file);
+		}else if(file.name.indexOf(".rng")){
+			reader.readAsText(file);
 		}
 	}
 

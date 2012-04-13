@@ -84,27 +84,37 @@ private Part m_filePart;
 			}
 			System.out.println("USE FILE PATH AS THIS COULD COME FROM A NON UNIX SYSTEM!!!");
 		}
-		//System.out.println("FILENAME<"+m_filename+"> MIMETYPE<"+m_mimetype+"> SIZE<"+m_filesize+"> DIR<"+m_dirname+">");
+		System.out.println("FILENAME<"+m_filename+"> MIMETYPE<"+m_mimetype+"> SIZE<"+m_filesize+"> DIR<"+m_dirname+">");
 
-		String destdir = FileManager.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_dirname+"/input/";
+		//String destdir = FileManager.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_dirname+"/input/";
+		String destdir = FileManager.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_dirname;
 
 		try {
-			
-			if((m_filename!=null)&&(m_mimetype!=null)){
+			System.out.println("CODE IS MESSY - NEEDS TO BE CLEANED UP AND TESTED - SEE IF OTHER BROWSERS SET MIME TYPE FOR .rng OR PERHAPS THIS CODE CAN GET RID OF MIMETYPE CHECK COMPLETELY - ALSO NOT DETECTING NON JAVASCRIPT VERSION!!");
+			if(m_filename!=null){//&&(m_mimetype!=null)){
 				System.out.println("JAVASCRIPT VERSION");
-				if(m_mimetype.indexOf("text") >= 0){
+				if((m_mimetype==null)||(m_mimetype.equals(""))||(m_mimetype.equals("application/octet-stream"))){
+					if(m_filename.toLowerCase().endsWith(FileManager.CONVERT_SUFFIX)){
+						ServletInputStream sis = ((HttpRequest)request).getInputStream();
+						m_size = AjaxUtil.writeFileFromInputStream(destdir+"/convert/",m_filename,(InputStream)sis);
+						m_msg = "Uploaded conversion file "+m_filename+" of size "+m_size+".";
+					}else{
+						m_msg = "File "+m_filename+" of unknown type not uploaded.";
+					}
+				}else if(m_mimetype.indexOf("text") >= 0){
 					ServletInputStream sis = ((HttpRequest)request).getInputStream();
-					m_size = AjaxUtil.writeFileFromInputStream(destdir,m_filename,(InputStream)sis);
+					m_size = AjaxUtil.writeFileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis);
 					m_msg = "Uploaded file "+m_filename+" of type "+m_mimetype+" and size "+m_size+".";
 				}else if(m_mimetype.indexOf("image") >= 0){
 					//While no image file uploads are expected for abbot/vicar it is a good sanity check
 					//to try at least one other file type to make sure the code works in a more general way.
 					//Should we have base64 encoded binary data for other reasons in the future we are ready.
 					ServletInputStream sis = ((HttpRequest)request).getInputStream();
-					m_size = AjaxUtil.writeImageFileFromInputStream(destdir,m_filename,(InputStream)sis);
+					m_size = AjaxUtil.writeImageFileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis);
 					m_msg = "Uploaded file "+m_filename+" of type "+m_mimetype+" and size "+m_size+".";
 				}else{
 					m_msg = "File "+m_filename+" of unknown type not uploaded.";
+					System.out.println("MSG<"+m_msg+">");
 				}
 			}else{
 				System.out.println("NO JAVASCRIPT VERSION");
@@ -112,17 +122,25 @@ private Part m_filePart;
 				if(m_filePart!=null){ //ADD_IMAGE
 					InputStream fis = m_filePart.getInputStream();
 					m_filename = m_filePart.getFileName();
+					String filedestdir = destdir+"/input/";
+					if((m_filename!=null)&&(m_filename.toLowerCase().endsWith(FileManager.CONVERT_SUFFIX))){
+						filedestdir = destdir+"/convert/";
+					}
 					m_mimetype = m_filePart.getMimeType();
 					int len = 0;
 					byte buf[] = new byte[1024];
-					File outfile = new File(destdir+m_filename);
+					File outfile = new File(filedestdir+m_filename);
 					FileOutputStream fos = new FileOutputStream(outfile);
 					m_size = 0;
 					while((len=fis.read(buf))>0){
 						fos.write(buf,0,len);
 						m_size += len;
 					}
-					m_msg = "Uploaded file "+m_filename+" of type "+m_mimetype+" and size "+m_size+".";
+					if((m_filename!=null)&&(m_filename.toLowerCase().endsWith(FileManager.CONVERT_SUFFIX))){
+						m_msg = "Uploaded conversion file "+m_filename+" of size "+m_size+".";
+					}else{
+						m_msg = "Uploaded file "+m_filename+" of type "+m_mimetype+" and size "+m_size+".";
+					}
 				}
 			}
 		}catch(Exception ex){
