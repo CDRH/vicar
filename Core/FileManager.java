@@ -88,7 +88,6 @@ private Part m_filePart;
 			m_FilenameStr = request.getParameter("fn");
 			m_performStr = request.getParameter("perform");
 			m_ConvStr = request.getParameter("conv");
-			System.out.println("PERFORM<"+m_performStr+">");
 
 			m_filePart = (Part)request.get("file_upload");
 			m_isnew = 0;
@@ -116,7 +115,6 @@ private Part m_filePart;
 				String resp = removeDir(dirpath);
 				if(resp==null){
 				}else{
-					//System.out.println("DELETED<"+resp+">");
 					m_DirStr = null; //GO TO LISTING
 				}
 			}
@@ -185,7 +183,7 @@ private Part m_filePart;
 				String newtar = outdir+"/"+m_DirStr+".tar";
 				zu.tar(outdir,".xml",newtar);
 				if(zu.gzip(newtar,newtar+".gz")>=0){
-					System.out.println("REMOVAL OF INTERMEDIATE TAR<"+newtar+"> HAPPENING?");
+					//System.out.println("REMOVAL OF INTERMEDIATE TAR<"+newtar+"> HAPPENING?");
 					String resp = removeFile(outdir+newtar);
 				}
 			}
@@ -200,7 +198,6 @@ private Part m_filePart;
 		if(m_DirStr==null){ //LIST ALL DIRECTORIES FOR USER OwnerID
 			mydirs = listDirs(BASE_USER_DIR+"/"+m_OwnerID);
 		}else if(m_DirStr.equalsIgnoreCase("new")){
-			//System.out.println("DIR<"+m_DirStr+"> REN<"+m_RenStr+"> OWNER<"+m_OwnerID+">");
 			if((m_RenStr==null)||(m_RenStr.length() < 1)){
 				if(m_performStr==null){
 					String dirpath = BASE_USER_DIR+"/"+m_OwnerID;
@@ -218,13 +215,11 @@ private Part m_filePart;
 					m_DirStr = null;
 				}
 			}else{
-				//System.out.println("PERFORM<"+m_performStr+">");
 				if(m_performStr==null){
 				}else if(m_performStr.equalsIgnoreCase("Save")){ //POST command
 					if(m_RenStr.matches("[a-zA-Z]+$")){ //FILTERING FOR NON DIR COMPATIBLE OR NEFARIOUS (i.e.'../' OR ESCAPE) CHAR.
 //NEED TO CHECK THAT RenStr IS UNIQUE SO IT DOESNT WRITE OVER AN EXISTING COLLECTION
 						String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_RenStr+"/";
-						//System.out.println("DIRPATH<"+dirpath+">");
 						if(isDir(dirpath) == false){
 							//System.out.println("\tDOESNT Exist already - being renamed");
 							renameDir(BASE_USER_DIR+"/"+m_OwnerID,"NEW",m_RenStr);
@@ -264,7 +259,7 @@ private Part m_filePart;
 						InputStream fis = m_filePart.getInputStream();
 						String fileName = m_filePart.getFileName();
 						String fileType = m_filePart.getMimeType();
-						System.out.println("UPLOAD FN<"+fileName+"> TYPE<"+fileType+"> TO DIR<"+m_DirStr+">");
+						//System.out.println("UPLOAD FN<"+fileName+"> TYPE<"+fileType+"> TO DIR<"+m_DirStr+">");
 						int len = 0;
 						byte buf[] = new byte[1024];
 						String filedirpath = dirpath+"/input/";
@@ -280,7 +275,7 @@ private Part m_filePart;
 						ex.printStackTrace();
 					}
 				}else{
-					System.out.println("NULL");
+					//System.out.println("NO FILE UPLOADED");
 				}
 			}
 			inputfiles = listFiles(dirpath+"input",".xml");
@@ -468,37 +463,37 @@ private Part m_filePart;
 	}
 
 	public String removeDir(String the_dirpath){
-		System.out.println("DELETE<"+the_dirpath+">");
+		//System.out.println("DELETE<"+the_dirpath+">");
 		File f = new File(the_dirpath);
 		if(f!=null){
 			if(f.isDirectory()){
 				//DIR MUST BE EMPTY BEFORE DELETION
-				System.out.println("DELETE DIR X<"+f.getName()+">");
+				//System.out.println("DELETE DIR X<"+f.getName()+">");
 				File dirlist[] = f.listFiles();
 //CURRENTLY NOT RECURSIVE FOR SAFETY
 				for (File userdir : dirlist){
-					System.out.println("DELETE DIR Y<"+userdir.getName()+">");
+					//System.out.println("DELETE DIR Y<"+userdir.getName()+">");
 					if(userdir.isDirectory()){
 						File subdirlist[] = userdir.listFiles();
-						System.out.println("LEN<"+subdirlist.length+">");
+						//System.out.println("LEN<"+subdirlist.length+">");
 						for (File subdir : subdirlist){
 							boolean df = subdir.delete();
-							System.out.println("\t\t\tDEL SUBDIR?"+df+">");
+							//System.out.println("\t\t\tDEL SUBDIR?"+df+">");
 						}
 					}else{
 						File filelist[] = userdir.listFiles();
 						for (File sf : filelist){
-							System.out.println("\t\t\tDEL FILE <"+sf.getName()+">");
+							//System.out.println("\t\t\tDEL FILE <"+sf.getName()+">");
 							boolean df = sf.delete();
-							System.out.println("\t\t\tDEL FILE?"+df+">");
+							//System.out.println("\t\t\tDEL FILE?"+df+">");
 						}
 					}
 					boolean ddf = userdir.delete();
-					System.out.println("\tDEL USRDIR?"+ddf+">");
+					//System.out.println("\tDEL USRDIR?"+ddf+">");
 				}
 			}
 			boolean dddf = f.delete();
-			System.out.println("PATH DEL?"+dddf+">");
+			//System.out.println("PATH DEL?"+dddf+">");
 		}
 		return the_dirpath;
 	}

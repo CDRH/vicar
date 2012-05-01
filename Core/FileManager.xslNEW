@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-<xsl:output method="html" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+<xsl:output method="xml"
+	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
+	doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 
 <xsl:template match="/">
-<html lang="en" class="no-js">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" class="no-js">
 	<xsl:apply-templates />
 </html>
 </xsl:template>
@@ -21,12 +23,12 @@
 	<div align="right" style="border:0px;margin:8px;padding:0px 25px 0px 0px;">
 		<div style="padding:25px 0px 25px 0px;">
 			<a name="signin" href="../OpenSignin/OpenSignin.html?op=Yahoo" style="color:blue;text-decoration:none;margin:0px;padding:0px;">
-				<img src="../OpenSignin/YahooOpenID_13.png" height="22px;" alt="Sign In With Yahoo" />
+				<img src="../OpenSignin/YahooOpenID_13.png" alt="Sign In With Yahoo" />
 			</a>
 		</div>
 		<div style="padding:0px 0px 8px 0px;">
 			<a name="signin" href="../OpenSignin/OpenSignin.html?op=Google" valign="bottom" style="font-size:82%;font-weight:bold;background:lightgrey;color:#222;border:1px solid #7D7D7D;text-decoration:none;margin:0px;padding:3px 1px 4px 2px;">
-				<img src="../OpenSignin/GoogleGImage.png" height="17px;" style="margin:0px;padding:0px;vertical-align:middle;" />
+				<img src="../OpenSignin/GoogleGImage.png" height="20px;" style="margin:0px;padding:0px;vertical-align:middle;" />
 				<span style="margin:4px;padding:0px;">Sign In through Google</span>
 			</a>
 		</div>
@@ -48,10 +50,9 @@
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta name="description" content="Collection" />
 	<meta name="robots" content="noindex,nofollow" />
-<!--the #160; gets past some bug that prevents the html5 serializer from working with these script lines-->
-	<script type="text/javascript" language="JavaScript" src="AjaxClient.js">&#160;</script>
-	<script type="text/javascript" language="JavaScript" src="AjaxUpload.js">&#160;</script>
-	<script type="text/javascript" language="JavaScript" src="../Modernizr/modernizr.js">&#160;</script>
+	<script type="text/javascript" language="JavaScript" src="AjaxClient.js"></script>
+	<script type="text/javascript" language="JavaScript" src="AjaxUpload.js"></script>
+	<script type="text/javascript" language="JavaScript" src="../Modernizr/modernizr.js"></script>
 <!--
 	<script type="text/javascript">
 		if("files" in DataTransfer.prototype){
@@ -62,6 +63,7 @@
 	</script>
 	<link rel="stylesheet" type="text/css" href="FileManager.css"></link>
 -->
+<!--
 	<style type="text/css">
 		body { margin:0px;padding:0px;}
 		#progbox {margin:10px;border:1px solid blue;min-width:100px;width:auto !important;min-height:15px;height:auto !important;text-align:center;}
@@ -104,6 +106,7 @@
 		html.js #nojsmsg {display:none;}
 		html.no-js #nojsmsg {display:block;}
 	</style>
+-->
 </head>
 <body onload="Init()">
 	<div style="padding:0.5em;margin:0.5em;color:black;background:yellow;">
@@ -201,6 +204,11 @@
 				<input type="hidden" id="dirname" name="dirname" value="{@dirname}" />
 				<input type="file" id="file_upload" name="file_upload" multiple="multiple" />
 				<input type="submit" id="perform" name="perform" value="Upload" />
+				<!--
+				<span id="nojsmsg">
+					<input type="submit" id="perform" name="perform" value="Upload" />
+				</span>
+				-->
 			</div>
 		</form>
 	</xsl:if>
@@ -259,10 +267,10 @@
 
 		<xsl:apply-templates />
 		<div>
-			<a href="../Download/{@dirname}.zip?dir={@dirname}&amp;fn={@dirname}.zip">Download all in a single zip</a>
+			<a href="{@dirname}.zip?dir={@dirname}&amp;fn={@dirname}.zip">Download all in a single zip</a>
 		</div>
 		<div>
-			<a href="../Download/{@dirname}.tar.gz?dir={@dirname}&amp;fn={@dirname}.tar.gz">Download all in a single tar.gz</a>
+			<a href="{@dirname}.tar.gz?dir={@dirname}&amp;fn={@dirname}.tar.gz">Download all in a single tar.gz</a>
 		</div>
 	</div>
 </xsl:if>
@@ -277,7 +285,7 @@
 		</xsl:if>
 		<xsl:if test="@op = 1">
 			<!--DOWNLOADABLE-->
-			<a style="color:blue;text-decoration:none;" href="../Download/{@name}?dir={../@dirname}&amp;fn={@name}">
+			<a style="color:blue;text-decoration:none;" href="{@name}?dir={../@dirname}&amp;fn={@name}">
 				<xsl:value-of select="@name" />
 			</a>
 		</xsl:if>
