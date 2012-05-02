@@ -1,5 +1,14 @@
 
-Current operation as of 4/13/2012
+Updated on 5/01/2012
+
+Added Modernizr javascript detection.
+
+Confirmed vicar use of different .rng translation files.
+
+Minor fixes.
+
+################################################
+Updated on 4/13/2012
 
 Removed 'Simple' shell around FileManager as all currently available functionality fits togther well in FileManager.
 	(It may be resurrected if needed for buildout of other features.)
@@ -17,7 +26,7 @@ Figured out how to get cocoon to serialize an HTML5 document.
 Have not yet tested on Internet Explorer
 
 ################################################
-Current operation as of 3/22/2012
+Updated on 3/22/2012
 
 Basic testing of major browsers as listed in http://www.w3schools.com/browsers/browsers_stats.asp
  

@@ -53,9 +53,6 @@
 	<map:match pattern="Modernizr/modernizr.js" >
 		<map:read mime-type="text/javascript" src="Modernizr/modernizr.js" />
 	</map:match>
-	<map:match pattern="Modernizr/modernizr.custom.63281.js" >
-		<map:read mime-type="text/javascript" src="Modernizr/modernizr.custom.63281.js" />
-	</map:match>
 </map:match>
 
 
