@@ -15,12 +15,13 @@ private String m_OwnerID;
 private String m_Name = "";
 private int m_InputCount = 0;
 //private String m_created = null;
-//private String m_lastModified = null;
+private String m_lastModified = null;
 
-	public FileData(String the_OwnerID,String the_Name,int the_InputCount) {
+	public FileData(String the_OwnerID,String the_Name,int the_InputCount,String the_lastModified) {
 		m_OwnerID = the_OwnerID;
 		m_Name = the_Name;
 		m_InputCount = the_InputCount;
+		m_lastModified = the_lastModified;
 	}
 
 /**
@@ -42,6 +43,13 @@ private int m_InputCount = 0;
 */
 	public int getInputCount(){
 		return m_InputCount;
+	}
+
+/**
+* The last modified date for the collection.
+*/ 
+	public String lastModified(){
+		return m_lastModified;
 	}
 }
 

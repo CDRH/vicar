@@ -79,15 +79,39 @@
 
 <!--CORE-->
 <map:match pattern="Core/**">
-	<map:match pattern="Core/WhenEditor.html" >
-		<map:generate src="Core/WhenEditor.xml"/>
-		<map:transform src="Core/WhenEditor.xsl"/>
+	<map:match pattern="Core/Vicar.html">
+		<map:read mime-type="text/html" src="Core/Vicar.html"/>
+	</map:match>
+
+	<!--MAIN FUNCTIONALITY-->
+	<map:match pattern="Core/FileManager.html" >
+		<map:generate type="filemanager"/>
+		<map:transform src="Core/FileManager.xsl"/>
 		<map:serialize type="html5"/>
 	</map:match>
-	<map:match pattern="Core/WhenEditor.xml" >
-		<map:generate src="Core/WhenEditor.xml"/>
+	<map:match pattern="Core/FileManager.xml" >
+		<map:generate type="filemanager"/>
 		<map:serialize type="xml"/>
 	</map:match>
+	<map:match pattern="Core/FileManager.css">
+		<map:read mime-type="text/css" src="Core/FileManager.css"/>
+	</map:match>
+	<map:match pattern="Core/Menu.css">
+		<map:read mime-type="text/css" src="Core/Menu.css"/>
+	</map:match>
+
+	<!--MULTIPLE FILE UPLOAD VIA AJAX-->
+	<map:match pattern="Core/AjaxUpload.js">
+		<map:read mime-type="text/javascript" src="Core/AjaxUpload.js"/>
+	</map:match>
+	<map:match pattern="Core/AjaxClient.js" >
+		<map:read mime-type="text/javascript" src="Core/AjaxClient.js"/>
+	</map:match>
+	<map:match pattern="Core/AjaxServer.xml" >
+		<map:generate type="ajax-upload"/>
+		<map:serialize type="xml"/>
+	</map:match>
+
 	<!--SIMPLE: MAY SOON BE OBSOLETE-->
 	<map:match pattern="Core/Simple.html" >
 		<map:generate type="simple"/>
@@ -102,28 +126,6 @@
 		<map:read mime-type="text/css" src="Core/Simple.css"/>
 	</map:match>
 
-	<!--MAIN FUNCTIONALITY-->
-	<map:match pattern="Core/FileManager.html" >
-		<map:generate type="filemanager"/>
-		<map:transform src="Core/FileManager.xsl"/>
-		<map:serialize type="html5"/>
-	</map:match>
-	<map:match pattern="Core/FileManager.xml" >
-		<map:generate type="filemanager"/>
-		<map:serialize type="xml"/>
-	</map:match>
-
-	<!--MULTIPLE FILE UPLOAD VIA AJAX-->
-	<map:match pattern="Core/AjaxUpload.js">
-		<map:read mime-type="text/javascript" src="Core/AjaxUpload.js"/>
-	</map:match>
-	<map:match pattern="Core/AjaxClient.js" >
-		<map:read mime-type="text/javascript" src="Core/AjaxClient.js"/>
-	</map:match>
-	<map:match pattern="Core/AjaxServer.xml" >
-		<map:generate type="ajax-upload"/>
-		<map:serialize type="xml"/>
-	</map:match>
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
 

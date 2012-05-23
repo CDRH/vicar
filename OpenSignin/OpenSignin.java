@@ -64,6 +64,7 @@ private Session m_session;
 private String m_OwnerID;
 private String m_SessionID = "";
 
+private int m_delay = 0;
 private String m_msg = null;
 private int m_msgcode = 0;
 
@@ -141,6 +142,22 @@ private int m_loginstatus = 0;
 					m_loginstatus = 1;
 					m_url = URL_APPL;
 				}
+			}else if(m_op.equals("Test")){
+					System.out.println("RA<"+RemoteAddr+"> RH<"+RemoteHost+">");
+					if(isValidIP(RemoteAddr)){
+						m_OwnerID = "ANONYMOUS";
+						m_url = URL_APPL;
+						m_loginstatus = 1;
+						m_session.setAttribute("personname","anonymous");
+						m_session.setAttribute("personemail","anonymous@example.com");
+						m_session.setAttribute("userid",m_OwnerID);
+					}else{
+						m_msg = "Not yet available.";
+						m_loginstatus = 0;
+						m_OwnerID = null;
+						m_url = URL_APPL;
+						m_delay = 5;
+					}
 			}else if(m_op.equals("Google")||m_op.equals("Yahoo")){
 				try {
 					Endpoint endpoint = oimanager.lookupEndpoint(m_op);
@@ -149,7 +166,24 @@ private int m_loginstatus = 0;
 					m_session.setAttribute(ATTR_ALIAS, endpoint.getAlias());
 					m_url = oimanager.getAuthenticationUrl(endpoint, association);
 				}catch(Exception ex){
-					ex.printStackTrace();
+				//	System.out.println("NO CONNECT BEGIN");
+				//	ex.printStackTrace();
+				//	System.out.println("NO CONNECT END");
+//FSS
+					m_loginstatus = 0;
+					m_OwnerID = null;
+					m_session.setAttribute("userid",null);
+					m_session.invalidate();
+					m_url = URL_APPL;
+					m_delay = 5;
+					m_msg = "Unable to connect to ";
+					if(m_op.equals("Google")){
+						m_msg += "Google";
+					}else if(m_op.equals("Yahoo")){
+						m_msg += "Yahoo";
+					}
+					
+//FSS
 				}
 			}
 		}else{
@@ -165,7 +199,18 @@ private int m_loginstatus = 0;
 				m_url = URL_APPL_LOGOUT;
 			}
 		}
-		OpenLoginXML(contentHandler,m_loginstatus,RemoteAddr,SessionID,m_url);
+		OpenLoginXML(contentHandler,m_loginstatus,RemoteAddr,SessionID,m_url,m_msg,m_delay);
+	}
+
+	public boolean isValidIP(String the_IP){
+		boolean retval = false;
+		if(the_IP==null){
+		}else if(the_IP.equals("127.0.0.1")){
+			retval = true;
+		}else if(the_IP.startsWith("129.93.")){
+			retval = true;
+		}
+		return retval;
 	}
 
 	public long generateKey() {
@@ -173,7 +218,7 @@ private int m_loginstatus = 0;
 		return 0;
 	}
 
-	public void OpenLoginXML(ContentHandler contentHandler,int the_loginstatus,String the_RemoteAddr,String the_SessionID,String the_url)
+	public void OpenLoginXML(ContentHandler contentHandler,int the_loginstatus,String the_RemoteAddr,String the_SessionID,String the_url,String the_msg,int the_delay)
 			throws SAXException, ProcessingException {
 		try {
 			contentHandler.startDocument();
@@ -185,9 +230,18 @@ private int m_loginstatus = 0;
 
 
 			AttributesImpl urlAttr = new AttributesImpl();
+			urlAttr.addAttribute("","delay","delay","CDATA",""+the_delay);
 			contentHandler.startElement("","url","url",urlAttr);
 			if(the_url!=null){
 				contentHandler.characters(the_url.toCharArray(),0,the_url.length());
+			}
+			contentHandler.endElement("","url","url");
+			//contentHandler.endElement("","msg","msg");
+
+			AttributesImpl msgAttr = new AttributesImpl();
+			contentHandler.startElement("","msg","msg",msgAttr);
+			if(the_msg!=null){
+				contentHandler.characters(the_msg.toCharArray(),0,the_msg.length());
 			}
 			contentHandler.endElement("","msg","msg");
 

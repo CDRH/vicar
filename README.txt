@@ -1,4 +1,13 @@
 
+################################################
+Updated on 5/22/2012
+
+Cleaned directory of some extraneous files used for testing.
+Cleaned up interface.  
+Added confirm cycle to the deletion of a collection.
+Fixed screen arrangement for computer and tablet sizes.
+
+################################################
 Updated on 5/01/2012
 
 Added Modernizr javascript detection.

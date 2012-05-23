@@ -19,11 +19,13 @@ private static final int BUFFER = 32*1024;;
 */
 	public static int writeFileFromInputStream(String the_path,String the_filename,InputStream the_sis){
 		int byteswritten = 0;
+		byte data[] = new byte[BUFFER];
+		int count = 0;
 		try {
 			FileOutputStream fos = new FileOutputStream(the_path+the_filename);
 			BufferedInputStream bis = new BufferedInputStream(the_sis,BUFFER);
-			byte data[] = new byte[BUFFER];
-			int count = 0;
+			data = new byte[BUFFER];
+			count = 0;
 			while((count = bis.read(data,0,BUFFER)) != -1){
 				fos.write(data,0,count);
 				byteswritten += count;
@@ -31,7 +33,8 @@ private static final int BUFFER = 32*1024;;
 			fos.close();
 		}catch (Exception ex){
 			ex.printStackTrace();
-			//byteswritten = -byteswritten;
+			System.out.println("BW<"+byteswritten+"> C<"+count+">");
+			System.out.println("Data<"+(new String(data))+">");
 		}
 		return byteswritten;
 	}

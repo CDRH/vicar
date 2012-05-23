@@ -1,29 +1,39 @@
 //SAVE BUTTON
 var url = 'AjaxServer.xml';
-var progbox;
+var progressbox;
 var msgbox;
 var sentbytes;
 var recvdbytes;
 var dirname;
 
 	function Init(){
+		//REMOVES NEED FOR UPLOAD BUTTON
 		var fu = document.getElementById("file_upload");
 		if(fu!=null){
 			fu.addEventListener("change",FileSelectHandler,false);
+		}
 
-			msgbox = document.getElementById("msgbox");
+		msgbox = document.getElementById("msgbox");
+		if(msgbox!=null){
 			msgbox.addEventListener("dragenter",function(e){e.preventDefault();},false);
 			msgbox.addEventListener("dragover",function(e){e.preventDefault();},false);
 			msgbox.addEventListener("drop",FileSelectHandler,false);
+		}
 
-			progbox = document.getElementById("progbox");
+		progressbox = document.getElementById("progressbox");
+		if(progressbox!=null){
+			progressbox.addEventListener("dragenter",function(e){e.preventDefault();},false);
+			progressbox.addEventListener("dragover",function(e){e.preventDefault();},false);
+			progressbox.addEventListener("drop",FileSelectHandler,false);
+		}
 
+		if(document.getElementById("dirname")!=null){
 			dirname = document.getElementById("dirname").value;
 		}
 	}
 
 	function FileSelectHandler(e){
-		msgbox.innerHTML = "<div><b>Drop files here</b></div>";
+//		msgbox.innerHTML = "<div><b>Drop files here</b></div>";
 		e.preventDefault();
 		var files = e.target.files || e.dataTransfer.files;
 		sentbytes = 0;
@@ -64,7 +74,7 @@ var dirname;
 				var p = parseInt(recvdbytes/sentbytes*100);
 				//msgbox.innerHTML += "<div>RECVD "+recvdbytes+" PCT "+p+"</div>";
 				if(p<100){
-					progbox.innerHTML = '<progress value="'+p+'" max="100">'+p+'%</progress>';
+					progressbox.innerHTML = '<progress value="'+p+'" max="100">'+p+'%</progress>';
 				}else{
 					//alert('reload');
 					location.replace('FileManager.html?dir='+dirname);
@@ -73,7 +83,9 @@ var dirname;
 				if(msg.firstChild!=null){
 					msgtxt = msg.firstChild.nodeValue;
 				}
-				msgbox.innerHTML += "<div>"+msgtxt+"</div>";
+				msgbox.innerHTML = "<div>"+msgtxt+"</div>";
+				//msgbox.innerHTML += "<div>"+msgtxt+"</div>";
+				//alert(msgbox.innerHTML);
 			}else{
 				alert("httpRequest status error:"+httpRequest.status);
 			}

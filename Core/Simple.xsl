@@ -19,6 +19,7 @@
 	<meta name="description" content="Collection" />
 	<meta name="robots" content="noindex,nofollow" />
 	<link rel="stylesheet" type="text/css" href="Simple.css"></link>
+	<link rel="stylesheet" type="text/css" href="Menu.css"></link>
 </head>
 <body>
 <!--NOT LOGGED IN-->

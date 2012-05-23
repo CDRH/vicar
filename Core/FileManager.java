@@ -6,6 +6,7 @@ import edu.unl.abbot.Abbot;
 
 import java.util.Vector;
 import java.util.Map;
+import java.util.Date;
 import java.io.File;
 import java.io.InputStream;
 import java.io.FileOutputStream;
@@ -106,10 +107,16 @@ private Part m_filePart;
 			return;
 		}
 
-		String msg = null;
+		m_msg = null;
+		m_msgcode = 0;
 		//GET commands
 		if(m_ActStr==null){
 		}else if(m_ActStr.equalsIgnoreCase("del")){
+			if(m_DirStr!=null){
+				m_msg = null;//"Delete this collection?";
+				m_msgcode = -1;
+			}
+		}else if(m_ActStr.equalsIgnoreCase("delconfirm")){
 			if(m_DirStr!=null){
 				String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr;
 				String resp = removeDir(dirpath);
@@ -168,26 +175,6 @@ private Part m_filePart;
 				}
 				System.out.println("ABBOT CONVERT END");
 			}
-/****
-//NOW DONE IN FileDownload.java
-		}else if(m_ActStr.equalsIgnoreCase("zip")){
-			if(m_DirStr!=null){
-				String outdir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
-				ZipUtil zu = new ZipUtil();
-				zu.zip(outdir,"xml",outdir+"/"+m_DirStr+".zip");
-			}
-		}else if(m_ActStr.equalsIgnoreCase("targz")){
-			if(m_DirStr!=null){
-				String outdir = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
-				ZipUtil zu = new ZipUtil();
-				String newtar = outdir+"/"+m_DirStr+".tar";
-				zu.tar(outdir,".xml",newtar);
-				if(zu.gzip(newtar,newtar+".gz")>=0){
-					//System.out.println("REMOVAL OF INTERMEDIATE TAR<"+newtar+"> HAPPENING?");
-					String resp = removeFile(outdir+newtar);
-				}
-			}
-****/
 		}
 
 		//PRODUCE OUTPUT
@@ -228,14 +215,16 @@ private Part m_filePart;
 							m_isnew = 0;
 						}else{
 							//System.out.println("\tExists already");
-							msg = "A collection by that name already exists.";
+							m_msg = "A collection by that name already exists.";
+							m_msgcode = 1;
 							m_isnew = 1;
 						}
 						inputfiles = listFiles(dirpath+"input",".xml");
 						convertfiles = listFiles(dirpath+"convert",CONVERT_SUFFIX);
 						outputfiles = listFiles(dirpath+"output",".xml");
 					}else{
-						msg = "Names can only contain letters a-z and A-Z with no spaces.";
+						m_msg = "Names can only contain letters a-z and A-Z with no spaces.";
+						m_msgcode = 1;
 						m_DirStr = "new";
 						String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/";
 						inputfiles = listFiles(dirpath+"input",".xml");
@@ -290,12 +279,15 @@ private Part m_filePart;
 				filemanagerAttr.addAttribute("","personname","personname","CDATA",""+m_PersonName);
 				filemanagerAttr.addAttribute("","personemail","personemail","CDATA",""+m_PersonEmail);
 				contentHandler.startElement("","filemanager","filemanager",filemanagerAttr);
+
 				AttributesImpl msgAttr = new AttributesImpl();
-				if(msg!=null){
-					contentHandler.startElement("","msg","msg",msgAttr);
-					contentHandler.characters(msg.toCharArray(),0,msg.length());
-					contentHandler.endElement("","msg","msg");
+				msgAttr.addAttribute("","msgcode","msgcode","CDATA",""+m_msgcode);
+				contentHandler.startElement("","msg","msg",msgAttr);
+				if(m_msg!=null){
+					contentHandler.characters(m_msg.toCharArray(),0,m_msg.length());
 				}
+				contentHandler.endElement("","msg","msg");
+
 				if(mydirs!=null){
 					AttributesImpl mydirsAttr = new AttributesImpl();
 					mydirsAttr.addAttribute("","maxcount","maxcount","CDATA",""+maxcount);
@@ -305,82 +297,103 @@ private Part m_filePart;
 						AttributesImpl dirAttr = new AttributesImpl();
 						dirAttr.addAttribute("","name","name","CDATA",""+userdir.getName());
 						dirAttr.addAttribute("","count","count","CDATA",""+userdir.getInputCount());
+						dirAttr.addAttribute("","date","date","CDATA",""+userdir.lastModified());
 						contentHandler.startElement("","dir","dir",dirAttr);
 						contentHandler.endElement("","dir","dir");
 					}
 					contentHandler.endElement("","dirs","dirs");
 				}else{
 					if(inputfiles!=null){
-						AttributesImpl inputfilesAttr = new AttributesImpl();
-						inputfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
-						inputfilesAttr.addAttribute("","count","count","CDATA",""+inputfiles.size());
-						inputfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
-						contentHandler.startElement("","inputfiles","inputfiles",inputfilesAttr);
-						for(String filename : inputfiles){
-							AttributesImpl fileAttr = new AttributesImpl();
-							fileAttr.addAttribute("","name","name","CDATA",""+filename);
-							fileAttr.addAttribute("","op","op","CDATA","0");
-							if(filename==null){
-							}else if(filename.endsWith(".xml")){
-								fileAttr.addAttribute("","zip","zip","CDATA","1");
-							}else if(filename.endsWith(".zip")){
-								fileAttr.addAttribute("","zip","zip","CDATA","2");
-							}else if(filename.endsWith(".tar")){
-								fileAttr.addAttribute("","zip","zip","CDATA","3");
-							}else if(filename.endsWith(".tar.gz")){
-								fileAttr.addAttribute("","zip","zip","CDATA","4");
-							}else{
-								fileAttr.addAttribute("","zip","zip","CDATA","0");
+						AttributesImpl collectionAttr = new AttributesImpl();
+						collectionAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
+						collectionAttr.addAttribute("","new","new","CDATA",""+m_isnew);
+/***
+						if(inputfiles!=null){
+							collectionAttr.addAttribute("","inputcount","inputcount","CDATA",""+inputfiles.size());
+						}
+						if(convertfiles!=null){
+							collectionAttr.addAttribute("","convertcount","convertcount","CDATA",""+convertfiles.size());
+						}
+						if(outputfiles!=null){
+							collectionAttr.addAttribute("","outputcount","outputcount","CDATA",""+outputfiles.size());
+						}
+***/
+						contentHandler.startElement("","collection","collection",collectionAttr);
+
+						if(inputfiles!=null){
+							AttributesImpl inputfilesAttr = new AttributesImpl();
+							inputfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
+							inputfilesAttr.addAttribute("","count","count","CDATA",""+inputfiles.size());
+							inputfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
+							contentHandler.startElement("","inputfiles","inputfiles",inputfilesAttr);
+							for(String filename : inputfiles){
+								AttributesImpl fileAttr = new AttributesImpl();
+								fileAttr.addAttribute("","name","name","CDATA",""+filename);
+								fileAttr.addAttribute("","op","op","CDATA","0");
+								if(filename==null){
+								}else if(filename.endsWith(".xml")){
+									fileAttr.addAttribute("","zip","zip","CDATA","1");
+								}else if(filename.endsWith(".zip")){
+									fileAttr.addAttribute("","zip","zip","CDATA","2");
+								}else if(filename.endsWith(".tar")){
+									fileAttr.addAttribute("","zip","zip","CDATA","3");
+								}else if(filename.endsWith(".tar.gz")){
+									fileAttr.addAttribute("","zip","zip","CDATA","4");
+								}else{
+									fileAttr.addAttribute("","zip","zip","CDATA","0");
+								}
+								contentHandler.startElement("","file","file",fileAttr);
+								contentHandler.endElement("","file","file");
 							}
-							contentHandler.startElement("","file","file",fileAttr);
-							contentHandler.endElement("","file","file");
+							contentHandler.endElement("","inputfiles","inputfiles");
 						}
-						contentHandler.endElement("","inputfiles","inputfiles");
-					}
 
-					if(convertfiles!=null){
-						AttributesImpl convertfilesAttr = new AttributesImpl();
-						convertfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
-						convertfilesAttr.addAttribute("","count","count","CDATA",""+convertfiles.size());
-						convertfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
-						if((m_ConvStr==null)||(m_ConvStr.equals("default"))){
-							convertfilesAttr.addAttribute("","last","last","CDATA","default");
-						}else{
-							convertfilesAttr.addAttribute("","last","last","CDATA",""+m_ConvStr);
-						}
-						contentHandler.startElement("","convertfiles","convertfiles",convertfilesAttr);
-						for(String filename : convertfiles){
-							AttributesImpl fileAttr = new AttributesImpl();
-							fileAttr.addAttribute("","name","name","CDATA",""+filename);
-							fileAttr.addAttribute("","op","op","CDATA","0");
-							contentHandler.startElement("","file","file",fileAttr);
+						if(convertfiles!=null){
+							AttributesImpl convertfilesAttr = new AttributesImpl();
+							convertfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
+							convertfilesAttr.addAttribute("","count","count","CDATA",""+convertfiles.size());
+							convertfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
+							if((m_ConvStr==null)||(m_ConvStr.equals("default"))){
+								convertfilesAttr.addAttribute("","last","last","CDATA","default");
+							}else{
+								convertfilesAttr.addAttribute("","last","last","CDATA",""+m_ConvStr);
+							}
+							contentHandler.startElement("","convertfiles","convertfiles",convertfilesAttr);
+							for(String filename : convertfiles){
+								AttributesImpl fileAttr = new AttributesImpl();
+								fileAttr.addAttribute("","name","name","CDATA",""+filename);
+								fileAttr.addAttribute("","op","op","CDATA","0");
+								contentHandler.startElement("","file","file",fileAttr);
+								contentHandler.endElement("","file","file");
+							}
+							//DEFAULT
+							AttributesImpl defaultAttr = new AttributesImpl();
+							defaultAttr.addAttribute("","name","name","CDATA","default");
+							defaultAttr.addAttribute("","op","op","CDATA","0");
+							contentHandler.startElement("","file","file",defaultAttr);
 							contentHandler.endElement("","file","file");
-						}
-						//DEFAULT
-						AttributesImpl defaultAttr = new AttributesImpl();
-						defaultAttr.addAttribute("","name","name","CDATA","default");
-						defaultAttr.addAttribute("","op","op","CDATA","0");
-						contentHandler.startElement("","file","file",defaultAttr);
-						contentHandler.endElement("","file","file");
 
-						contentHandler.endElement("","convertfiles","convertfiles");
-					}
-
-					//THIS DIR ONLY CONTAINS ABBOT OUTPUT SO SHOULD ALWAYS BE .xml FILES
-					if(outputfiles!=null){
-						AttributesImpl outputfilesAttr = new AttributesImpl();
-						outputfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
-						outputfilesAttr.addAttribute("","count","count","CDATA",""+outputfiles.size());
-						outputfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
-						contentHandler.startElement("","outputfiles","outputfiles",outputfilesAttr);
-						for(String filename : outputfiles){
-							AttributesImpl fileAttr = new AttributesImpl();
-							fileAttr.addAttribute("","name","name","CDATA",""+filename);
-							fileAttr.addAttribute("","op","op","CDATA","1");
-							contentHandler.startElement("","file","file",fileAttr);
-							contentHandler.endElement("","file","file");
+							contentHandler.endElement("","convertfiles","convertfiles");
 						}
-						contentHandler.endElement("","outputfiles","outputfiles");
+
+						//THIS DIR ONLY CONTAINS ABBOT OUTPUT SO SHOULD ALWAYS BE .xml FILES
+						if(outputfiles!=null){
+							AttributesImpl outputfilesAttr = new AttributesImpl();
+							outputfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
+							outputfilesAttr.addAttribute("","count","count","CDATA",""+outputfiles.size());
+							outputfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
+							contentHandler.startElement("","outputfiles","outputfiles",outputfilesAttr);
+							for(String filename : outputfiles){
+								AttributesImpl fileAttr = new AttributesImpl();
+								fileAttr.addAttribute("","name","name","CDATA",""+filename);
+								fileAttr.addAttribute("","op","op","CDATA","1");
+								contentHandler.startElement("","file","file",fileAttr);
+								contentHandler.endElement("","file","file");
+							}
+							contentHandler.endElement("","outputfiles","outputfiles");
+						}
+
+						contentHandler.endElement("","collection","collection");
 					}
 				}
 				contentHandler.endElement("","filemanager","filemanager");
@@ -450,7 +463,7 @@ private Part m_filePart;
 								outputcnt = subfiles.length;
 							}
 						}
-						dir.add(new FileData(m_OwnerID,userdir.getName(),inputcnt));
+						dir.add(new FileData(m_OwnerID,userdir.getName(),inputcnt,""+(new Date(userdir.lastModified()))));
 						//System.out.println("INPUT CNT<"+inputcnt+"> OUTPUT CNT<"+outputcnt+">");
 						//userfile.lastModified();
 					}

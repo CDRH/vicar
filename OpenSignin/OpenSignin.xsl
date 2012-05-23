@@ -19,11 +19,19 @@
 	<meta name="description" content="Collection" />
 	<meta name="robots" content="noindex,nofollow" />
 	<xsl:if test="url/text() !='null'">
-		<meta http-equiv="REFRESH" content="0;url={url/text()}" />
+		<meta http-equiv="REFRESH" content="{url/@delay};url={url/text()}" />
 	</xsl:if>
 	<link rel="stylesheet" type="text/css" href="OpenSignin.css"></link>
 </head>
 <body>
+	<xsl:if test="msg/text()!='null'">
+		<div style="color:red;font-size:120%;">
+			<xsl:value-of select="msg/text()" />
+		</div>
+		<div style="color:red;">
+			<a href="{url/text()}">Continue</a>
+		</div>
+	</xsl:if>
 	<xsl:if test="url/text()='null'">
 		<xsl:if test="@loginstatus &lt; 1">
 			<xsl:if test="@loginstatus &lt; 0">
