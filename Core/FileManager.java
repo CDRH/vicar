@@ -134,17 +134,21 @@ private Part m_filePart;
 				}
 			}
 		}else if(m_ActStr.equalsIgnoreCase("untar")){
+			System.out.println("UNTAR FN<"+m_FilenameStr+">");
 			if((m_DirStr!=null)&&(m_FilenameStr!=null)&&(m_FilenameStr.endsWith(".tar"))){
 				String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
+				System.out.println("UNTAR<"+dirpath+"> FN<"+m_FilenameStr+">");
 				ZipUtil zu = new ZipUtil();
 				if(zu.untar(dirpath+m_FilenameStr,dirpath)>=0){
 					String resp = removeFile(dirpath+m_FilenameStr);
 				}
 			}
 		}else if(m_ActStr.equalsIgnoreCase("untargz")){
+			System.out.println("FN<"+m_FilenameStr+">");
 			if((m_DirStr!=null)&&(m_FilenameStr!=null)&&(m_FilenameStr.endsWith(".tar.gz"))){
 				String dirpath = BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
 				ZipUtil zu = new ZipUtil();
+				System.out.println("UNTARGZ<"+dirpath+"> FN<"+m_FilenameStr+">");
 				if(zu.ungzip(dirpath+m_FilenameStr,dirpath)>=0){
 					String resp = removeFile(dirpath+m_FilenameStr);
 					int indx = m_FilenameStr.indexOf(".gz");
@@ -529,6 +533,7 @@ private Part m_filePart;
 	}
 
 	public Vector<String> listFiles(String the_dirpath,String the_suffix){
+System.out.println("LISTFILES DOES NOT SCAN FOR SUFFIX ANYMORE");
 		if(the_suffix==null){
 			the_suffix = ".xml";
 		}
@@ -539,9 +544,10 @@ private Part m_filePart;
 				String files[] = f.list();
 				if(files!=null){
 					for (int i=0; i<files.length; i++) {
-						if(files[i].toLowerCase().endsWith(the_suffix)){
+
+						//if(files[i].toLowerCase().endsWith(the_suffix)){
 							dir.add(files[i]);
-						}
+						//}
 					}
 				}
 			}

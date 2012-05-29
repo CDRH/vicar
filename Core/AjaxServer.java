@@ -93,11 +93,25 @@ private Part m_filePart;
 			System.out.println("CODE IS MESSY - NEEDS TO BE CLEANED UP AND TESTED - SEE IF OTHER BROWSERS SET MIME TYPE FOR .rng OR PERHAPS THIS CODE CAN GET RID OF MIMETYPE CHECK COMPLETELY - ALSO NOT DETECTING NON JAVASCRIPT VERSION!!");
 			if(m_filename!=null){//&&(m_mimetype!=null)){
 				System.out.println("JAVASCRIPT VERSION");
-				if((m_mimetype==null)||(m_mimetype.equals(""))||(m_mimetype.equals("application/octet-stream"))){
+				if((m_mimetype==null)||(m_mimetype.equals(""))||(m_mimetype.startsWith("application/"))){
 					if(m_filename.toLowerCase().endsWith(FileManager.CONVERT_SUFFIX)){
 						ServletInputStream sis = ((HttpRequest)request).getInputStream();
 						m_size = AjaxUtil.writeFileFromInputStream(destdir+"/convert/",m_filename,(InputStream)sis);
 						m_msg = "Uploaded conversion file "+m_filename+" of size "+m_size+".";
+					}else if(m_filename.toLowerCase().endsWith(".gz")){
+						ServletInputStream sis = ((HttpRequest)request).getInputStream();
+						m_size = AjaxUtil.writeBase64FileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis);
+						System.out.println("FSS<"+m_size+">");
+						m_msg = "Uploaded gzip file "+m_filename+" of size "+m_size+".";
+					}else if(m_filename.toLowerCase().endsWith(".zip")){
+						ServletInputStream sis = ((HttpRequest)request).getInputStream();
+						m_size = AjaxUtil.writeBase64FileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis);
+						System.out.println("FSS<"+m_size+">");
+						m_msg = "Uploaded zip file "+m_filename+" of size "+m_size+".";
+					}else if(m_filename.toLowerCase().endsWith(".tar")){
+						ServletInputStream sis = ((HttpRequest)request).getInputStream();
+						m_size = AjaxUtil.writeBase64FileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis);
+						m_msg = "Uploaded tar file "+m_filename+" of size "+m_size+".";
 					}else{
 						m_msg = "File "+m_filename+" of unknown type not uploaded.";
 					}
@@ -110,7 +124,8 @@ private Part m_filePart;
 					//to try at least one other file type to make sure the code works in a more general way.
 					//Should we have base64 encoded binary data for other reasons in the future we are ready.
 					ServletInputStream sis = ((HttpRequest)request).getInputStream();
-					m_size = AjaxUtil.writeImageFileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis);
+					//m_size = AjaxUtil.writeImageFileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis);
+					m_size = AjaxUtil.writeBase64FileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis);
 					m_msg = "Uploaded file "+m_filename+" of type "+m_mimetype+" and size "+m_size+".";
 				}else{
 					m_msg = "File "+m_filename+" of unknown type not uploaded.";

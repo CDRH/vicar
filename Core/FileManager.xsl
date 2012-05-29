@@ -67,7 +67,7 @@
 			</td>
 			<xsl:if test="@count &lt; @maxcount">
 				<td>
-					<a id="collection_create" style="margin:0em 1em;" href="FileManager.html?dir=new" title="Create New Collection">+</a>
+					<a id="collection_create" style="margin:0em 1em;" href="FileManager.html?dir=new" title="Add New Collection">+</a>
 				</td>
 			</xsl:if>
 			<xsl:if test="@count &gt;= @maxcount">
@@ -176,8 +176,8 @@
 
 <xsl:template match="inputfiles">
 	<div class="outercolumn">
-		<div style="font-weight:bold;font-size:110%;margin:0.5em 0em;">
-			<span style="padding:0em 0em 0em 0.6em;">Input files</span>
+		<div class="columnheader">
+			<span class="columntitle">Input Files</span>
 		</div>
 		<xsl:apply-templates select="file"/>
 	</div>
@@ -185,8 +185,8 @@
 
 <xsl:template match="convertfiles">
 	<div class="innercolumn">
-		<div style="font-weight:bold;font-size:110%;margin:0.5em 0em;">
-			<span style="padding:0em 0em 0em 0.3em;">Convert with:</span>
+		<div class="columnheader">
+			<span class="columntitle">Convert With:</span>
 		</div>
 		<form action="FileManager.html?dir={@dirname}&amp;act=conv" method="post" enctype="multipart/form-data">
 			<div style="margin:5px 20px;">
@@ -204,14 +204,15 @@
 				</xsl:for-each>
 			</div>
 			<input type="submit" style="color:blue;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" title="Generate output files using Abbot" />
+			<progress max="100"></progress>
 		</form>
 	</div>
 </xsl:template>
 
 <xsl:template match="outputfiles">
 	<div class="outercolumn">
-		<div style="font-weight:bold;font-size:110%;margin:0.5em 0em;">
-			<span style="padding:0em 0em 0em 0.3em;">Abbot Generated Results</span>
+		<div class="columnheader">
+			<span class="columntitle">Abbot Generated Results</span>
 		</div>
 		<xsl:apply-templates select="file"/>
 		<div style="padding:0em 0em 0em 0.3em">
@@ -274,17 +275,15 @@
 				<span style="margin:4px;padding:0px;">Sign In through Google</span>
 			</a>
 		</div>
-<!--
 		<div style="padding:0px 0px 8px 0px;margin:2em 0em;">
 			<a name="signin" href="../OpenSignin/OpenSignin.html?op=Test" style="outline:none;color:blue;text-decoration:none;">
 				<span style="margin:4px;padding:0px;">Anonymous Sign In</span>
 			</a>
 		</div>
--->
 	</div>
 	<div style="font-size:140%;margin:0.5em;">
 		<xsl:if test="@mode &lt; 0">
-			<div style="color:red;">You have successfuly logged out of this site, but still likely need to log out of your identity provider (Google or Yahoo) account.</div>
+			<div style="color:red;">You have successfuly logged out of this site but this does not log you out of your identity provider (Google or Yahoo) account.</div>
 		</xsl:if>
 		<div style="color:blue;font-size:120%;font-weight:bold;">Vicar - gateway to Abbot</div>
 		<div>Other features and login options will follow.</div>

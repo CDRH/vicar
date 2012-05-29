@@ -2,6 +2,7 @@
 
 package OpenSignin;
 
+
 import java.util.Vector;
 import java.util.Map;
 import java.util.HashSet;
@@ -48,8 +49,8 @@ static final long TEN_HOUR = ONE_HOUR * 10L;
 static final String ATTR_MAC = "openid_mac";
 static final String ATTR_ALIAS = "openid_alias";
 
-//private String URL_BASE = "http://127.0.0.1:8888";
-private String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
+private String URL_BASE = "http://127.0.0.1:8888";
+//private String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
 
 private String URL_LOGIN_SFX = "/vicar/OpenSignin/OpenSignin.html";
 //private String URL_APPL = "../Core/Simple.html";

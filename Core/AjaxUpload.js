@@ -56,6 +56,8 @@ var dirname;
 			reader.readAsText(file);
 		}else if(file.type.indexOf("image") == 0){
 			reader.readAsDataURL(file);
+		}else if(file.type.indexOf("application") == 0){
+			reader.readAsDataURL(file);
 		}else if(file.name.indexOf(".rng")){
 			reader.readAsText(file);
 		}
