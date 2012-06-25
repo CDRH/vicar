@@ -1,0 +1,50 @@
+<!--
+/*hide from old browsers*/
+	html.js #nojsmsg {display:none;}
+	html.no-js #nojsmsg {display:block;}
+	body {margin:0.5em;padding:0em;font-family:arial,sans-serif;}
+	progress {background-color:white;width:99%;margin:10px;border:1px solid blue;}
+	a {color:blue;}
+
+	#errmsg {font-size:110%;color:red;}
+	#collection_delete {text-decoration:none;color:red;border:1px solid red;background:white;font-size:100%;font-family:sans-serif;padding:0px 2px 0px 2px;border-radius:8px;-moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;}
+	#collection_create {text-decoration:none;color:green;border:1px solid green;background:white;font-size:100%;font-family:sans-serif;padding:0px 1px 0px 2px;border-radius:8px;-moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;}
+
+	#msgbox {margin:0.4em;padding:0.4em;min-width:100px;width:97%;min-height:15px;height:15px;font-weight:bold;border:1px solid blue;}
+	#progressbox {margin:10px;min-width:100px;width:97%;min-height:35px;height:35px;}
+	#addfiles {margin:0.5em;padding:0.5em;}
+
+	.innercolumn {display:inline;min-width:32%;float:left;margin:0em 0em 2em 0em;}
+	.outercolumn {display:inline;min-width:32%;float:left;margin:0em 0em 2em 0em;}
+
+	.columnheader {font-weight:bold;font-size:110%;margin:0.5em 0em;}
+	.columntitle {padding:0em 0em 0em 0.3em;}
+
+	@media all and (max-width:320px){
+		#smartphonesize{display:block;}
+		#tabletsize{display:none;}
+		#computersize{display:none;}
+
+		.innercolumn {display:block;width:99%;float:left;margin:0em 0em 2em 0em;}
+		.outercolumn {display:block;width:99%;float:left;margin:0em 0em 2em 0em;}
+	}
+
+	@media all and (min-width:321px) and (max-width:768px){
+		#smartphonesize{display:none;}
+		#tabletsize{display:block;}
+		#computersize{display:none;}
+
+		.innercolumn {display:block;width:99%;float:left;margin:0em 0em 2em 0em;}
+		.outercolumn {display:block;width:99%;float:left;margin:0em 0em 2em 0em;}
+	}
+
+	@media all and (min-width:769px) {
+		#smartphonesize{display:none;}
+		#tabletsize{display:none;}
+		#computersize{display:block;}
+
+		.innercolumn {display:inline;min-width:32%;float:left;margin:0em 0em 2em 0em;}
+		.outercolumn {display:inline;min-width:32%;float:left;margin:0em 0em 2em 0em;}
+	}
+-->
+

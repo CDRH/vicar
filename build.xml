@@ -32,8 +32,12 @@
 		<pathelement path="${libdir}/commons-compress-1.3.jar"/>
 		<pathelement path="${libdir}/junit-4.10.jar"/>
 
+		<pathelement path="${libdir}/jing-20030619.jar"/>
+
 <!--LAPTOP Using cocoon under jetty-->
 		<pathelement path="${corelibdir}/servlet_2_2.jar"/>
+<!--
+-->
 <!--ABBOT Using a cocoon.war file under tomcat7-->
 <!--
 		<pathelement path="${corelibdir}/servlet-api.jar"/>
@@ -46,8 +50,9 @@
 	</path>
 
 	<target name="clean" description="clean up" >
-		<delete dir="${builddir}/OpenSignin"/>
-		<delete dir="${builddir}/Core"/>
+		<delete dir="${builddir}/Server/OpenSignin"/>
+		<delete dir="${builddir}/Server/Core"/>
+		<delete dir="${builddir}/Server/Prog"/>
 	</target>
 
 	<target name="init">
@@ -59,10 +64,18 @@
 
 	<target name="all" depends="clean,compile"> </target>
 
-	<target name="compile" depends="compile_OpenSignin,compile_Core"> </target>
+<!--
+	<target name="compile" depends="compile_OpenSignin,compile_Core,compile_Prog"> </target>
+-->
+	<target name="compile">
+		<javac deprecation="on" srcdir="Server" destdir="${builddir}" includeantruntime="false">
+			<classpath refid = "CP"/>
+			<compilerarg value="-Xlint"/>
+		</javac>
+	</target>
 
 	<target name="archive" description="make code archive" >
-		<tar destfile="Archive.tar" basedir="." includes="build.xml,sitemap.xmap,README.txt,INSTALL.txt,OPERATION.txt,Error.html,OpenSignin/*,Core/*,Modernizr/*"/>
+		<tar destfile="Archive.tar" basedir="." includes="build.xml,sitemap.xmap,README.txt,VICAR.txt,Error.html,Server/*,Server/OpenSignin/*,Server/Core/*,Server/Modernizr/*,Server/Prog/*"/>
 	</target>
 
 	<target name="archive_specific" description="make code archive" >
@@ -103,6 +116,12 @@
 		</javac>
 	</target>
 
+	<target name="compile_Prog" depends="init" description="compile core" >
+		<javac deprecation="on" srcdir="Prog" destdir="${builddir}" includeantruntime="false">
+			<classpath refid = "CP"/>
+			<compilerarg value="-Xlint"/>
+		</javac>
+	</target>
 </project>
 
 

@@ -1,4 +1,10 @@
-
+################################################
+Updated on 6/25/2012
+Added validation using jing.
+Changed presentation of public and user schema files.
+Vicar now uses sed to change the output files to reflect the person initiating the conversion and the name of the schema file.
+Progress bars for slow single uploads and for schema conversion are partially implemented - in this version you may see a few things flash on your screen during uploads or conversions.
+Changed directory structure.
 ################################################
 Updated on 5/22/2012
 
