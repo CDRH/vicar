@@ -137,12 +137,10 @@ System.out.println("DOWNLOAD FILE<"+m_FilenameStr+">");
 				}else if(m_FilenameStr.endsWith(".tar.gz")){
 					System.out.println("GENERATING TAR.GZ DIR<"+m_DirStr+"> FN<"+m_FilenameStr+">");
 					ZipUtil zu = new ZipUtil();
-					//String outdir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
 					downloadfilename = downloadfiledir+"/"+m_DirStr+".tar";
 					zu.tar(downloadfiledir,".xml",downloadfilename);
 					if(zu.gzip(downloadfilename,downloadfilename+".gz")>=0){
 						System.out.println("REMOVAL OF INTERMEDIATE TAR<"+downloadfilename+"> HAPPENING?");
-						//String resp = removeFile(downloadfilename);
 						downloadfilename+=".gz";
 					}
 				}else if(m_FilenameStr.endsWith(".html")){
@@ -171,18 +169,5 @@ System.out.println("DOWNLOAD FILE<"+m_FilenameStr+">");
 		}
 	}
 }
-/****
-	}else if(m_ActStr.equalsIgnoreCase("zip")){
-	}else if(m_ActStr.equalsIgnoreCase("targz")){
-		if(m_DirStr!=null){
-			String outdir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
-			ZipUtil zu = new ZipUtil();
-			String newtar = outdir+"/"+m_DirStr+".tar";
-			zu.tar(outdir,".xml",newtar);
-			if(zu.gzip(newtar,newtar+".gz")>=0){
-				System.out.println("REMOVAL OF INTERMEDIATE TAR<"+newtar+"> HAPPENING?");
-				String resp = removeFile(outdir+newtar);
-			}
-		}
-	}
-****/
+
+

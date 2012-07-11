@@ -3,15 +3,11 @@
 <map:components>
 
 	<map:generators default="file">
-		<!--OPENSIGNIN-->
 		<map:generator name="opensignin" src="Server.OpenSignin.OpenSignin"/>
-		<!--CORE-->
-		<map:generator name="simple" src="Server.Core.Simple"/>
 		<map:generator name="filemanager" src="Server.Core.FileManager"/>
 		<map:generator name="filedownload" src="Server.Core.FileDownload"/>
-		<map:generator name="ajax-upload" src="Server.Core.AjaxServer"/>
-		<map:generator name="monitor-server" src="Server.Prog.MonitorServer"/>
-		<map:generator name="schemalist" src="Server.Core.SchemaList"/>
+		<map:generator name="ajax-upload" src="Server.Upload.AjaxServer"/>
+		<map:generator name="monitor-server" src="Server.Progress.MonitorServer"/>
 	</map:generators>
 
 
@@ -78,35 +74,9 @@
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
 
-<!--VALID-->
-<map:match pattern="valid/**">
-	<map:match pattern="valid/*/*.html" >
-		<map:generate type="filedownload"/>
-<!--
-		<map:generate type="filedownload">
-			<map:parameter name="fn" value="{1}.html" />
-		</map:generate>
--->
-		<map:serialize type="html" />
-	</map:match>
-</map:match>
 
 <!--CORE-->
 <map:match pattern="Core/**">
-	<map:match pattern="Core/Vicar.html">
-		<map:read mime-type="text/html" src="Server/Core/Vicar.html"/>
-	</map:match>
-
-	<map:match pattern="Core/SchemaList.html" >
-		<map:generate type="schemalist"/>
-		<map:transform src="Server/Core/SchemaList.xsl"/>
-		<map:serialize type="html5"/>
-	</map:match>
-
-	<map:match pattern="Core/SchemaList.xml" >
-		<map:generate type="schemalist"/>
-		<map:serialize type="xml"/>
-	</map:match>
 
 	<!--MAIN FUNCTIONALITY-->
 	<map:match pattern="Core/FileManager.html" >
@@ -121,63 +91,22 @@
 	<map:match pattern="Core/FileManager.css">
 		<map:read mime-type="text/css" src="Server/Core/FileManager.css"/>
 	</map:match>
-	<map:match pattern="Core/Menu.css">
-		<map:read mime-type="text/css" src="Server/Core/Menu.css"/>
+
+	<map:match pattern="Core/SchemaList.js" >
+		<map:read mime-type="text/javascript" src="Server/Core/SchemaList.js"/>
 	</map:match>
 
-	<!--MULTIPLE FILE UPLOAD VIA AJAX-->
-	<map:match pattern="Core/AjaxUpload.js">
-		<map:read mime-type="text/javascript" src="Server/Core/AjaxUpload.js"/>
-	</map:match>
-	<map:match pattern="Core/AjaxClient.js" >
-		<map:read mime-type="text/javascript" src="Server/Core/AjaxClient.js"/>
-	</map:match>
-	<map:match pattern="Core/AjaxServer.xml" >
-		<map:generate type="ajax-upload"/>
-		<map:serialize type="xml"/>
-	</map:match>
-
-	<!--SIMPLE: MAY SOON BE OBSOLETE-->
-	<map:match pattern="Core/Simple.html" >
-		<map:generate type="simple"/>
-		<map:transform src="Server/Core/Simple.xsl"/>
-		<map:serialize type="html"/>
-	</map:match>
-	<map:match pattern="Core/Simple.xml" >
-		<map:generate type="simple"/>
-		<map:serialize type="xml"/>
-	</map:match>
-	<map:match pattern="Core/Simple.css">
-		<map:read mime-type="text/css" src="Server/Core/Simple.css"/>
-	</map:match>
 
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
 
-<!--PROG-->
-<map:match pattern="Prog/**">
-	<map:match pattern="Prog/Monitor.html">
-		<map:read mime-type="text/html" src="Server/Prog/Monitor.html"/>
+<!--VALID-->
+<map:match pattern="valid/**">
+	<map:match pattern="valid/*/*.html" >
+		<map:generate type="filedownload"/>
+		<map:serialize type="html" />
 	</map:match>
-	<map:match pattern="Prog/MonitorServer.xml" >
-		<map:generate type="monitor-server"/>
-		<map:serialize type="xml"/>
-	</map:match>
-	<map:match pattern="Prog/MonitorServer.html" >
-		<map:generate type="monitor-server"/>
-		<map:transform src="Server/Prog/MonitorServer.xsl"/>
-		<map:serialize type="html"/>
-	</map:match>
-	<map:match pattern="Prog/Monitor.js" >
-		<map:read mime-type="text/javascript" src="Server/Prog/Monitor.js"/>
-	</map:match>
-	<map:match pattern="Prog/Monitor.css">
-		<map:read mime-type="text/css" src="Server/Prog/Monitor.css"/>
-	</map:match>
-
-	<map:redirect-to uri="../Error.html"/>
 </map:match>
-
 
 <!--DOWNLOAD-->
 <map:match pattern="Download/**">
@@ -197,6 +126,48 @@
 		<map:generate type="filedownload" />
 		<map:serialize mime-type="application/octet-stream" />
 	</map:match>
+	<map:redirect-to uri="../Error.html"/>
+</map:match>
+
+<!--UPLOAD-->
+<map:match pattern="Upload/**">
+
+	<!--MULTIPLE FILE UPLOAD VIA AJAX-->
+	<map:match pattern="Upload/AjaxUpload.js">
+		<map:read mime-type="text/javascript" src="Server/Upload/AjaxUpload.js"/>
+	</map:match>
+	<map:match pattern="Upload/AjaxUpload.css">
+		<map:read mime-type="text/css" src="Server/Upload/AjaxUpload.css"/>
+	</map:match>
+	<map:match pattern="Upload/AjaxServer.xml" >
+		<map:generate type="ajax-upload"/>
+		<map:serialize type="xml"/>
+	</map:match>
+
+	<map:redirect-to uri="../Error.html"/>
+</map:match>
+
+<!--PROG-->
+<map:match pattern="Progress/**">
+	<map:match pattern="Progress/Monitor.html">
+		<map:read mime-type="text/html" src="Server/Progress/Monitor.html"/>
+	</map:match>
+	<map:match pattern="Progress/MonitorServer.xml" >
+		<map:generate type="monitor-server"/>
+		<map:serialize type="xml"/>
+	</map:match>
+	<map:match pattern="Progress/MonitorServer.html" >
+		<map:generate type="monitor-server"/>
+		<map:transform src="Server/Progress/MonitorServer.xsl"/>
+		<map:serialize type="html"/>
+	</map:match>
+	<map:match pattern="Progress/Monitor.js" >
+		<map:read mime-type="text/javascript" src="Server/Progress/Monitor.js"/>
+	</map:match>
+	<map:match pattern="Progress/Monitor.css">
+		<map:read mime-type="text/css" src="Server/Progress/Monitor.css"/>
+	</map:match>
+
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
 

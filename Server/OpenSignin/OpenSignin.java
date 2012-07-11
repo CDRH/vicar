@@ -57,7 +57,7 @@ private String URL_LOGIN_SFX = "/vicar/OpenSignin/OpenSignin.html";
 //private String URL_APPL = "../Core/Simple.html";
 //private String URL_APPL_LOGOUT = "../Core/Simple.html?mode=-1";
 
-private String URL_APPL = "../Core/FileManager.html";
+private String URL_APPL = "../Core/FileManager.html?mode=1";
 private String URL_APPL_LOGOUT = "../Core/FileManager.html?mode=-1";
 
 private Request m_request;
@@ -68,7 +68,7 @@ private String m_SessionID = "";
 
 private int m_delay = 0;
 private String m_msg = null;
-private int m_msgcode = 0;
+//private int m_msgcode = 0;
 
 private OpenIdManager oimanager;
 private String m_op = null;
@@ -167,6 +167,7 @@ private int m_loginstatus = 0;
 					m_session.setAttribute(ATTR_MAC, association.getRawMacKey());
 					m_session.setAttribute(ATTR_ALIAS, endpoint.getAlias());
 					m_url = oimanager.getAuthenticationUrl(endpoint, association);
+					m_msg = null;
 				}catch(Exception ex){
 				//	System.out.println("NO CONNECT BEGIN");
 				//	ex.printStackTrace();

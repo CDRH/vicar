@@ -20,6 +20,7 @@ import java.util.Vector;
 
 public class JingUtil {
 
+private Vector<Integer> m_ErrorList = new Vector<Integer>();
 
 	public static void main(String args[]){
 		String filebase = "/Users/franksmutniak/Desktop/abbottestdata/";
@@ -31,10 +32,15 @@ public class JingUtil {
 	}
 
 	public JingUtil(){
+		m_ErrorList = new Vector<Integer>();
+	}
+
+	public Vector<Integer> getErrorList(){
+		return m_ErrorList;
 	}
 
 	public void writeReportToFile(String the_schemafile,String the_xmlfile,String the_reportfile,String the_schemafn,String the_xmlfn){
-		System.out.println("WRTF SF<"+the_schemafile+"> RF<"+the_reportfile+"> SCHEMAFN<"+the_schemafn+"> XML<"+the_xmlfn+">");
+		//System.out.println("WRTF SF<"+the_schemafile+"> XMLF<"+the_xmlfile+"> RF<"+the_reportfile+"> SCHEMAFN<"+the_schemafn+"> XML<"+the_xmlfn+">");
 		String s = getReport(the_schemafile,the_xmlfile);
 		try {
 			Vector<String> errList = new Vector<String>();
@@ -54,6 +60,7 @@ public class JingUtil {
 			for(String errmsg : errList){
 				fw.write("<div>"+errmsg+"</div>\n");
 			}
+			m_ErrorList.add(errList.size());
 			fw.write("</body>\n");
 			fw.write("</html>\n");
 /****

@@ -50,9 +50,14 @@
 	</path>
 
 	<target name="clean" description="clean up" >
+		<delete dir="${builddir}/Server"/>
+<!--
 		<delete dir="${builddir}/Server/OpenSignin"/>
 		<delete dir="${builddir}/Server/Core"/>
-		<delete dir="${builddir}/Server/Prog"/>
+		<delete dir="${builddir}/Server/Upload"/>
+		<delete dir="${builddir}/Server/Progress"/>
+		<delete dir="${builddir}/Server/Aux"/>
+-->
 	</target>
 
 	<target name="init">
@@ -70,7 +75,8 @@
 	<target name="compile">
 		<javac deprecation="on" srcdir="Server" destdir="${builddir}" includeantruntime="false">
 			<classpath refid = "CP"/>
-			<compilerarg value="-Xlint"/>
+			<!--SUPPRESS jing-20030619.jar RELATED JAR WARNINGS BELOW WITH '-path' -->
+			<compilerarg value="-Xlint:-path"/>
 		</javac>
 	</target>
 
@@ -102,6 +108,7 @@
 		</junit>
 	</target>
 
+<!--
 	<target name="compile_OpenSignin" depends="init" description="compile OpenID Signin" >
 		<javac deprecation="on" srcdir="OpenSignin" destdir="${builddir}" includeantruntime="false">
 			<classpath refid = "CP"/>
@@ -122,6 +129,7 @@
 			<compilerarg value="-Xlint"/>
 		</javac>
 	</target>
+-->
 </project>
 
 

@@ -9,6 +9,7 @@ import edu.unl.abbot.Abbot;
 import java.util.Vector;
 import java.util.Map;
 import java.util.Date;
+import java.util.Enumeration;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,6 +45,8 @@ import org.apache.cocoon.servlet.multipart.Part;
 
 public class FileManager extends ServiceableGenerator implements Disposable {
 
+private Session m_session;
+
 private String m_OwnerID;
 private String m_PersonName = null;
 private String m_PersonEmail = null;
@@ -66,6 +69,7 @@ private String m_FilenameStr = null;
 private String m_performStr = null;
 private int m_isnew = 0;
 
+private String m_CurrentStr = null;
 private Part m_filePart;
 
 	public void dispose() {
@@ -82,14 +86,11 @@ private Part m_filePart;
 
 	public void setup(SourceResolver resolver, Map objectModel, String src, Parameters par) {
 		Request request = ObjectModelHelper.getRequest(objectModel);
-		Session session = request.getSession();
-		m_OwnerID = (String)session.getAttribute("userid");
+		m_session = request.getSession();
+		m_OwnerID = (String)m_session.getAttribute("userid");
 		if(m_OwnerID!=null){
-			//m_OwnerID = "FRANK"; //If not set in OpenSignin.  This is to enable testing outside of Simple or OpenID
-			//session.setAttribute("userid",m_OwnerID);
-
-			m_PersonName = (String)session.getAttribute("personname");
-			m_PersonEmail = (String)session.getAttribute("personemail");
+			m_PersonName = (String)m_session.getAttribute("personname");
+			m_PersonEmail = (String)m_session.getAttribute("personemail");
 
 			m_DirStr = request.getParameter("dir");
 			m_ActStr = request.getParameter("act");
@@ -97,7 +98,15 @@ private Part m_filePart;
 			m_FilenameStr = request.getParameter("fn");
 			m_performStr = request.getParameter("perform");
 			m_ConvStr = request.getParameter("conv");
-
+			if(m_ConvStr==null){
+				m_CurrentStr = (String)m_session.getAttribute("SAVE:schema:"+m_DirStr);
+				//System.out.println("GET ATTR<"+m_CurrentStr+">");
+			}else{
+				m_CurrentStr = m_ConvStr;
+				//System.out.println("SET ATTR<"+m_CurrentStr+">");
+				m_session.setAttribute("SAVE:schema:"+m_DirStr,m_CurrentStr);
+				SessionSaver.save(m_session,Global.BASE_USER_DIR+"/"+m_OwnerID+"/session.txt");
+			}
 			m_filePart = (Part)request.get("file_upload");
 			m_isnew = 0;
 		}
@@ -108,6 +117,14 @@ private Part m_filePart;
 			String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/";
 			if(!isDir(dirpath)){
 				m_DirStr = null;
+			}
+		}
+
+		if((m_mode!=null)&&(m_mode.equals("1"))){
+			System.out.println("NEW LOGIN");
+			if(m_OwnerID!=null){
+				SessionSaver.load(m_session,Global.BASE_USER_DIR+"/"+m_OwnerID+"/session.txt");
+				//SessionSaver.Display(m_session);
 			}
 		}
 	}
@@ -191,22 +208,25 @@ private Part m_filePart;
 /****/
 				int convtype = 0;
 				if(m_ConvStr!=null){
-					if(m_ConvStr.startsWith("0")){
+					if(m_ConvStr.startsWith("1")){
 						convdir = Global.SCHEMA_DIR;
 						m_ConvStr = m_ConvStr.substring(1);
-					}else if(m_ConvStr.startsWith("1")){
+					}else if(m_ConvStr.startsWith("2")){
 						convtype = 1;
 						m_ConvStr = m_ConvStr.substring(1);
 					}
 					System.out.println("*****CONVERT USING <"+convdir+m_ConvStr+">");
-					abbot.convert(indir,outdir,convdir+m_ConvStr);
+					try {
+						abbot.convert(indir,outdir,convdir+m_ConvStr);
+					}catch(Exception ex){
+					}
 				}
 /****/
 
 				Vector<String> outputfiles = listFiles(outdir,".xml");
-				for(String ofn : outputfiles){
-					System.out.println("OFN<"+ofn+">");
-				}
+				//for(String ofn : outputfiles){
+				//	System.out.println("OFN<"+ofn+">");
+				//}
 
 				System.out.println("SED CORRECTION BEGIN");
 				System.out.println("CHANGE OUTPUT FILES WITH SED");
@@ -217,9 +237,18 @@ private Part m_filePart;
 					convURL = m_ConvStr;
 				}
 				String email = m_OwnerID.replace("__","@");
+				String emailsuffix = email;
+				if(emailsuffix!=null){
+					int suffstrt = emailsuffix.indexOf("@");
+					if(suffstrt>0){
+						emailsuffix = emailsuffix.substring(0,suffstrt);
+					}
+				}
+
 				Vector<String> convList = new Vector<String>();
 				convList.add("s/http:\\/\\/abbot.unl.edu\\/tei_all.rng/"+convURL+"/g");
-				convList.add("s/bpz/"+email+"/g");
+				//convList.add("s/bpz/"+email+"/g");
+				convList.add("s/bpz/"+emailsuffix+"/g");
 				convList.add("s/Pytlik Zillig,/"+email+"/g");
 				convList.add("s/[ \t]*B.<\\/name> Conversion to TEI/<\\/name> Conversion to TEI/g");
 
@@ -232,6 +261,9 @@ private Part m_filePart;
 					ju.writeReportToFile(convdir+m_ConvStr,outdir+"/"+ofn,validdir+"/"+ofn.replace(".xml",".html"),m_ConvStr,ofn);
 				}
 				System.out.println("VALIDATE END");
+				Vector<Integer> el = ju.getErrorList();
+				m_session.setAttribute("SAVE:validationerrors:"+m_DirStr,el);
+				SessionSaver.save(m_session,Global.BASE_USER_DIR+"/"+m_OwnerID+"/session.txt");
 			}
 		}
 
@@ -404,71 +436,33 @@ private Part m_filePart;
 
 						if(m_DirStr!=null){
 							SchemaList sl = new SchemaList();
-							Vector<SchemaData> sdl = sl.getSchemaList(m_OwnerID,m_DirStr);
+							Vector<SchemaData> sdl = sl.getSchemaList(m_OwnerID,m_DirStr,m_CurrentStr);
 							sl.generateSchemaXML(contentHandler,sdl);
 						}
-/****
-						if(convertfiles!=null){
-							AttributesImpl convertfilesAttr = new AttributesImpl();
-							convertfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
-							convertfilesAttr.addAttribute("","count","count","CDATA",""+convertfiles.size());
-							convertfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
-							if((m_ConvStr==null)||(m_ConvStr.equals("default"))){
-								convertfilesAttr.addAttribute("","last","last","CDATA","default");
-							}else{
-								convertfilesAttr.addAttribute("","last","last","CDATA",""+m_ConvStr);
-							}
-							contentHandler.startElement("","convertfiles","convertfiles",convertfilesAttr);
-							for(String filename : convertfiles){
-								AttributesImpl fileAttr = new AttributesImpl();
-								fileAttr.addAttribute("","name","name","CDATA",""+filename);
-								fileAttr.addAttribute("","op","op","CDATA","0");
-								contentHandler.startElement("","file","file",fileAttr);
-								contentHandler.endElement("","file","file");
-							}
-							//DEFAULT
-							AttributesImpl defaultAttr = new AttributesImpl();
-							defaultAttr.addAttribute("","name","name","CDATA","default");
-							defaultAttr.addAttribute("","op","op","CDATA","0");
-							contentHandler.startElement("","file","file",defaultAttr);
-							contentHandler.endElement("","file","file");
-
-							contentHandler.endElement("","convertfiles","convertfiles");
-						}
-****/
 
 						//THIS DIR ONLY CONTAINS ABBOT OUTPUT SO SHOULD ALWAYS BE .xml FILES
 						if(outputfiles!=null){
+							@SuppressWarnings("unchecked")
+							Vector<Integer> errorlist = (Vector<Integer>)m_session.getAttribute("SAVE:validationerrors:"+m_DirStr);
 							AttributesImpl outputfilesAttr = new AttributesImpl();
 							outputfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
 							outputfilesAttr.addAttribute("","count","count","CDATA",""+outputfiles.size());
 							outputfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
 							contentHandler.startElement("","outputfiles","outputfiles",outputfilesAttr);
+							int count = 0;
 							for(String filename : outputfiles){
 								AttributesImpl fileAttr = new AttributesImpl();
 								fileAttr.addAttribute("","name","name","CDATA",""+filename);
 								fileAttr.addAttribute("","vname","vname","CDATA",""+filename.replace(".xml",".html"));
 								fileAttr.addAttribute("","op","op","CDATA","1");
+								if((errorlist!=null)&&(count < errorlist.size())){
+									fileAttr.addAttribute("","errors","errors","CDATA",""+errorlist.get(count));
+								}
 								contentHandler.startElement("","file","file",fileAttr);
 								contentHandler.endElement("","file","file");
+								count++;
 							}
 							contentHandler.endElement("","outputfiles","outputfiles");
-						}
-
-						if(validfiles!=null){
-							AttributesImpl validfilesAttr = new AttributesImpl();
-							validfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
-							validfilesAttr.addAttribute("","count","count","CDATA",""+validfiles.size());
-							validfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
-							contentHandler.startElement("","validfiles","validfiles",validfilesAttr);
-							for(String filename : validfiles){
-								AttributesImpl fileAttr = new AttributesImpl();
-								fileAttr.addAttribute("","name","name","CDATA",""+filename.replace(".xml",""));
-								fileAttr.addAttribute("","op","op","CDATA","2");
-								contentHandler.startElement("","file","file",fileAttr);
-								contentHandler.endElement("","file","file");
-							}
-							contentHandler.endElement("","validfiles","validfiles");
 						}
 
 						contentHandler.endElement("","collection","collection");

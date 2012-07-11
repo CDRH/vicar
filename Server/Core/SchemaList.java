@@ -75,7 +75,7 @@ private String m_DirStr = null;
 			return;
 		}
 
-		Vector<SchemaData> schemaList = getSchemaList(m_OwnerID,m_DirStr);
+		Vector<SchemaData> schemaList = getSchemaList(m_OwnerID,m_DirStr,"1tei_bare.rng");
 
 		contentHandler.startDocument();
 		generateSchemaXML(contentHandler,schemaList);
@@ -87,17 +87,20 @@ private String m_DirStr = null;
 			AttributesImpl schemalistAttr = new AttributesImpl();
 			contentHandler.startElement("","schemalist","schemalist",schemalistAttr);
 
+			int count = 0;
 			for(SchemaData sd : the_schemaList){
 				AttributesImpl schemaAttr = new AttributesImpl();
 				schemaAttr.addAttribute("","name","name","CDATA",""+sd.getName());
 				schemaAttr.addAttribute("","path","path","CDATA",""+sd.getPath());
 				schemaAttr.addAttribute("","type","type","CDATA",""+sd.getType());
+				schemaAttr.addAttribute("","current","current","CDATA",""+sd.getCurrent());
 				contentHandler.startElement("","schema","schema",schemaAttr);
 				String cmnt = sd.getComment();
 				if(cmnt!=null){
 					contentHandler.characters(cmnt.toCharArray(),0,cmnt.length());
 				}
 				contentHandler.endElement("","schema","schema");
+				count++;
 			}
 
 			contentHandler.endElement("","schemalist","schemalist");
@@ -106,16 +109,22 @@ private String m_DirStr = null;
 		}
 	}
 
-	public Vector<SchemaData> getSchemaList(String the_OwnerID,String the_DirStr){
+	public Vector<SchemaData> getSchemaList(String the_OwnerID,String the_DirStr,String the_current){
 		Vector<SchemaData> schemaList = new Vector<SchemaData>();
 		Vector<String> standardSchemaList = listFiles(Global.SCHEMA_DIR,".rng");
 		String comment = "In a future iteration Brian will be able to put an appropriate comment here that tells something about this particular schema";
 		String url = "";
 		for(String schemaName : standardSchemaList){
+			int iscurrent = 0;
+			if((the_current!=null)&&(the_current.startsWith("1"))){
+				if(the_current.substring(1).equals(schemaName)){
+					iscurrent = 1;
+				}
+			}
 			if(schemaName.equals("tei-xl.rng")){
-				schemaList.insertElementAt(new SchemaData(schemaName,Global.SCHEMA_DIR+schemaName,0,comment,url),0);
+				schemaList.insertElementAt(new SchemaData(schemaName,Global.SCHEMA_DIR+schemaName,1,iscurrent,comment,url),0);
 			}else{
-				schemaList.add(new SchemaData(schemaName,Global.SCHEMA_DIR+schemaName,0,comment,url));
+				schemaList.add(new SchemaData(schemaName,Global.SCHEMA_DIR+schemaName,1,iscurrent,comment,url));
 			}
 		}
 		if(the_DirStr!=null){
@@ -124,7 +133,13 @@ private String m_DirStr = null;
 			comment = "";
 			url = "";
 			for(String schemaName : userSchemaList){
-				schemaList.add(new SchemaData(schemaName,userschemaDir+schemaName,1,comment,url));
+				int iscurrent = 0;
+				if((the_current!=null)&&(the_current.startsWith("2"))){
+					if(the_current.substring(1).equals(schemaName)){
+						iscurrent = 1;
+					}
+				}
+				schemaList.add(new SchemaData(schemaName,userschemaDir+schemaName,2,iscurrent,comment,url));
 			}
 		}
 
@@ -141,7 +156,7 @@ private String m_DirStr = null;
 	}
 
 
-	public Vector<String> listFiles(String the_dirpath,String the_suffix){
+	private Vector<String> listFiles(String the_dirpath,String the_suffix){
 		Vector<String> dir = new Vector<String>();
 		try {
 			File f = new File(the_dirpath);

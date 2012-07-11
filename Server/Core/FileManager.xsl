@@ -18,13 +18,13 @@
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta name="robots" content="noindex,nofollow" />
 	<!--unicode 160 gets past some odd bug that prevents the html5 serializer from working with these script lines-->
-	<script type="text/javascript" language="JavaScript" src="AjaxClient.js">&#160;</script>
-	<script type="text/javascript" language="JavaScript" src="AjaxUpload.js">&#160;</script>
-	<script type="text/javascript" language="JavaScript" src="../Prog/Monitor.js">&#160;</script>
 	<script type="text/javascript" language="JavaScript" src="../Modernizr/modernizr.js">&#160;</script>
-	<link rel="stylesheet" type="text/css" href="../Prog/Monitor.css" />
+	<script type="text/javascript" language="JavaScript" src="../Progress/Monitor.js">&#160;</script>
+	<script type="text/javascript" language="JavaScript" src="../Upload/AjaxUpload.js">&#160;</script>
+	<script type="text/javascript" language="JavaScript" src="SchemaList.js">&#160;</script>
 	<link rel="stylesheet" type="text/css" href="FileManager.css" />
-	<link rel="stylesheet" type="text/css" href="Menu.css" />
+	<link rel="stylesheet" type="text/css" href="../Progress/Monitor.css" />
+	<link rel="stylesheet" type="text/css" href="../Upload/AjaxUpload.css" />
 <!--
 	<script type="text/javascript">
 		if("files" in DataTransfer.prototype){
@@ -36,7 +36,7 @@
 -->
 </head>
 
-<body id="bodyid" onload="Init()">
+<body id="bodyid" onload="UploadInit()">
 <!--BANNER-->
 	<div style="padding:0.5em;margin:0.5em;color:blue;background:yellow;">
 		<a style="position:relative;float:right;color:blue;" href="../OpenSignin/OpenSignin.html?op=logout">Sign out</a>
@@ -149,29 +149,26 @@
 		<div id="nojsmsg">
 			<div style="color:red;margin:10px 0px;">If javascript were enabled you would be able to upload multiple files at once by selecting them or by dragging and dropping them into the drop box.</div>
 		</div>
+
 		<div style="margin:0.5em 0em 1em 0em;padding:0em;">
-			<div id="msgbox">
+			<div id="upload_msgbox">
 				<span>Drag and drop input and conversion (.rng) files here</span>
 			</div>
-			<div id="progressbox"></div>
-			<form id="addfiles" style="padding:0.5em;margin:0.5em;" action="FileManager.html?dir={@dirname}" method="post" enctype="multipart/form-data">
+			<div id="upload_progressbox"></div>
+			<form id="upload_form" style="padding:0.5em;margin:0.5em;" action="FileManager.html?dir={@dirname}" method="post" enctype="multipart/form-data">
 				<span>Add files </span>
 				<input type="hidden" id="dirname" name="dirname" value="{@dirname}" />
 				<input type="file" id="file_upload" name="file_upload" multiple="multiple" title="Navigate or drag/drop files here."></input>
 				<input type="submit" id="perform" name="perform" value="Upload" />
 			</form>
 		</div>
+
 	</xsl:if>
 
 	<hr style="color:blue;width:99%;height:2px;"/>
 	<xsl:if test="@new=0">
 		<xsl:apply-templates select="inputfiles" />
 	</xsl:if>
-<!--
-	<xsl:if test="( inputfiles/@count &gt; 0 ) and ( @new=0 )">
-		<xsl:apply-templates select="convertfiles" />
-	</xsl:if>
--->
 	<xsl:if test="( inputfiles/@count &gt; 0 ) and ( @new=0 )">
 		<xsl:apply-templates select="schemalist" />
 	</xsl:if>
@@ -209,12 +206,17 @@
 
 <xsl:template match="schema">
 	<option value="{@type}{@name}" title="{text()}">
-		<xsl:if test="@type &lt;= 0">
+		<xsl:if test="@current = 1">
+			<xsl:attribute name="selected">
+				<xsl:text>selected</xsl:text>
+			</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="@type &lt;= 1">
 			<xsl:attribute name="style">
 				<xsl:text>color:blue;</xsl:text>
 			</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="@type &gt;= 1">
+		<xsl:if test="@type &gt;= 2">
 			<xsl:attribute name="style">
 				<xsl:text>color:black;</xsl:text>
 			</xsl:attribute>
@@ -223,46 +225,12 @@
 	</option>
 </xsl:template>
 
-
-<xsl:template match="convertfiles">
-	<div class="innercolumn">
-		<div class="columnheader">
-			<span class="columntitle">Convert With:</span>
-		</div>
-		<form action="FileManager.html?dir={@dirname}&amp;act=conv" method="post" enctype="multipart/form-data">
-			<div style="margin:5px 20px;">
-				<xsl:for-each select="file">
-					<div>
-						<input type="radio" name="conv" value="{@name}">
-							<xsl:if test="../@last = @name">
-								<xsl:attribute name="checked">
-									<xsl:text>checked</xsl:text>
-								</xsl:attribute>
-							</xsl:if>
-							<xsl:value-of select="@name" />
-						</input>
-					</div>
-				</xsl:for-each>
-			</div>
-			<input type="submit" style="color:blue;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" title="Generate output files using Abbot" />
-		</form>
-	</div>
-</xsl:template>
-
 <xsl:template match="outputfiles">
 	<div class="outercolumn">
 		<div class="columnheader">
 			<span class="columntitle">Abbot Generated Results</span>
 		</div>
 		<xsl:apply-templates select="file"/>
-<!--
-		<div style="padding:0em 0em 0em 0.3em">
-			<a href="../Download/{@dirname}.zip?dir={@dirname}&amp;fn={@dirname}.zip">Download all in a single zip</a>
-		</div>
-		<div style="padding:0em 0em 0em 0.3em">
-			<a href="../Download/{@dirname}.tar.gz?dir={@dirname}&amp;fn={@dirname}.tar.gz">Download all in a single tar.gz</a>
-		</div>
--->
 		<div style="padding:0em 0em 0em 0.3em">
 			<a href="../Download/{@dirname}/{@dirname}.zip">Download all in a single zip</a>
 		</div>
@@ -280,20 +248,19 @@
 			</span>
 		</xsl:if>
 		<xsl:if test="@op = 1">
-<!--
-			<a style="color:blue;text-decoration:none;" href="../Download/{@name}?dir={../@dirname}&amp;fn={@name}">
-				<xsl:value-of select="@name" />
-			</a>
-			<a target="_jing" style="color:red;text-decoration:none;" href="../valid/{@vname}?dir={../@dirname}&amp;fn={@vname}">
-				<xsl:text>Jing Report</xsl:text>
-			</a>
--->
 			<a style="color:blue;text-decoration:none;" href="../Download/{../@dirname}/{@name}">
 				<xsl:value-of select="@name" />
 			</a>
-			<a target="_jing" style="color:red;text-decoration:none;" href="../valid/{../@dirname}/{@vname}">
-				<xsl:text>Jing Report</xsl:text>
-			</a>
+			<xsl:if test="@errors &lt;= 0">
+				<a target="_validation" class="error_report_green" href="../valid/{../@dirname}/{@vname}">
+					<xsl:text>OK</xsl:text>
+				</a>
+			</xsl:if>
+			<xsl:if test="@errors &gt; 0">
+				<a target="_validation" class="error_report_red" href="../valid/{../@dirname}/{@vname}">
+					<xsl:value-of select="@errors" />
+				</a>
+			</xsl:if>
 		</xsl:if>
 		<xsl:if test="@zip = 0">
 			<span style="margin:0px 10px;color:red;">xml?</span>
@@ -354,4 +321,5 @@
 </xsl:template>
 
 </xsl:stylesheet>
+
 
