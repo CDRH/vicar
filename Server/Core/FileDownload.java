@@ -82,24 +82,17 @@ private String m_FilenameStr;
 		m_session = request.getSession();
 
 		String requestURL = request.getRequestURI();
-		System.out.println("URL<"+requestURL+">");
 
 		m_OwnerID = (String)m_session.getAttribute("userid");
-		//m_DirStr = request.getParameter("dir");
-		//m_FilenameStr = request.getParameter("fn");
 
 		Vector<String> urlpartList = new Vector<String>();
-		System.out.println("MIGHT WANT TO USE java.nio.File Path interface instead - here and elsewhere");
+		System.out.println("SHOULD USE java.nio.File Path interface instead - here and elsewhere");
 		StringTokenizer stok = new StringTokenizer(requestURL,"/");
 		//PUT URL COMPONENTS INTO REVERSE ORDER
 		while(stok.hasMoreTokens()){
 			String s = stok.nextToken();
 			urlpartList.insertElementAt(s,0);
 		}
-
-		//for(String part : urlpartList){
-		//	System.out.println(part);
-		//}
 
 		m_FilenameStr = urlpartList.get(0);
 		m_DirStr = urlpartList.get(1);
@@ -122,20 +115,18 @@ private String m_FilenameStr;
 				res.setContentType("text/html");
 				sos.println("<html><head><title>Filename Needed</title></head><body><h2>Filename Needed</h2></body></html>");
 			}else{
-/**NEED TO CHECK IF 'dirty' i.e. HAS Abbot BEEN RUN SINCE LAST COMPRESSED FILE WAS MADE? THEN REGENERATE**/
-System.out.println("DOWNLOAD FILE<"+m_FilenameStr+">");
 				res.setContentType("xml");
 				String downloadfiledir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
 				String downloadfilename = downloadfiledir+m_FilenameStr;
 				if(m_FilenameStr.endsWith(".zip")){
-					System.out.println("GENERATING ZIP DIR<"+m_DirStr+"> FN<"+m_FilenameStr+">");
+					//System.out.println("GENERATING ZIP DIR<"+m_DirStr+"> FN<"+m_FilenameStr+">");
 					if(m_DirStr!=null){
 						downloadfilename = downloadfiledir+"/"+m_DirStr+".zip";
 						ZipUtil zu = new ZipUtil();
 						zu.zip(downloadfiledir,"xml",downloadfilename);
 					}
 				}else if(m_FilenameStr.endsWith(".tar.gz")){
-					System.out.println("GENERATING TAR.GZ DIR<"+m_DirStr+"> FN<"+m_FilenameStr+">");
+					//System.out.println("GENERATING TAR.GZ DIR<"+m_DirStr+"> FN<"+m_FilenameStr+">");
 					ZipUtil zu = new ZipUtil();
 					downloadfilename = downloadfiledir+"/"+m_DirStr+".tar";
 					zu.tar(downloadfiledir,".xml",downloadfilename);
@@ -148,7 +139,7 @@ System.out.println("DOWNLOAD FILE<"+m_FilenameStr+">");
 					downloadfilename = downloadfiledir+"/"+m_FilenameStr;
 					res.setContentType("html");
 				}
-				System.out.println("\tDLF<"+downloadfilename+">");
+				//System.out.println("\tDLF<"+downloadfilename+">");
 				File f = new File(downloadfilename);
 				if((f!=null)&&(f.exists())){
 					FileInputStream fis = new FileInputStream(f);
@@ -158,7 +149,7 @@ System.out.println("DOWNLOAD FILE<"+m_FilenameStr+">");
 					bis.read(b);
 					sos.write(b);
 				}else{
-					System.out.println("NEED TO BASE OUTPUT ON REQUESTED FILE TYPE");
+					//System.out.println("NEED TO BASE OUTPUT ON REQUESTED FILE TYPE");
 					res.setContentType("text/html");
 					sos.println("<html><head><title>File Not Found</title></head><body><h2>File Not Found</h2></body></html>");
 				}

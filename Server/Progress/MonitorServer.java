@@ -45,6 +45,10 @@ private int m_dispose = 0;
 private String m_pathname = null;
 private long m_pathsize = 0;
 
+private int m_iter = 1;
+private int m_count = 0;
+private boolean m_new = false;
+
 	public void dispose() {
 		super.dispose();
 	}
@@ -68,46 +72,68 @@ private long m_pathsize = 0;
 			m_session.setAttribute("userid",m_OwnerID);
 		}
 
+		m_new = false;
+		String newStr = request.getParameter("new");
+		if((newStr!=null)&&(newStr.equals("true"))){
+			m_new = true; 
+		}
+
 		m_dispose = 0;
 		m_msg = null;
-		m_value = getIntFromString((String)m_session.getAttribute("monitor_value"));
-
-		m_pathname = (String)m_session.getAttribute("monitor_pathname");
-		m_pathsize = getIntFromString((String)m_session.getAttribute("monitor_pathsize"));
-		System.out.println("PATH NAME<"+m_pathname+"> SIZE<"+m_pathsize+">");
-		m_msg = m_pathname;
-		long currsize = getFileSize(m_pathname);
-		m_value = (int)((100.0*currsize)/m_pathsize);
-
-		System.out.println("V<"+m_value+">");
-/****/
-		//m_value +=10;
-/****/
-		if(m_value > 100){
-			m_value = 0;
-			m_dispose = 1;
-		}
-		m_session.setAttribute("monitor_value",""+m_value);
 	}
 
 	public void generate() throws SAXException, ProcessingException {
 		System.out.println("MonitorServer:generate()");
-		generateResponseXML(contentHandler,m_value,m_msg,m_dispose);
+		MonitorData md = (MonitorData)m_session.getAttribute("monitor_data");
+		if(md!=null){
+			//System.out.println("FIRST TEST<"+md.isnew()+">");
+			if(m_new){
+				md.setnew(true);
+			}
+		}else{
+			System.out.println("FIRST TEST<NULL>");
+			md = new MonitorData(true,"___",0);
+			m_session.setAttribute("monitor_data",md);
+		}
+		while((m_count < 10)&&(md.isnew()==false)){
+			try {
+				Thread.sleep(2000);
+				md = (MonitorData)m_session.getAttribute("monitor_data");
+				//md.Display();
+				m_count++;
+				//System.out.println("\tCOUNT<"+m_count+"> SID<"+m_session.getId()+">");
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+		}
+		if(md.getvalue() >= 100){
+			md.setvalue(100);
+			m_dispose = 1;
+		}
+		m_count = 0;
+		md.setnew(false);
+		m_session.setAttribute("monitor_data",md);
+		generateResponseXML(contentHandler,md,m_dispose);
 	}
 
-	public void generateResponseXML(ContentHandler contentHandler,int the_value,String the_msg,int the_dispose) throws SAXException, ProcessingException {
+	public void generateResponseXML(ContentHandler contentHandler,MonitorData the_md,int the_dispose) throws SAXException, ProcessingException {
 		try {
 			contentHandler.startDocument();
 
+System.out.println("MonitorServer:");
 			AttributesImpl monitorAttr = new AttributesImpl();
-			monitorAttr.addAttribute("","value","value","CDATA",""+the_value);
 			monitorAttr.addAttribute("","dispose","dispose","CDATA",""+the_dispose);
 			contentHandler.startElement("","Monitor","Monitor",monitorAttr);
-			if(the_msg!=null){
-				AttributesImpl msgAttr = new AttributesImpl();
-				contentHandler.startElement("","msg","msg",msgAttr);
-				contentHandler.characters(the_msg.toCharArray(),0,the_msg.length());
-				contentHandler.endElement("","msg","msg");
+			while(the_md!=null){
+				//the_md.Display();
+				AttributesImpl progAttr = new AttributesImpl();
+				progAttr.addAttribute("","value","value","CDATA",""+the_md.getvalue());
+				contentHandler.startElement("","Prog","Prog",progAttr);
+				if(the_md.getname()!=null){
+					contentHandler.characters(the_md.getname().toCharArray(),0,the_md.getname().length());
+				}
+				contentHandler.endElement("","Prog","Prog");
+				the_md = the_md.getNext();
 			}
 			contentHandler.endElement("","Monitor","Monitor");
 

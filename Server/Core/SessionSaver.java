@@ -35,7 +35,7 @@ private static String TOKEN = "$";
 
 	public static void load(Session the_session,String the_pathname){
 		try {
-			System.out.println("SESSION LOAD FROM FILE<"+the_pathname+">");
+			//System.out.println("SESSION LOAD FROM FILE<"+the_pathname+">");
 			File f = new File(the_pathname);
 			if(f!=null){
 				FileReader fr = new FileReader(f);
@@ -52,7 +52,7 @@ private static String TOKEN = "$";
 					if(stok.hasMoreTokens()){
 						value = stok.nextToken();
 					}
-					System.out.println("\tATTR<"+name+"> VALUE<"+value+">");
+					//System.out.println("\tATTR<"+name+"> VALUE<"+value+">");
 					if(value.startsWith("[")){
 						Vector<Integer> erlist = new Vector<Integer>();
 						value = value.replace("[","");
@@ -79,7 +79,7 @@ private static String TOKEN = "$";
 
 	public static void save(Session the_session,String the_pathname){
 		try {
-			System.out.println("SESSION SAVED TO FILE<"+the_pathname+">");
+			//System.out.println("SESSION SAVED TO FILE<"+the_pathname+">");
 			File f = new File(the_pathname);
 			FileWriter fw = new FileWriter(f,false);
 			Enumeration san = the_session.getAttributeNames();
@@ -87,7 +87,7 @@ private static String TOKEN = "$";
 				String sanName = (String)san.nextElement();
 				if(sanName.startsWith("SAVE:")){
 					Object sanObj = the_session.getAttribute(sanName);
-					System.out.println("\tATTR<"+sanName+"> VALUE<"+sanObj.toString()+">");
+					//System.out.println("\tATTR<"+sanName+"> VALUE<"+sanObj.toString()+">");
 					fw.write(sanName+TOKEN+sanObj.toString()+"\n");
 				}
 			}

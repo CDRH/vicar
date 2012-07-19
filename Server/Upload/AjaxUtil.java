@@ -77,6 +77,7 @@ private static final int BUFFER = 32*1024;;
 				fos.write(s,0,s.length);
 				byteswritten += s.length;
 				numberofreads++;
+//Thread.sleep(1000);
 			}
 			fos.close();
 			//System.out.println("NOREADS<"+numberofreads+">");

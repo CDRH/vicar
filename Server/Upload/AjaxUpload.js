@@ -2,6 +2,7 @@
 var url = '../Upload/AjaxServer.xml';
 var msgbox;
 var progressbox;
+var progressbarjq;
 var sentbytes;
 var recvdbytes;
 var dirname;
@@ -30,6 +31,8 @@ var dirname;
 		if(document.getElementById("dirname")!=null){
 			dirname = document.getElementById("dirname").value;
 		}
+
+		progressbarjq = document.getElementById("progressbar");
 	}
 
 	function FileSelectHandler(e){
@@ -37,18 +40,20 @@ var dirname;
 		var files = e.target.files || e.dataTransfer.files;
 		sentbytes = 0;
 		recvdbytes = 0;
+		//makeSimpleFrame(this,'../Progress/MonitorClient.html');
 		for(var i = 0,f;f=files[i];i++){
-			uploadFile(f);
-			makeSimpleFrame(this,'../Progress/MonitorServer.html');
 			sentbytes += f.size;
+		}
+		for(var i = 0,f;f=files[i];i++){
+			uploadFile(f,sentbytes);
 		}
 	}
 
-	function uploadFile(file){
-		//alert('filetype '+file.type+' of size '+file.size);
+	function uploadFile(file,sentbytes){
+		//alert('filetype '+file.type+' of size '+file.size+' of total '+sentbytes);
 		var reader = new FileReader();
 		reader.onload = function(e){
-			var sendurl = url+'?fn='+file.name+'&mt='+file.type+'&sz='+file.size+'&dir='+dirname;
+			var sendurl = url+'?fn='+file.name+'&mt='+file.type+'&sz='+file.size+'&dir='+dirname+'&totsz='+sentbytes;
 			HTTP.sendXML(sendurl,e.target.result);
 		};
 		if(file.type.indexOf("text") == 0){
@@ -74,9 +79,9 @@ var dirname;
 				recvdbytes += parseInt(filesize);
 				var p = parseInt(recvdbytes/sentbytes*100);
 				if(p<100){
-					progressbox.innerHTML = '<progress value="'+p+'" max="100">'+p+'%</progress>';
+					//progressbox.innerHTML = '<progress value="'+p+'" max="100">'+p+'%</progress>';
+					$("#progressbar").progressbar('value',p);//.append("<div>"+filename+"</div>");
 				}else{
-					//alert('reload');
 					location.replace('FileManager.html?dir='+dirname);
 				}
 				var msgtxt = "";
@@ -89,66 +94,5 @@ var dirname;
 			}
 		}
 	}
-
-
-//CLIENT FUNCTIONS
-
-//Originally Adapted From:
-// JavaScript The Definitive Guide - 5th Edition
-// by David Flanagan
-// O'Reilly Media Inc. 2006
-// but significantly mutated since then
-
-var HTTP = {
-};
-
-HTTP._factory = null;
-
-HTTP._factories = [
-	function() {return new XMLHttpRequest(); },
-	function() {return new ActiveXObject("Msxml2.XMLHTTP"); },
-	function() {return new ActiveXObject("Microsoft.XMLHTTP"); }
-];
-
-HTTP.newRequest = function() {
-	if(HTTP._factory!=null){
-		return HTTP._factory();
-	}
-	for(var i=0;i<HTTP._factories.length;i++){
-		try {
-			var factory = HTTP._factories[i];
-			var request = factory();
-			if (request!=null) {
-				HTTP._factory=factory;
-				return request;
-			}
-		}catch(e){
-			continue;
-		}
-	}
-
-	HTTP._factory = function() {
-		throw new Error("XMLHttpRequest not supported");
-	}
-	HTTP._factory();
-	return null;
-};
-
-HTTP.sendXML = function(url,xmltxt){
-	var httpRequest = HTTP.newRequest();
-	httpRequest.onreadystatechange = function(){getReturnXML(httpRequest);};
-	httpRequest.open('POST', url, true);
-	httpRequest.send(xmltxt);
-	return false;
-};
-
-HTTP.sendXMLSingleFile = function(url,xmltxt){
-	var httpRequest = HTTP.newRequest();
-	httpRequest.onreadystatechange = function(){getReturnXML(httpRequest);};
-	httpRequest.open('POST', url, true);
-	httpRequest.send(xmltxt);
-	return false;
-};
--->
 
 

@@ -16,7 +16,7 @@ function makeSimpleFrame(obj,url){
 	clickedobj = obj;
 	var pos = getPos(obj);
         var t = "<div class='innerpopup' style='width:800px;border:3px solid red;'>\n";
-        t += "<iframe id='"+((new Date()).getTime())+"' width='99%' height='50px' src='"+url+"'></iframe>";
+        t += "<iframe id='"+((new Date()).getTime())+"' width='99%' height='300px' src='"+url+"'></iframe>";
         t += "</div>";
         //var t = "<table class='innerpopup' style='width:800px;border:3px solid red;'>\n";
         //t += "<tr><td><iframe id='"+((new Date()).getTime())+"' width='99%' height='50px' src='"+url+"'></iframe></td></tr>";
@@ -178,7 +178,7 @@ function makeFrameFixed(obj,url,w,h,hoffset,color){
         show(clickedobj,t);
 }
 
-
+//document.write("<iframe id='myframe' src='' frameBorder='0' scrolling='no'></iframe>");
 document.write("<iframe id='myframe' src='javascript:false;' frameBorder='0' scrolling='no'></iframe>");
 document.write("<div id='mydiv'></div>");
 

@@ -19,12 +19,22 @@
 	<meta name="robots" content="noindex,nofollow" />
 	<!--unicode 160 gets past some odd bug that prevents the html5 serializer from working with these script lines-->
 	<script type="text/javascript" language="JavaScript" src="../Modernizr/modernizr.js">&#160;</script>
-	<script type="text/javascript" language="JavaScript" src="../Progress/Monitor.js">&#160;</script>
+	<script type="text/javascript" language="JavaScript" src="../Utils/AjaxClient.js">&#160;</script>
 	<script type="text/javascript" language="JavaScript" src="../Upload/AjaxUpload.js">&#160;</script>
 	<script type="text/javascript" language="JavaScript" src="SchemaList.js">&#160;</script>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">&#160;</script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js">&#260;</script>
 	<link rel="stylesheet" type="text/css" href="FileManager.css" />
-	<link rel="stylesheet" type="text/css" href="../Progress/Monitor.css" />
 	<link rel="stylesheet" type="text/css" href="../Upload/AjaxUpload.css" />
+
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css" />
+
+	<script>
+		$(function() {
+			$( "#progressbar" ).progressbar({value:0});
+		});
+	</script>
 <!--
 	<script type="text/javascript">
 		if("files" in DataTransfer.prototype){
@@ -154,13 +164,17 @@
 			<div id="upload_msgbox">
 				<span>Drag and drop input and conversion (.rng) files here</span>
 			</div>
-			<div id="upload_progressbox"></div>
+
 			<form id="upload_form" style="padding:0.5em;margin:0.5em;" action="FileManager.html?dir={@dirname}" method="post" enctype="multipart/form-data">
 				<span>Add files </span>
 				<input type="hidden" id="dirname" name="dirname" value="{@dirname}" />
 				<input type="file" id="file_upload" name="file_upload" multiple="multiple" title="Navigate or drag/drop files here."></input>
 				<input type="submit" id="perform" name="perform" value="Upload" />
 			</form>
+			<div id="progressbar" style="height:15px;background:white;"></div>
+<!--
+			<div id="upload_progressbox">xx</div>
+-->
 		</div>
 
 	</xsl:if>
@@ -302,14 +316,20 @@
 			</a>
 		</div>
 		<div style="padding:0px 0px 8px 0px;margin:2em 0em;">
-			<a name="signin" href="../OpenSignin/OpenSignin.html?op=Test" style="outline:none;color:blue;text-decoration:none;">
+			<a name="signin" href="../OpenSignin/OpenSignin.html?op=Test" style="outline:none;color:blue;text-decoration:none;" title="Anonymous login currently only for testing purposes and is limited to requests from unl.edu IP addresses.">
 				<span style="margin:4px;padding:0px;">Anonymous Sign In</span>
 			</a>
 		</div>
 	</div>
 	<div style="font-size:140%;margin:0.5em;">
-		<xsl:if test="@mode &lt; 0">
-			<div style="color:red;">You have successfuly logged out of this site but this does not log you out of your identity provider (Google or Yahoo) account.</div>
+		<xsl:if test="@mode = 0">
+			<div style="color:red;">You have successfuly logged out of your anonymous account.</div>
+		</xsl:if>
+		<xsl:if test="@mode = -1">
+			<div style="color:red;">You have successfuly logged out of this site but this does not log you out of your Google account.</div>
+		</xsl:if>
+		<xsl:if test="@mode = -2">
+			<div style="color:red;">You have successfuly logged out of this site but this does not log you out of your Yahoo account.</div>
 		</xsl:if>
 		<div style="color:blue;font-size:120%;font-weight:bold;">Vicar - gateway to Abbot</div>
 		<div>Other features and login options will follow.</div>

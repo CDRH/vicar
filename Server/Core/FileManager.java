@@ -121,7 +121,7 @@ private Part m_filePart;
 		}
 
 		if((m_mode!=null)&&(m_mode.equals("1"))){
-			System.out.println("NEW LOGIN");
+			//System.out.println("NEW LOGIN");
 			if(m_OwnerID!=null){
 				SessionSaver.load(m_session,Global.BASE_USER_DIR+"/"+m_OwnerID+"/session.txt");
 				//SessionSaver.Display(m_session);
@@ -200,9 +200,7 @@ private Part m_filePart;
 				String outdir = colldir+"/output/";
 				String validdir = colldir+"/valid/";
 				String resp = cleanDir(outdir);
-				//System.out.println("ABBOT CLEARED OUTPUT DIRECTORY<"+resp+">");
 				resp = cleanDir(validdir);
-				//System.out.println("CLEARED VALIDATION DIRECTORY<"+resp+">");
 				System.out.println("ABBOT CONVERT BEGIN");
 				Abbot abbot = new Abbot();
 /****/
@@ -222,14 +220,11 @@ private Part m_filePart;
 					}
 				}
 /****/
+				System.out.println("ABBOT CONVERT END");
 
 				Vector<String> outputfiles = listFiles(outdir,".xml");
-				//for(String ofn : outputfiles){
-				//	System.out.println("OFN<"+ofn+">");
-				//}
 
-				System.out.println("SED CORRECTION BEGIN");
-				System.out.println("CHANGE OUTPUT FILES WITH SED");
+				//System.out.println("SED CORRECTION BEGIN");
 
 				ProcMngr pm = new ProcMngr(Global.SEDPATH,"-i_sed",outdir);
 				String convURL = "http:\\/\\/abbot.unl.edu\\/"+m_ConvStr;
@@ -255,7 +250,7 @@ private Part m_filePart;
 				pm.cleanup(outputfiles,convList);
 				System.out.println("SED CORRECTION END");
 
-				System.out.println("VALIDATE BEGIN");
+				//System.out.println("VALIDATE BEGIN");
 				JingUtil ju = new JingUtil();
 				for(String ofn : outputfiles){
 					ju.writeReportToFile(convdir+m_ConvStr,outdir+"/"+ofn,validdir+"/"+ofn.replace(".xml",".html"),m_ConvStr,ofn);
@@ -604,16 +599,13 @@ private Part m_filePart;
 	}
 
 	public String cleanDir(String the_dirpath){
-		System.out.println("CLEAN<"+the_dirpath+">");
+		//System.out.println("CLEAN<"+the_dirpath+">");
 		File f = new File(the_dirpath);
 		if(f!=null){
 			if(f.isDirectory()){
-				//System.out.println("CLEAN DIR X<"+f.getName()+">");
 				File dirlist[] = f.listFiles();
 				for (File userdir : dirlist){
-					//System.out.println("CLEAN DIR Y<"+userdir.getName()+">");
 					boolean ddf = userdir.delete();
-					//System.out.println("\tDEL USRDIR?"+ddf+">");
 				}
 			}
 		}

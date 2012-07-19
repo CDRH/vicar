@@ -3,6 +3,7 @@
 package Server.Upload;
 
 import Server.Global;
+//import Server.Progress.MonitorData;
 
 import java.io.InputStream;
 import java.io.File;
@@ -43,12 +44,14 @@ private String m_OwnerID;
 private String m_filename = "";
 private String m_mimetype = "";
 private String m_filesize = "";
+private int m_totalsize = 0;
+private int m_collectionsize = 0;
 private String m_dirname = "";
 
 private int m_size = 0;
 private String m_msg = "";
 
-private Part m_filePart;
+//private Part m_filePart;
 
 	public void dispose() {
 		super.dispose();
@@ -76,6 +79,8 @@ private Part m_filePart;
 		m_filename = request.getParameter("fn");
 		m_mimetype = request.getParameter("mt");
 		m_filesize = request.getParameter("sz");
+		m_totalsize = getIntFromString(request.getParameter("totsz"));
+		m_collectionsize = getIntFromString((String)m_session.getAttribute("upload_collectionsize"));
 		m_dirname = request.getParameter("dir");
 		String ful = request.getParameter("file_upload");
 		if(ful!=null){
@@ -85,20 +90,15 @@ private Part m_filePart;
 			}
 			System.out.println("NEED TO USE FILE PATH AS THIS COULD COME FROM A NON UNIX SYSTEM!!!");
 		}
-		System.out.println("FILENAME<"+m_filename+"> DECL MIMETYPE<"+m_mimetype+"> DECLARED SIZE<"+m_filesize+"> DIR<"+m_dirname+">");
+		System.out.println("FILENAME<"+m_filename+"> DECL MIMETYPE<"+m_mimetype+"> DECLARED SIZE<"+m_filesize+"> DIR<"+m_dirname+"> TOTALSIZE<"+m_totalsize+">");
 
 		String destdir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_dirname;
 
-		m_session.setAttribute("monitor_pathsize",""+m_filesize);
-
-System.out.println("DOES NOT CHECK FOR CONVERT FILES");
-		m_session.setAttribute("monitor_pathname",destdir+"/input/"+m_filename);
-
 		try {
-			System.out.println("CODE IS MESSY - BETTER TO HAVE ONE AjaxUtil.write...() WHICH DETECTS TEXT OR BASE64 AND UNPACKS APPROPRIATELY");
+			//System.out.println("CODE IS MESSY - BETTER TO HAVE ONE AjaxUtil.write...() WHICH DETECTS TEXT OR BASE64 AND UNPACKS APPROPRIATELY");
 			if(m_filename!=null){
-				System.out.println("JAVASCRIPT VERSION");
-				System.out.println("JS MIME<"+m_mimetype+">");
+				//System.out.println("JAVASCRIPT VERSION");
+				//System.out.println("JS MIME<"+m_mimetype+">");
 				if((m_mimetype==null)||(m_mimetype.equals(""))||(m_mimetype.startsWith("application/"))){
 					if(m_filename.toLowerCase().endsWith(".rng")){
 						ServletInputStream sis = ((HttpRequest)request).getInputStream();
@@ -140,6 +140,13 @@ System.out.println("DOES NOT CHECK FOR CONVERT FILES");
 				}else{
 					m_msg = "File "+m_filename+" of unknown type not uploaded.";
 				}
+
+				m_collectionsize += m_size;
+				m_session.setAttribute("upload_collectionsize",""+m_collectionsize);
+				int pct = (int)(100.0*((float)m_collectionsize/m_totalsize));
+				//MonitorData md = new MonitorData(true,m_filename,pct);
+				//m_session.setAttribute("monitor_data",md);
+
 			}else{
 				System.out.println("NO JAVASCRIPT VERSION HANDLED IN FileManager.java");
 /****
@@ -170,7 +177,7 @@ System.out.println("DOES NOT CHECK FOR CONVERT FILES");
 				}
 ****/
 			}
-			System.out.println("MIME<"+m_mimetype+"> FN<"+m_filename+"> SIZE<"+m_size+"> DECL SIZE<"+m_filesize+">");
+			//System.out.println("MIME<"+m_mimetype+"> FN<"+m_filename+"> SIZE<"+m_size+"> DECL SIZE<"+m_filesize+">");
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -201,7 +208,7 @@ System.out.println("DOES NOT CHECK FOR CONVERT FILES");
 			e.printStackTrace();
 		}
 	}
-/***
+
 	public static int getIntFromString(String the_str){
 		int ret = 0;
 		if(the_str==null){
@@ -214,7 +221,6 @@ System.out.println("DOES NOT CHECK FOR CONVERT FILES");
 		}
 		return ret;
 	}
-***/
 }
 
 

@@ -1,6 +1,6 @@
-//MonitorServer.java
+//MonitorTest.java
 
-package Server.Prog;
+package Server.Progress;
 
 
 import java.io.InputStream;
@@ -31,19 +31,15 @@ import org.apache.avalon.framework.parameters.ParameterException;
 import org.apache.avalon.framework.activity.Disposable;
 import org.apache.avalon.excalibur.datasource.DataSourceComponent;
 
-public class MonitorServer extends ServiceableGenerator implements Disposable {
+public class MonitorTest extends ServiceableGenerator implements Disposable {
 
 private ServiceSelector m_selector;
 private Session m_session;
 
 private String m_OwnerID;
 
-private int m_value = 0;
-private String m_msg = null;
-private int m_dispose = 0;
-
-private String m_pathname = null;
-private long m_pathsize = 0;
+private String m_name;
+private int m_value;
 
 	public void dispose() {
 		super.dispose();
@@ -54,7 +50,7 @@ private long m_pathsize = 0;
 	}
 
 	public void service(ServiceManager manager) throws ServiceException{
-		//System.out.println("CALLING MonitorServer SERVICE");
+		//System.out.println("CALLING MonitorTest SERVICE");
 		super.service(manager);
 		m_selector = (ServiceSelector)manager.lookup(DataSourceComponent.ROLE+"Selector");
 	}
@@ -68,71 +64,31 @@ private long m_pathsize = 0;
 			m_session.setAttribute("userid",m_OwnerID);
 		}
 
-		m_dispose = 0;
-		m_msg = null;
-		m_value = getIntFromString((String)m_session.getAttribute("monitor_value"));
-
-		m_pathname = (String)m_session.getAttribute("monitor_pathname");
-		m_pathsize = getIntFromString((String)m_session.getAttribute("monitor_pathsize"));
-		System.out.println("PATH NAME<"+m_pathname+"> SIZE<"+m_pathsize+">");
-		m_msg = m_pathname;
-		long currsize = getFileSize(m_pathname);
-		m_value = (int)((100.0*currsize)/m_pathsize);
-
-		System.out.println("V<"+m_value+">");
-/****/
-		//m_value +=10;
-/****/
-		if(m_value > 100){
-			m_value = 0;
-			m_dispose = 1;
-		}
-		m_session.setAttribute("monitor_value",""+m_value);
+		m_name = (String)request.getParameter("name");
+		m_value = getIntFromString((String)request.getParameter("value"));
+		//System.out.println("NAME<"+m_name+"> VALUE<"+m_value+">");
+		MonitorData md = new MonitorData(true,m_name,m_value);
+		MonitorData md1 = new MonitorData(true,m_name+"more",m_value+20);
+		md.setNext(md1);
+		m_session.setAttribute("monitor_data",md);
 	}
 
 	public void generate() throws SAXException, ProcessingException {
-		System.out.println("MonitorServer:generate()");
-		generateResponseXML(contentHandler,m_value,m_msg,m_dispose);
-	}
-
-	public void generateResponseXML(ContentHandler contentHandler,int the_value,String the_msg,int the_dispose) throws SAXException, ProcessingException {
+		System.out.println("MonitorTest:generate()");
 		try {
 			contentHandler.startDocument();
-
 			AttributesImpl monitorAttr = new AttributesImpl();
-			monitorAttr.addAttribute("","value","value","CDATA",""+the_value);
-			monitorAttr.addAttribute("","dispose","dispose","CDATA",""+the_dispose);
-			contentHandler.startElement("","Monitor","Monitor",monitorAttr);
-			if(the_msg!=null){
-				AttributesImpl msgAttr = new AttributesImpl();
-				contentHandler.startElement("","msg","msg",msgAttr);
-				contentHandler.characters(the_msg.toCharArray(),0,the_msg.length());
-				contentHandler.endElement("","msg","msg");
-			}
+			monitorAttr.addAttribute("","name","name","CDATA",""+m_name);
+			monitorAttr.addAttribute("","value","value","CDATA",""+m_value);
+			contentHandler.startElement("","MonitorTest","MonitorTest",monitorAttr);
 			contentHandler.endElement("","Monitor","Monitor");
-
 			contentHandler.endDocument();
 		}catch(Exception e){
 			System.out.println("ERROR0");
 			e.printStackTrace();
 		}
-	}
 
-	public long getFileSize(String the_pathname){
-		long fs = 0;
-		System.out.println("PN<"+the_pathname+">");
-		try {
-			File f = new File(the_pathname);
-			if(f!=null){
-				System.out.println("NOTNULL<"+f.getName()+">");
-				fs = f.length();
-			}
-		}catch(Exception ex){
-			fs = -1;
-		}
-		return fs;
 	}
-	
 
 	public static int getIntFromString(String the_str){
 		int ret = 0;

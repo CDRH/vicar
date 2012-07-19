@@ -55,10 +55,10 @@ static final String ATTR_ALIAS = "openid_alias";
 
 private String URL_LOGIN_SFX = "/vicar/OpenSignin/OpenSignin.html";
 //private String URL_APPL = "../Core/Simple.html";
-//private String URL_APPL_LOGOUT = "../Core/Simple.html?mode=-1";
+//private String URL_APPL_LOGOUT = "../Core/Simple.html";
 
 private String URL_APPL = "../Core/FileManager.html?mode=1";
-private String URL_APPL_LOGOUT = "../Core/FileManager.html?mode=-1";
+private String URL_APPL_LOGOUT = "../Core/FileManager.html";
 
 private Request m_request;
 private Session m_session;
@@ -145,14 +145,17 @@ private int m_loginstatus = 0;
 					m_url = URL_APPL;
 				}
 			}else if(m_op.equals("Test")){
-					System.out.println("RA<"+RemoteAddr+"> RH<"+RemoteHost+">");
+					//System.out.println("RA<"+RemoteAddr+"> RH<"+RemoteHost+">");
 					if(isValidIP(RemoteAddr)){
-						m_OwnerID = "ANONYMOUS";
+						//m_OwnerID = "ANONYMOUS";
+						m_OwnerID = RemoteAddr;
 						m_url = URL_APPL;
 						m_loginstatus = 1;
 						m_session.setAttribute("personname","anonymous");
-						m_session.setAttribute("personemail","anonymous@example.com");
+						m_session.setAttribute("personemail","");
+						//m_session.setAttribute("personemail","anonymous@example.com");
 						m_session.setAttribute("userid",m_OwnerID);
+						m_session.setAttribute("openid","anonymous");
 					}else{
 						m_msg = "Not yet available.";
 						m_loginstatus = 0;
@@ -166,6 +169,7 @@ private int m_loginstatus = 0;
 					Association association = oimanager.lookupAssociation(endpoint);
 					m_session.setAttribute(ATTR_MAC, association.getRawMacKey());
 					m_session.setAttribute(ATTR_ALIAS, endpoint.getAlias());
+					m_session.setAttribute("openid",m_op.toLowerCase());
 					m_url = oimanager.getAuthenticationUrl(endpoint, association);
 					m_msg = null;
 				}catch(Exception ex){
@@ -197,9 +201,17 @@ private int m_loginstatus = 0;
 				//System.out.println("LOGGING OUT");
 				m_OwnerID = null;
 				m_session.setAttribute("userid",null);
+				String openid = (String)m_session.getAttribute("openid");
 				m_session.invalidate();
 				m_loginstatus = 0;
-				m_url = URL_APPL_LOGOUT;
+				if(openid==null){
+				}else if(openid.equals("anonymous")){
+					m_url = URL_APPL_LOGOUT;
+				}else if(openid.equals("google")){
+					m_url = URL_APPL_LOGOUT+"?mode=-1";
+				}else if(openid.equals("yahoo")){
+					m_url = URL_APPL_LOGOUT+"?mode=-2";
+				}
 			}
 		}
 		OpenLoginXML(contentHandler,m_loginstatus,RemoteAddr,SessionID,m_url,m_msg,m_delay);
