@@ -31,8 +31,6 @@ import org.apache.avalon.framework.activity.Disposable;
 import org.expressme.openid.Association;
 import org.expressme.openid.Endpoint;
 import org.expressme.openid.OpenIdManager;
-//import org.expressme.openid.Authentication;
-//import org.expressme.openid.OpenIdException;
 
 /**
 * Requires JOpenId-1.08.jar from http://code.google.com/p/jopenid/
@@ -50,13 +48,7 @@ static final long TEN_HOUR = ONE_HOUR * 10L;
 static final String ATTR_MAC = "openid_mac";
 static final String ATTR_ALIAS = "openid_alias";
 
-//private String URL_BASE = "http://127.0.0.1:8888";
-//private String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
-
 private String URL_LOGIN_SFX = "/vicar/OpenSignin/OpenSignin.html";
-//private String URL_APPL = "../Core/Simple.html";
-//private String URL_APPL_LOGOUT = "../Core/Simple.html";
-
 private String URL_APPL = "../Core/FileManager.html?mode=1";
 private String URL_APPL_LOGOUT = "../Core/FileManager.html";
 
@@ -68,11 +60,11 @@ private String m_SessionID = "";
 
 private int m_delay = 0;
 private String m_msg = null;
-//private int m_msgcode = 0;
 
 private OpenIdManager oimanager;
 private String m_op = null;
 private int m_loginstatus = 0;
+private LocalLog m_locallog;
 
 
 	public void dispose() {
@@ -93,7 +85,10 @@ private int m_loginstatus = 0;
 		oimanager.setReturnTo(Global.URL_BASE+URL_LOGIN_SFX);
 	}
 
+
 	public void setup(SourceResolver resolver, Map objectModel,String src, Parameters par) {
+		m_locallog = new LocalLog("/tmp/vicar/log.txt");
+		m_locallog.msg("hello world!");
 		m_request = ObjectModelHelper.getRequest(objectModel);
 		m_session = m_request.getSession();
 		m_op = m_request.getParameter("op");
@@ -104,7 +99,11 @@ private int m_loginstatus = 0;
 
 	public void generate() throws SAXException, ProcessingException {
 		String RemoteAddr = m_request.getRemoteAddr();
-		String RemoteHost = m_request.getRemoteHost();
+		String ForwardFor = m_request.getHeader("X-Forwarded-For");
+		if(ForwardFor!=null){
+			RemoteAddr = ForwardFor;
+		}
+		//String RemoteHost = m_request.getRemoteHost();
 		String SessionID = m_session.getId();
 		String m_url = null;
 
@@ -152,8 +151,8 @@ private int m_loginstatus = 0;
 						m_url = URL_APPL;
 						m_loginstatus = 1;
 						m_session.setAttribute("personname","anonymous");
-						m_session.setAttribute("personemail","");
-						//m_session.setAttribute("personemail","anonymous@example.com");
+						//m_session.setAttribute("personemail","");
+						m_session.setAttribute("personemail",m_OwnerID);
 						m_session.setAttribute("userid",m_OwnerID);
 						m_session.setAttribute("openid","anonymous");
 					}else{
@@ -173,10 +172,6 @@ private int m_loginstatus = 0;
 					m_url = oimanager.getAuthenticationUrl(endpoint, association);
 					m_msg = null;
 				}catch(Exception ex){
-				//	System.out.println("NO CONNECT BEGIN");
-				//	ex.printStackTrace();
-				//	System.out.println("NO CONNECT END");
-//FSS
 					m_loginstatus = 0;
 					m_OwnerID = null;
 					m_session.setAttribute("userid",null);
@@ -189,8 +184,6 @@ private int m_loginstatus = 0;
 					}else if(m_op.equals("Yahoo")){
 						m_msg += "Yahoo";
 					}
-					
-//FSS
 				}
 			}
 		}else{
@@ -223,6 +216,8 @@ private int m_loginstatus = 0;
 		}else if(the_IP.equals("127.0.0.1")){
 			retval = true;
 		}else if(the_IP.startsWith("129.93.")){
+			retval = true;
+		}else if(the_IP.startsWith("66.45.131.")){
 			retval = true;
 		}
 		return retval;

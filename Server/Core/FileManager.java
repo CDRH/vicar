@@ -55,21 +55,14 @@ private String m_mode = "0";
 private String m_msg = null;
 private int m_msgcode = 0;
 
-//public static String DEFAULT_RNG = "tei_all.rng";
-//public static String DEFAULT_RNGDIR = "/Users/franksmutniak/Desktop/abbottestdata/schema/";
-//public static String DEFAULT_RNGFN = "DEFAULT";
-
-//public static String BASE_USER_DIR = "/tmp/vicar/";
-//public static String CONVERT_SUFFIX = ".rng";
 private String m_DirStr = null;
 private String m_ActStr = null;
 private String m_RenStr = null;
-private String m_ConvStr = null;
 private String m_FilenameStr = null;
 private String m_performStr = null;
 private int m_isnew = 0;
 
-private String m_CurrentStr = null;
+private String m_CurrentSchema = null;
 private Part m_filePart;
 
 	public void dispose() {
@@ -97,16 +90,6 @@ private Part m_filePart;
 			m_RenStr = request.getParameter("ren");
 			m_FilenameStr = request.getParameter("fn");
 			m_performStr = request.getParameter("perform");
-			m_ConvStr = request.getParameter("conv");
-			if(m_ConvStr==null){
-				m_CurrentStr = (String)m_session.getAttribute("SAVE:schema:"+m_DirStr);
-				//System.out.println("GET ATTR<"+m_CurrentStr+">");
-			}else{
-				m_CurrentStr = m_ConvStr;
-				//System.out.println("SET ATTR<"+m_CurrentStr+">");
-				m_session.setAttribute("SAVE:schema:"+m_DirStr,m_CurrentStr);
-				SessionSaver.save(m_session,Global.BASE_USER_DIR+"/"+m_OwnerID+"/session.txt");
-			}
 			m_filePart = (Part)request.get("file_upload");
 			m_isnew = 0;
 		}
@@ -126,6 +109,9 @@ private Part m_filePart;
 				SessionSaver.load(m_session,Global.BASE_USER_DIR+"/"+m_OwnerID+"/session.txt");
 				//SessionSaver.Display(m_session);
 			}
+		}
+		if(m_DirStr!=null){
+			m_CurrentSchema = (String)m_session.getAttribute("SAVE:schema:"+m_DirStr);
 		}
 	}
 
@@ -192,80 +178,11 @@ private Part m_filePart;
 					}
 				}
 			}
-		}else if(m_ActStr.equalsIgnoreCase("conv")){
-			if(m_DirStr!=null){
-				String colldir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr;
-				String indir = colldir+"/input/";
-				String convdir = colldir+"/convert/";
-				String outdir = colldir+"/output/";
-				String validdir = colldir+"/valid/";
-				String resp = cleanDir(outdir);
-				resp = cleanDir(validdir);
-				System.out.println("ABBOT CONVERT BEGIN");
-				Abbot abbot = new Abbot();
-/****/
-				int convtype = 0;
-				if(m_ConvStr!=null){
-					if(m_ConvStr.startsWith("1")){
-						convdir = Global.SCHEMA_DIR;
-						m_ConvStr = m_ConvStr.substring(1);
-					}else if(m_ConvStr.startsWith("2")){
-						convtype = 1;
-						m_ConvStr = m_ConvStr.substring(1);
-					}
-					System.out.println("*****CONVERT USING <"+convdir+m_ConvStr+">");
-					try {
-						abbot.convert(indir,outdir,convdir+m_ConvStr);
-					}catch(Exception ex){
-					}
-				}
-/****/
-				System.out.println("ABBOT CONVERT END");
-
-				Vector<String> outputfiles = listFiles(outdir,".xml");
-
-				//System.out.println("SED CORRECTION BEGIN");
-
-				ProcMngr pm = new ProcMngr(Global.SEDPATH,"-i_sed",outdir);
-				String convURL = "http:\\/\\/abbot.unl.edu\\/"+m_ConvStr;
-				if(convtype == 1){
-					convURL = m_ConvStr;
-				}
-				String email = m_OwnerID.replace("__","@");
-				String emailsuffix = email;
-				if(emailsuffix!=null){
-					int suffstrt = emailsuffix.indexOf("@");
-					if(suffstrt>0){
-						emailsuffix = emailsuffix.substring(0,suffstrt);
-					}
-				}
-
-				Vector<String> convList = new Vector<String>();
-				convList.add("s/http:\\/\\/abbot.unl.edu\\/tei_all.rng/"+convURL+"/g");
-				//convList.add("s/bpz/"+email+"/g");
-				convList.add("s/bpz/"+emailsuffix+"/g");
-				convList.add("s/Pytlik Zillig,/"+email+"/g");
-				convList.add("s/[ \t]*B.<\\/name> Conversion to TEI/<\\/name> Conversion to TEI/g");
-
-				pm.cleanup(outputfiles,convList);
-				System.out.println("SED CORRECTION END");
-
-				//System.out.println("VALIDATE BEGIN");
-				JingUtil ju = new JingUtil();
-				for(String ofn : outputfiles){
-					ju.writeReportToFile(convdir+m_ConvStr,outdir+"/"+ofn,validdir+"/"+ofn.replace(".xml",".html"),m_ConvStr,ofn);
-				}
-				System.out.println("VALIDATE END");
-				Vector<Integer> el = ju.getErrorList();
-				m_session.setAttribute("SAVE:validationerrors:"+m_DirStr,el);
-				SessionSaver.save(m_session,Global.BASE_USER_DIR+"/"+m_OwnerID+"/session.txt");
-			}
 		}
 
 		//PRODUCE OUTPUT
 		Vector<FileData> mydirs = null;
 		Vector<String> inputfiles = null;
-//FSS
 		Vector<String> convertfiles = null;
 		Vector<String> outputfiles = null;
 		Vector<String> validfiles = null;
@@ -278,7 +195,6 @@ private Part m_filePart;
 					createDir(dirpath+"/NEW");
 					dirpath = dirpath+"/"+m_DirStr+"/";
 					inputfiles = listFiles(dirpath+"input");
-//FSS
 					convertfiles = listFiles(dirpath+"convert");
 					outputfiles = listFiles(dirpath+"output",".xml");
 					validfiles = listFiles(dirpath+"valid");
@@ -317,7 +233,6 @@ private Part m_filePart;
 						m_isnew = 1;
 					}
 					inputfiles = listFiles(dirpath+"input");
-//FSS
 					convertfiles = listFiles(dirpath+"convert");
 					outputfiles = listFiles(dirpath+"output",".xml");
 					validfiles = listFiles(dirpath+"valid");
@@ -358,7 +273,6 @@ private Part m_filePart;
 				}
 			}
 			inputfiles = listFiles(dirpath+"input");
-//FSS
 			convertfiles = listFiles(dirpath+"convert");
 			outputfiles = listFiles(dirpath+"output",".xml");
 			validfiles = listFiles(dirpath+"valid");
@@ -431,7 +345,7 @@ private Part m_filePart;
 
 						if(m_DirStr!=null){
 							SchemaList sl = new SchemaList();
-							Vector<SchemaData> sdl = sl.getSchemaList(m_OwnerID,m_DirStr,m_CurrentStr);
+							Vector<SchemaData> sdl = sl.getSchemaList(m_OwnerID,m_DirStr,m_CurrentSchema);
 							sl.generateSchemaXML(contentHandler,sdl);
 						}
 

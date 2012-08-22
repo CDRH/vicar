@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Vector;
 import java.util.StringTokenizer;
@@ -107,7 +108,6 @@ private String m_FilenameStr;
 		try {
 			HttpResponse res = (HttpResponse)response;
 			ServletOutputStream sos = res.getOutputStream();
-	
 			if(m_DirStr==null){
 				res.setContentType("text/html");
 				sos.println("<html><head><title>Directory Needed</title></head><body><h2>Directory Needed</h2></body></html>");
@@ -142,12 +142,13 @@ private String m_FilenameStr;
 				//System.out.println("\tDLF<"+downloadfilename+">");
 				File f = new File(downloadfilename);
 				if((f!=null)&&(f.exists())){
-					FileInputStream fis = new FileInputStream(f);
-					BufferedInputStream bis = new BufferedInputStream(fis);
-					int avail = bis.available();
-					byte[] b = new byte[avail];
-					bis.read(b);
-					sos.write(b);
+					try(FileInputStream fis = new FileInputStream(f);BufferedInputStream bis = new BufferedInputStream(fis)){
+						int avail = bis.available();
+						byte[] b = new byte[avail];
+						bis.read(b);
+						sos.write(b);
+					}catch(IOException ioex){
+					}
 				}else{
 					//System.out.println("NEED TO BASE OUTPUT ON REQUESTED FILE TYPE");
 					res.setContentType("text/html");

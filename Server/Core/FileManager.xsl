@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
+<!--
 <xsl:output method="html" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+-->
+<xsl:output method="xml"
+	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
+	doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 
 <xsl:template match="/">
 <html lang="en" class="no-js">
@@ -13,6 +18,7 @@
 <xsl:template match="filemanager">
 <head>
 	<title>Vicar - gateway to Abbot</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="description" content="Collection of files to be processed by Abbot" />
 	<meta http-equiv="Cache-Control" content="no-cache" />
 	<meta http-equiv="Pragma" content="no-cache" />
@@ -20,6 +26,7 @@
 	<!--unicode 160 gets past some odd bug that prevents the html5 serializer from working with these script lines-->
 	<script type="text/javascript" language="JavaScript" src="../Modernizr/modernizr.js">&#160;</script>
 	<script type="text/javascript" language="JavaScript" src="../Utils/AjaxClient.js">&#160;</script>
+	<script type="text/javascript" language="JavaScript" src="../Upload/PopupFrame.js">&#160;</script>
 	<script type="text/javascript" language="JavaScript" src="../Upload/AjaxUpload.js">&#160;</script>
 	<script type="text/javascript" language="JavaScript" src="SchemaList.js">&#160;</script>
 
@@ -27,6 +34,7 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js">&#260;</script>
 	<link rel="stylesheet" type="text/css" href="FileManager.css" />
 	<link rel="stylesheet" type="text/css" href="../Upload/AjaxUpload.css" />
+	<link rel="stylesheet" type="text/css" href="../Upload/PopupFrame.css" />
 
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css" />
 
@@ -53,9 +61,11 @@
 		<span>Welcome</span>
 		<span style="font-size:100%;color:blue;">
 			<xsl:value-of select="@personname" />
-			<xsl:text> (</xsl:text>
-			<xsl:value-of select="@personemail" />
-			<xsl:text>)</xsl:text>
+			<xsl:if test="@personemail != ''">
+				<xsl:text> (</xsl:text>
+				<xsl:value-of select="@personemail" />
+				<xsl:text>)</xsl:text>
+			</xsl:if>
 		</span>
 	</div>
 
@@ -207,14 +217,18 @@
 		<div class="columnheader">
 			<span class="columntitle">Convert With:</span>
 		</div>
-		<form action="FileManager.html?dir={../@dirname}&amp;act=conv" method="post" enctype="multipart/form-data">
+		<form id="convert" action="FileManager.html?dir={../@dirname}&amp;act=conv" method="post" enctype="multipart/form-data">
 			<div style="margin:5px 20px;">
-				<select name="conv" style="color:blue;">
+				<select id="schemaselect" name="conv" style="color:blue;">
 					<xsl:apply-templates />
 				</select>
 			</div>
+<!--
 			<input type="submit" style="color:blue;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" title="Generate output files using Abbot" />
+-->
+<!--need a javascript free way to trigger convert?-->
 		</form>
+		<input type="submit" style="color:orange;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" onclick="makeSimpleFrame(this,'../Stream/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
 	</div>
 </xsl:template>
 

@@ -55,6 +55,15 @@ HTTP.sendXMLSingleFile = function(url,xmltxt){
 	httpRequest.send(xmltxt);
 	return false;
 };
+
+HTTP.doGet = function(url){
+        var httpRequest = HTTP.newRequest();
+        httpRequest.onreadystatechange = function(){getReturnText(httpRequest);};
+        httpRequest.open('GET', url, true);
+        httpRequest.send();
+        return false;
+};
+
 -->
 
 

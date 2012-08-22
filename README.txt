@@ -1,3 +1,17 @@
+
+Updated on 8/22/2012
+
+Vicar now monitors the progress of Abbot.convert and validation and displays a two tiered progress window.  The top progress bar shows total progress while the bottom shows the progress of the current task. (Though the actual means of determining progress is not currently accurate!)
+
+Vicar now has an Anonymous login which is useful for quick testing.  The files are saved in a directory/account named the same as the IP of the user.  Currently the only IP addresses allowed are 127.0.0.1 (local computer) and those of people associated with the project.
+
+Chrome now refreshes but might not be a good fix - revisit - problem may lie with the recursive way that the getReturnXML function works.
+	see Upload/AjaxUpload.js around where percentage and 'complete' is measured and the function recurses or exits and reloads the main page
+Opera now handles drag/drop and multiple file upload (version 12)
+IE 9 is not expected to be able to use FileReader either per http://caniuse.com/#feat=filereader (html5 javascript function to read files on the browser's local system)
+
+Current efforts focus on utilizing java 7 features where applicable (i.e. java.nio.file.* and 'try with resources').
+
 ################################################
 Updated on 6/25/2012
 Added validation using jing.

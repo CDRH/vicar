@@ -7,6 +7,8 @@ import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.util.Arrays;
 
+import org.apache.cocoon.environment.Session;
+
 public class AjaxUtil {
 
 private static final int BUFFER = 32*1024;;
@@ -28,6 +30,7 @@ private static final int BUFFER = 32*1024;;
 			count = 0;
 			while((count = bis.read(data,0,BUFFER)) != -1){
 				fos.write(data,0,count);
+				System.out.println("\t\tAUFN<"+the_filename+">");
 				byteswritten += count;
 			}
 			fos.close();
@@ -39,6 +42,34 @@ private static final int BUFFER = 32*1024;;
 		}
 		return byteswritten;
 	}
+
+	public static int writeFileFromInputStream(String the_path,String the_filename,InputStream the_sis,Session the_session,int the_filesize){
+		int byteswritten = 0;
+		byte data[] = new byte[BUFFER];
+		int count = 0;
+		try {
+			FileOutputStream fos = new FileOutputStream(the_path+the_filename);
+			BufferedInputStream bis = new BufferedInputStream(the_sis,BUFFER);
+			data = new byte[BUFFER];
+			count = 0;
+			while((count = bis.read(data,0,BUFFER)) != -1){
+				fos.write(data,0,count);
+				//System.out.println("\t\tTN<"+Thread.currentThread().getName()+"> AUFN<"+the_filename+">");
+				byteswritten += count;
+				int pct = (int)((100*byteswritten)/the_filesize);
+				//the_session.setAttribute("upload_filepct",""+pct);
+				//Thread.sleep(500);
+			}
+			fos.close();
+		}catch (Exception ex){
+			byteswritten = -byteswritten;
+			//ex.printStackTrace();
+			//System.out.println("BW<"+byteswritten+"> C<"+count+">");
+			//System.out.println("Data<"+(new String(data))+">");
+		}
+		return byteswritten;
+	}
+
 
 /**
 * Read base64 data by stripping the preamble, converting the data to raw bytes, and then storing in the specified file.
@@ -77,7 +108,6 @@ private static final int BUFFER = 32*1024;;
 				fos.write(s,0,s.length);
 				byteswritten += s.length;
 				numberofreads++;
-//Thread.sleep(1000);
 			}
 			fos.close();
 			//System.out.println("NOREADS<"+numberofreads+">");

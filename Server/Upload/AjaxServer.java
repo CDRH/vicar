@@ -33,8 +33,6 @@ import org.apache.avalon.framework.parameters.ParameterException;
 import org.apache.avalon.framework.activity.Disposable;
 import org.apache.avalon.excalibur.datasource.DataSourceComponent;
 
-import org.apache.cocoon.servlet.multipart.Part;
-
 public class AjaxServer extends ServiceableGenerator implements Disposable {
 
 private ServiceSelector m_selector;
@@ -50,8 +48,7 @@ private String m_dirname = "";
 
 private int m_size = 0;
 private String m_msg = "";
-
-//private Part m_filePart;
+private int m_complete = 0;
 
 	public void dispose() {
 		super.dispose();
@@ -72,15 +69,15 @@ private String m_msg = "";
 		m_session = request.getSession();
 
 		m_OwnerID = (String)m_session.getAttribute("userid");
-		if(m_OwnerID==null){
-			m_session.setAttribute("userid",m_OwnerID);
-		}
+		//if(m_OwnerID==null){
+		//	m_session.setAttribute("userid",m_OwnerID);
+		//}
 
 		m_filename = request.getParameter("fn");
+		//m_session.setAttribute("upload_filename",""+m_filename);
 		m_mimetype = request.getParameter("mt");
 		m_filesize = request.getParameter("sz");
 		m_totalsize = getIntFromString(request.getParameter("totsz"));
-		m_collectionsize = getIntFromString((String)m_session.getAttribute("upload_collectionsize"));
 		m_dirname = request.getParameter("dir");
 		String ful = request.getParameter("file_upload");
 		if(ful!=null){
@@ -90,8 +87,9 @@ private String m_msg = "";
 			}
 			System.out.println("NEED TO USE FILE PATH AS THIS COULD COME FROM A NON UNIX SYSTEM!!!");
 		}
-		System.out.println("FILENAME<"+m_filename+"> DECL MIMETYPE<"+m_mimetype+"> DECLARED SIZE<"+m_filesize+"> DIR<"+m_dirname+"> TOTALSIZE<"+m_totalsize+">");
+		System.out.println("NAME<"+Thread.currentThread().getName()+"> FILENAME<"+m_filename+"> DECL MIMETYPE<"+m_mimetype+"> DECLARED SIZE<"+m_filesize+"> DIR<"+m_dirname+"> TOTALSIZE<"+m_totalsize+">");
 
+		m_complete = 0;
 		String destdir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_dirname;
 
 		try {
@@ -128,7 +126,8 @@ private String m_msg = "";
 					}
 				}else if(m_mimetype.indexOf("text") >= 0){
 					ServletInputStream sis = ((HttpRequest)request).getInputStream();
-					m_size = AjaxUtil.writeFileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis);
+					//m_size = AjaxUtil.writeFileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis);
+					m_size = AjaxUtil.writeFileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis,m_session,getIntFromString(m_filesize));
 					m_msg = "Uploaded file "+m_filename+" of type "+m_mimetype+" and size "+m_size+".";
 				}else if(m_mimetype.indexOf("image") >= 0){
 					//While no image file uploads are expected for abbot/vicar it is a good sanity check
@@ -141,41 +140,22 @@ private String m_msg = "";
 					m_msg = "File "+m_filename+" of unknown type not uploaded.";
 				}
 
+				System.out.println("\t"+m_msg+"\n");
+/****
+				m_collectionsize = getIntFromString((String)m_session.getAttribute("upload_collectionsize"));
+				System.out.println("NAME<"+Thread.currentThread().getName()+"> FN<"+m_filename+"> COLLECTIONSIZE<"+m_collectionsize+"> PLUS<"+m_size+">");
 				m_collectionsize += m_size;
 				m_session.setAttribute("upload_collectionsize",""+m_collectionsize);
-				int pct = (int)(100.0*((float)m_collectionsize/m_totalsize));
+				int totalpct = (int)(100.0*((float)m_collectionsize/m_totalsize));
+				m_session.setAttribute("upload_totalpct",""+totalpct);
+				if(totalpct>=100){
+					m_complete = 1;
+				}
 				//MonitorData md = new MonitorData(true,m_filename,pct);
 				//m_session.setAttribute("monitor_data",md);
-
+****/
 			}else{
 				System.out.println("NO JAVASCRIPT VERSION HANDLED IN FileManager.java");
-/****
-				m_filePart = (Part)request.get("file_upload");
-				if(m_filePart!=null){ //ADD_IMAGE
-					InputStream fis = m_filePart.getInputStream();
-					m_filename = m_filePart.getFileName();
-					String filedestdir = destdir+"/input/";
-					if((m_filename!=null)&&(m_filename.toLowerCase().endsWith(FileManager.CONVERT_SUFFIX))){
-						filedestdir = destdir+"/convert/";
-					}
-					m_mimetype = m_filePart.getMimeType();
-					System.out.println("NO JS READ MIME<"+m_mimetype+">");
-					int len = 0;
-					byte buf[] = new byte[1024];
-					File outfile = new File(filedestdir+m_filename);
-					FileOutputStream fos = new FileOutputStream(outfile);
-					m_size = 0;
-					while((len=fis.read(buf))>0){
-						fos.write(buf,0,len);
-						m_size += len;
-					}
-					if((m_filename!=null)&&(m_filename.toLowerCase().endsWith(FileManager.CONVERT_SUFFIX))){
-						m_msg = "Uploaded conversion file "+m_filename+" of size "+m_size+".";
-					}else{
-						m_msg = "Uploaded file "+m_filename+" of type "+m_mimetype+" and size "+m_size+".";
-					}
-				}
-****/
 			}
 			//System.out.println("MIME<"+m_mimetype+"> FN<"+m_filename+"> SIZE<"+m_size+"> DECL SIZE<"+m_filesize+">");
 		}catch(Exception ex){
@@ -184,14 +164,16 @@ private String m_msg = "";
 	}
 
 	public void generate() throws SAXException, ProcessingException {
-		generateResponseXML(contentHandler,m_dirname,m_filename,m_size,m_msg);
+		generateResponseXML(contentHandler,m_dirname,m_complete,m_filename,m_size,m_msg);
+		System.out.println("FINISH<"+Thread.currentThread().getName()+"> FN<"+m_filename+">");
 	}
 
-	public void generateResponseXML(ContentHandler contentHandler,String the_dirname,String the_filename,int the_size,String the_msg) throws SAXException, ProcessingException {
+	public void generateResponseXML(ContentHandler contentHandler,String the_dirname,int the_complete,String the_filename,int the_size,String the_msg) throws SAXException, ProcessingException {
 		try {
 			contentHandler.startDocument();
 			AttributesImpl respAttr = new AttributesImpl();
 			respAttr.addAttribute("","dirname","dirname","CDATA",""+the_dirname);
+			respAttr.addAttribute("","complete","complete","CDATA",""+the_complete);
 			contentHandler.startElement("","Response","Response",respAttr);
 			if(the_msg!=null){
 				AttributesImpl msgAttr = new AttributesImpl();

@@ -40,13 +40,15 @@ var dirname;
 		var files = e.target.files || e.dataTransfer.files;
 		sentbytes = 0;
 		recvdbytes = 0;
-		//makeSimpleFrame(this,'../Progress/MonitorClient.html');
+		//makeSimpleFrame(this,'../Stream/StreamClient.html');
 		for(var i = 0,f;f=files[i];i++){
 			sentbytes += f.size;
 		}
 		for(var i = 0,f;f=files[i];i++){
+			//alert('IU'+i+' '+files[i].size);
 			uploadFile(f,sentbytes);
 		}
+		//alert(sentbytes);
 	}
 
 	function uploadFile(file,sentbytes){
@@ -73,24 +75,22 @@ var dirname;
 				//alert(httpRequest.responseText);
 				var xmldoc = httpRequest.responseXML;
 				var response = xmldoc.getElementsByTagName('Response')[0];
+				var complete = response.getAttribute("complete");
 				var msg = xmldoc.getElementsByTagName('Msg')[0];
 				var filename = msg.getAttribute("filename");
 				var filesize = msg.getAttribute("filesize");
 				recvdbytes += parseInt(filesize);
-				var p = parseInt(recvdbytes/sentbytes*100);
-				if(p<100){
+				var p = parseInt(((recvdbytes)/sentbytes)*100);
+				//alert("RB<"+recvdbytes+"> SB<"+sentbytes+">FN<"+filename+"> FS<"+filesize+"> P<"+p+"> COMP<"+complete+">");
+				if(p<99){
 					//progressbox.innerHTML = '<progress value="'+p+'" max="100">'+p+'%</progress>';
-					$("#progressbar").progressbar('value',p);//.append("<div>"+filename+"</div>");
+					$("#progressbar").progressbar('value',p);
 				}else{
-					location.replace('FileManager.html?dir='+dirname);
+					//location.replace('FileManager.html?dir='+dirname);
+					window.location.href='FileManager.html?dir='+dirname;
 				}
-				var msgtxt = "";
-				if(msg.firstChild!=null){
-					msgtxt = msg.firstChild.nodeValue;
-				}
-				msgbox.innerHTML = "<div>"+msgtxt+"</div>";
 			}else{
-				alert("httpRequest status error:"+httpRequest.status);
+				//alert("httpRequest status error:"+httpRequest.status);
 			}
 		}
 	}

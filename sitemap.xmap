@@ -4,13 +4,11 @@
 
 	<map:generators default="file">
 		<map:generator name="opensignin" src="Server.OpenSignin.OpenSignin"/>
+		<map:generator name="testsession" src="Server.OpenSignin.TestSession"/>
 		<map:generator name="filemanager" src="Server.Core.FileManager"/>
 		<map:generator name="filedownload" src="Server.Core.FileDownload"/>
 		<map:generator name="ajax-upload" src="Server.Upload.AjaxServer"/>
-<!--
-		<map:generator name="monitor-server" src="Server.Progress.MonitorServer"/>
-		<map:generator name="monitor-test" src="Server.Progress.MonitorTest"/>
--->
+		<map:generator name="stream-server" src="Server.Stream.StreamServer"/>
 	</map:generators>
 
 
@@ -41,11 +39,9 @@
 
 <!--TOP-->
 <map:match pattern="" >
-	<!--GO TO INDEX.HTML UNDER APACHE-->
 	<map:redirect-to uri="../"/>
 </map:match>
 <map:match pattern="/" >
-	<!--GO TO INDEX.HTML UNDER APACHE-->
 	<map:redirect-to uri="../"/>
 </map:match>
 
@@ -59,6 +55,11 @@
 
 <!--OPENSIGNIN-->
 <map:match pattern="OpenSignin/**">
+	<map:match pattern="OpenSignin/TestSession.html" >
+		<map:generate type="testsession"/>
+		<map:transform src="Server/OpenSignin/TestSession.xsl"/>
+		<map:serialize type="html5"/>
+	</map:match>
 	<map:match pattern="OpenSignin/OpenSignin.html" >
 		<map:generate type="opensignin"/>
 		<map:transform src="Server/OpenSignin/OpenSignin.xsl"/>
@@ -145,6 +146,12 @@
 	<map:match pattern="Upload/AjaxUpload.js">
 		<map:read mime-type="text/javascript" src="Server/Upload/AjaxUpload.js"/>
 	</map:match>
+	<map:match pattern="Upload/PopupFrame.js">
+		<map:read mime-type="text/javascript" src="Server/Upload/PopupFrame.js"/>
+	</map:match>
+	<map:match pattern="Upload/PopupFrame.css">
+		<map:read mime-type="text/css" src="Server/Upload/PopupFrame.css"/>
+	</map:match>
 	<map:match pattern="Upload/AjaxUpload.css">
 		<map:read mime-type="text/css" src="Server/Upload/AjaxUpload.css"/>
 	</map:match>
@@ -156,55 +163,31 @@
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
 
-<!--PROG-->
+<map:match pattern="Stream/**">
+	<!--MULTIPLE FILE UPLOAD VIA AJAX-->
+	<map:match pattern="Stream/StreamClient.html">
 <!--
-<map:match pattern="Progress/**">
-	<map:match pattern="Progress/Monitor.html">
-		<map:read mime-type="text/html" src="Server/Progress/Monitor.html"/>
-	</map:match>
-	<map:match pattern="Progress/MonitorClient.html">
-		<map:read mime-type="text/html" src="Server/Progress/MonitorClient.html"/>
-	</map:match>
-	<map:match pattern="Progress/MonitorClient.js">
-		<map:read mime-type="text/javascript" src="Server/Progress/MonitorClient.js"/>
-	</map:match>
-	<map:match pattern="Progress/MonitorClient.css">
-		<map:read mime-type="text/css" src="Server/Progress/MonitorClient.css"/>
-	</map:match>
-	<map:match pattern="Progress/AjaxMonitor.js">
-		<map:read mime-type="text/javascript" src="Server/Progress/AjaxMonitor.js"/>
-	</map:match>
-	<map:match pattern="Progress/Monitor.js" >
-		<map:read mime-type="text/javascript" src="Server/Progress/Monitor.js"/>
-	</map:match>
-	<map:match pattern="Progress/MonitorServer.xml" >
-		<map:generate type="monitor-server"/>
-		<map:serialize type="xml"/>
-	</map:match>
-	<map:match pattern="Progress/MonitorTest.xml" >
-		<map:generate type="monitor-test"/>
-		<map:serialize type="xml"/>
-	</map:match>
-	<map:match pattern="Progress/MonitorTest.html" >
-		<map:generate type="monitor-test"/>
-		<map:transform src="Server/Progress/MonitorTest.xsl"/>
+		<map:read mime-type="text/html" src="Server/Stream/StreamClient.html"/>
+-->
+		<map:generate src="Server/Stream/StreamClient.xml" />
+		<map:transform src="Server/Stream/StreamClient.xsl">
+			<map:parameter name="use-request-parameters" value="true" />
+		</map:transform>
+<!--
+		<map:serialize type="html5"/>
+-->
 		<map:serialize type="html"/>
 	</map:match>
-
-
-
-	<map:match pattern="Progress/MonitorServer.html" >
-		<map:generate type="monitor-server"/>
-		<map:transform src="Server/Progress/MonitorServer.xsl"/>
-		<map:serialize type="html"/>
+	<map:match pattern="Stream/StreamClient.js">
+		<map:read mime-type="text/javascript" src="Server/Stream/StreamClient.js"/>
 	</map:match>
-	<map:match pattern="Progress/MonitorServer.css">
-		<map:read mime-type="text/css" src="Server/Progress/MonitorServer.css"/>
+	<map:match pattern="Stream/StreamServer.xml" >
+		<map:generate type="stream-server"/>
+		<map:serialize type="xml"/>
 	</map:match>
 
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
--->
 
 <map:match pattern="Error.html">
 	<map:match pattern="Error.html">
