@@ -1,8 +1,9 @@
 //SessionSaver.java
 
-package Server.Core;
+//package Server.Core;
+package Server;
 
-import Server.Global;
+//import Server.Global;
 
 import java.io.BufferedWriter;
 import java.nio.file.Files;
@@ -53,7 +54,7 @@ private static String TOKEN = "$";
 			Path p = Paths.get(the_pathname);
 			List<String> lines = Files.readAllLines(p,StandardCharsets.UTF_8);
 			for(String line : lines){
-				System.out.println(line);
+				//System.out.println(line);
 				StringTokenizer stok = new StringTokenizer(line,TOKEN);
 				String name = "";
 				if(stok.hasMoreTokens()){
@@ -80,7 +81,7 @@ private static String TOKEN = "$";
 				}
 			}
 		}catch(NoSuchFileException nsfex){
-			System.out.println("FILE MISSING");
+			System.out.println("SessionSaver:FILE MISSING");
 			//nsfex.printStackTrace();
 		}catch(InvalidPathException ipex){
 			ipex.printStackTrace();
@@ -106,95 +107,7 @@ private static String TOKEN = "$";
 		}catch(IOException ioex){
 			ioex.printStackTrace();
 		}
-		
-/****
-		try {
-			//System.out.println("SESSION SAVED TO FILE<"+the_pathname+">");
-			File f = new File(the_pathname);
-			FileWriter fw = new FileWriter(f,false);
-			Enumeration san = the_session.getAttributeNames();
-			while(san.hasMoreElements()){
-				String sanName = (String)san.nextElement();
-				if(sanName.startsWith("SAVE:")){
-					Object sanObj = the_session.getAttribute(sanName);
-					//System.out.println("\tATTR<"+sanName+"> VALUE<"+sanObj.toString()+">");
-					fw.write(sanName+TOKEN+sanObj.toString()+"\n");
-				}
-			}
-			fw.flush();
-			fw.close();
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
-****/
 	}
-
-/****
-	public static void load(Session the_session,String the_pathname){
-		try {
-			//System.out.println("SESSION LOAD FROM FILE<"+the_pathname+">");
-			File f = new File(the_pathname);
-			if(f!=null){
-				FileReader fr = new FileReader(f);
-				BufferedReader br = new BufferedReader(fr);
-				String s;
-				while((s = br.readLine())!=null){
-					//System.out.println(s);
-					StringTokenizer stok = new StringTokenizer(s,TOKEN);
-					String name = "";
-					if(stok.hasMoreTokens()){
-						name = stok.nextToken();
-					}
-					String value = "";
-					if(stok.hasMoreTokens()){
-						value = stok.nextToken();
-					}
-					//System.out.println("\tATTR<"+name+"> VALUE<"+value+">");
-					if(value.startsWith("[")){
-						Vector<Integer> erlist = new Vector<Integer>();
-						value = value.replace("[","");
-						value = value.replace("]","");
-						StringTokenizer stokvec = new StringTokenizer(value,", ");
-						String svec;
-						while(stokvec.hasMoreTokens()){
-							svec = stokvec.nextToken();
-							erlist.add(new Integer(svec));
-						}
-						the_session.setAttribute(name,erlist);
-					}else{
-						the_session.setAttribute(name,value);
-					}
-				}
-				fr.close();
-			}
-		}catch(FileNotFoundException fnfex){
-			System.out.println("FILE NOT FOUND");
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
-	}
-
-	public static void save(Session the_session,String the_pathname){
-		try {
-			//System.out.println("SESSION SAVED TO FILE<"+the_pathname+">");
-			File f = new File(the_pathname);
-			FileWriter fw = new FileWriter(f,false);
-			Enumeration san = the_session.getAttributeNames();
-			while(san.hasMoreElements()){
-				String sanName = (String)san.nextElement();
-				if(sanName.startsWith("SAVE:")){
-					Object sanObj = the_session.getAttribute(sanName);
-					//System.out.println("\tATTR<"+sanName+"> VALUE<"+sanObj.toString()+">");
-					fw.write(sanName+TOKEN+sanObj.toString()+"\n");
-				}
-			}
-			fw.flush();
-			fw.close();
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
-	}
-****/
 
 	public static void Display(Session the_session){
 		try {
@@ -212,6 +125,5 @@ private static String TOKEN = "$";
 		}
 	}
 }
-
 
 

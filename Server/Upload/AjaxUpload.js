@@ -1,7 +1,8 @@
 //SAVE BUTTON
 var url = '../Upload/AjaxServer.xml';
+var watchurl = '../Upload/MonitorServer.xml';
 var msgbox;
-var progressbox;
+//var progressbox;
 var progressbarjq;
 var sentbytes;
 var recvdbytes;
@@ -21,12 +22,12 @@ var dirname;
 			msgbox.addEventListener("drop",FileSelectHandler,false);
 		}
 
-		progressbox = document.getElementById("upload_progressbox");
-		if(progressbox!=null){
-			progressbox.addEventListener("dragenter",function(e){e.preventDefault();},false);
-			progressbox.addEventListener("dragover",function(e){e.preventDefault();},false);
-			progressbox.addEventListener("drop",FileSelectHandler,false);
-		}
+		//progressbox = document.getElementById("upload_progressbox");
+		//if(progressbox!=null){
+		//	progressbox.addEventListener("dragenter",function(e){e.preventDefault();},false);
+		//	progressbox.addEventListener("dragover",function(e){e.preventDefault();},false);
+		//	progressbox.addEventListener("drop",FileSelectHandler,false);
+		//}
 
 		if(document.getElementById("dirname")!=null){
 			dirname = document.getElementById("dirname").value;
@@ -44,6 +45,7 @@ var dirname;
 		for(var i = 0,f;f=files[i];i++){
 			sentbytes += f.size;
 		}
+		//HTTP.watchFiles(watchurl+'?dir='+dirname+'&totsz='+sentbytes);
 		for(var i = 0,f;f=files[i];i++){
 			//alert('IU'+i+' '+files[i].size);
 			uploadFile(f,sentbytes);
@@ -89,6 +91,16 @@ var dirname;
 					//location.replace('FileManager.html?dir='+dirname);
 					window.location.href='FileManager.html?dir='+dirname;
 				}
+			}else{
+				//alert("httpRequest status error:"+httpRequest.status);
+			}
+		}
+	}
+
+	function getReturnWatch(httpRequest){
+		if(httpRequest.readyState==4){
+			if(httpRequest.status==200){
+				alert(httpRequest.responseText);
 			}else{
 				//alert("httpRequest status error:"+httpRequest.status);
 			}

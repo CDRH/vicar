@@ -87,7 +87,6 @@ private String m_FilenameStr;
 		m_OwnerID = (String)m_session.getAttribute("userid");
 
 		Vector<String> urlpartList = new Vector<String>();
-		System.out.println("SHOULD USE java.nio.File Path interface instead - here and elsewhere");
 		StringTokenizer stok = new StringTokenizer(requestURL,"/");
 		//PUT URL COMPONENTS INTO REVERSE ORDER
 		while(stok.hasMoreTokens()){

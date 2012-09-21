@@ -11,21 +11,23 @@ package Server;
 
 public class Global {
 
-/****/
+/****
 //LOCAL
 public static String URL_BASE = "http://127.0.0.1:8888";
 public static String BASE_USER_DIR = "/tmp/vicar";
 public static String SCHEMA_DIR = "/users/franksmutniak/Desktop/abbottestdata/schema/";
 public static String SEDPATH = "/usr/bin/sed";
-/****/
+public static String LOGFILE_PATH = "/tmp/vicar/log.txt";
+****/
 
-/****
+/****/
 //ABBOT
 public static String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
 public static String BASE_USER_DIR = "/tmp/vicar";
 public static String SCHEMA_DIR = "/var/www/localhost/htdocs/";
 public static String SEDPATH = "/bin/sed";
-****/
+public static String LOGFILE_PATH = "/tmp/vicar/log.txt";
+/****/
 
 	public Global(){
 	}

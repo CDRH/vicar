@@ -8,7 +8,8 @@
 		<map:generator name="filemanager" src="Server.Core.FileManager"/>
 		<map:generator name="filedownload" src="Server.Core.FileDownload"/>
 		<map:generator name="ajax-upload" src="Server.Upload.AjaxServer"/>
-		<map:generator name="stream-server" src="Server.Stream.StreamServer"/>
+		<map:generator name="monitor-server" src="Server.Upload.MonitorServer"/>
+		<map:generator name="stream-server" src="Server.Convert.StreamServer"/>
 	</map:generators>
 
 
@@ -159,18 +160,19 @@
 		<map:generate type="ajax-upload"/>
 		<map:serialize type="xml"/>
 	</map:match>
+	<map:match pattern="Upload/MonitorServer.xml" >
+		<map:generate type="monitor-server"/>
+		<map:serialize type="xml"/>
+	</map:match>
 
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
 
-<map:match pattern="Stream/**">
+<map:match pattern="Convert/**">
 	<!--MULTIPLE FILE UPLOAD VIA AJAX-->
-	<map:match pattern="Stream/StreamClient.html">
-<!--
-		<map:read mime-type="text/html" src="Server/Stream/StreamClient.html"/>
--->
-		<map:generate src="Server/Stream/StreamClient.xml" />
-		<map:transform src="Server/Stream/StreamClient.xsl">
+	<map:match pattern="Convert/StreamClient.html">
+		<map:generate src="Server/Convert/StreamClient.xml" />
+		<map:transform src="Server/Convert/StreamClient.xsl">
 			<map:parameter name="use-request-parameters" value="true" />
 		</map:transform>
 <!--
@@ -178,10 +180,16 @@
 -->
 		<map:serialize type="html"/>
 	</map:match>
-	<map:match pattern="Stream/StreamClient.js">
-		<map:read mime-type="text/javascript" src="Server/Stream/StreamClient.js"/>
+	<map:match pattern="Convert/StreamClient.js">
+		<map:read mime-type="text/javascript" src="Server/Convert/StreamClient.js"/>
 	</map:match>
-	<map:match pattern="Stream/StreamServer.xml" >
+
+	<map:match pattern="Convert/StreamServer.html" >
+		<map:generate type="stream-server"/>
+		<map:transform src="Server/Convert/StreamServer.xsl" />
+		<map:serialize type="html"/>
+	</map:match>
+	<map:match pattern="Convert/StreamServer.xml" >
 		<map:generate type="stream-server"/>
 		<map:serialize type="xml"/>
 	</map:match>

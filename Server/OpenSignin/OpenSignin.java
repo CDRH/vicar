@@ -3,6 +3,7 @@
 package Server.OpenSignin;
 
 import Server.Global;
+import Server.LogWriter;
 
 import java.util.Vector;
 import java.util.Map;
@@ -64,7 +65,6 @@ private String m_msg = null;
 private OpenIdManager oimanager;
 private String m_op = null;
 private int m_loginstatus = 0;
-private LocalLog m_locallog;
 
 
 	public void dispose() {
@@ -87,8 +87,6 @@ private LocalLog m_locallog;
 
 
 	public void setup(SourceResolver resolver, Map objectModel,String src, Parameters par) {
-		m_locallog = new LocalLog("/tmp/vicar/log.txt");
-		m_locallog.msg("hello world!");
 		m_request = ObjectModelHelper.getRequest(objectModel);
 		m_session = m_request.getSession();
 		m_op = m_request.getParameter("op");
@@ -103,6 +101,7 @@ private LocalLog m_locallog;
 		if(ForwardFor!=null){
 			RemoteAddr = ForwardFor;
 		}
+		m_session.setAttribute("IPADDR",RemoteAddr);
 		//String RemoteHost = m_request.getRemoteHost();
 		String SessionID = m_session.getId();
 		String m_url = null;
@@ -142,6 +141,7 @@ private LocalLog m_locallog;
 					m_session.setAttribute("personemail",op_email);
 					m_loginstatus = 1;
 					m_url = URL_APPL;
+					LogWriter.msg(RemoteAddr,"LOGIN,"+op_email);
 				}
 			}else if(m_op.equals("Test")){
 					//System.out.println("RA<"+RemoteAddr+"> RH<"+RemoteHost+">");
@@ -155,6 +155,7 @@ private LocalLog m_locallog;
 						m_session.setAttribute("personemail",m_OwnerID);
 						m_session.setAttribute("userid",m_OwnerID);
 						m_session.setAttribute("openid","anonymous");
+						LogWriter.msg(RemoteAddr,"LOGIN,anonymous");
 					}else{
 						m_msg = "Not yet available.";
 						m_loginstatus = 0;
@@ -197,6 +198,7 @@ private LocalLog m_locallog;
 				String openid = (String)m_session.getAttribute("openid");
 				m_session.invalidate();
 				m_loginstatus = 0;
+				LogWriter.msg(RemoteAddr,"LOGOUT,"+openid);
 				if(openid==null){
 				}else if(openid.equals("anonymous")){
 					m_url = URL_APPL_LOGOUT;

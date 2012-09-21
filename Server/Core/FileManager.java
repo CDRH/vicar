@@ -3,6 +3,7 @@
 package Server.Core;
 
 import Server.Global;
+import Server.SessionSaver;
 
 import edu.unl.abbot.Abbot;
 
@@ -253,7 +254,7 @@ private Part m_filePart;
 						InputStream fis = m_filePart.getInputStream();
 						String fileName = m_filePart.getFileName();
 						String fileType = m_filePart.getMimeType();
-						System.out.println("UPLOAD FN<"+fileName+"> TYPE<"+fileType+"> TO DIR<"+m_DirStr+">");
+						System.out.println("NON JAVASCRIPT UPLOAD FN<"+fileName+"> TYPE<"+fileType+"> TO DIR<"+m_DirStr+">");
 						int len = 0;
 						byte buf[] = new byte[1024];
 						String filedirpath = dirpath+"/input/";
@@ -423,25 +424,6 @@ private Part m_filePart;
 		}
 		return isdir;
 	}
-
-/****
-	public boolean isFile(String the_filepath){
-		boolean isfile = false;
-		if(the_filepath!=null){
-			try {
-				File f = new File(the_filepath);
-				if(f!=null){
-					if(!f.isDirectory()){
-						isdir = true;
-					}
-				}
-			}catch(Exception e){ 
-				e.printStackTrace();
-			}
-		}
-		return isdir;
-	}
-****/
 
 	public Vector<FileData> listDirs(String the_dirpath){
 		Vector<FileData> dir = new Vector<FileData>();

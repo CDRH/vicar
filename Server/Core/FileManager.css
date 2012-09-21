@@ -2,6 +2,7 @@
 /*hide from old browsers*/
 	html.js #nojsmsg {display:none;}
 	html.no-js #nojsmsg {display:block;}
+	html.no-js #nojshide {display:none;}
 	body {margin:0.5em;padding:0em;font-family:arial,sans-serif;}
 
 	progress {background-color:white;width:99%;margin:10px;border:1px solid blue;}

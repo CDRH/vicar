@@ -3,18 +3,18 @@
 	<description> simple example build file </description>
 
 <!--LAPTOP-->
+<!--
 	<property name="cocoonpath" location="/Users/franksmutniak/ImportedSoftware/cocoon-2.1.11" />
 	<property name="builddir" location="${cocoonpath}/build/webapp/WEB-INF/classes/"/>
 	<property name="libdir" location="${cocoonpath}/build/webapp/WEB-INF/lib/"/>
 	<property name="corelibdir" location="${cocoonpath}/lib/core/"/>
+-->
 
 <!--ABBOT-->
-<!--
 	<property name="cocoonpath" location="/var/lib/tomcat-7/" />
 	<property name="builddir" location="${cocoonpath}/webapps/cocoon/WEB-INF/classes/"/>
 	<property name="libdir" location="${cocoonpath}/webapps/cocoon/WEB-INF/lib/"/>
 	<property name="corelibdir" location="/usr/share/tomcat-servlet-api-3.0/lib/"/>
--->
 
 
 	<path id="CP">
@@ -74,7 +74,7 @@
 	</target>
 
 	<target name="archive" description="make code archive" >
-		<tar destfile="Archive.tar" basedir="." includes="build.xml,sitemap.xmap,README.txt,VICAR.txt,Error.html,Server/*,Server/Core/*,Server/Modernizr/*,Server/OpenSignin/*,Server/Stream/*,Server/Upload/*,Server/Utils/*"/>
+		<tar destfile="Archive.tar" basedir="." includes="build.xml,sitemap.xmap,README.txt,VICAR.txt,Error.html,Server/*,Server/Core/*,Server/Modernizr/*,Server/OpenSignin/*,Server/Convert/*,Server/Upload/*,Server/Utils/*"/>
 	</target>
 
 	<target name="archive_specific" description="make code archive" >

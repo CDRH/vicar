@@ -1,9 +1,10 @@
 //AbbotConvert.java
 
-package Server.Stream;
+package Server.Convert;
 
 import Server.Global;
-import Server.Core.SessionSaver;
+import Server.LogWriter;
+import Server.SessionSaver;
 
 import edu.unl.abbot.Abbot;
 
@@ -39,45 +40,48 @@ private String m_ConvStr;
 	}
 
 	public void batchresult(){
-		m_OwnerID = (String)m_session.getAttribute("userid");//"127.0.0.1";
+		String remoteaddr = (String)m_session.getAttribute("IPADDR");
+		m_OwnerID = (String)m_session.getAttribute("userid");
 		if(m_dir!=null){
-				String colldir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_dir;
-				String indir = colldir+"/input/";
-				String convdir = colldir+"/convert/";
-				String outdir = colldir+"/output/";
-				String validdir = colldir+"/valid/";
-				String resp = cleanDir(outdir);
-				resp = cleanDir(validdir);
-				System.out.println("ABBOT CONVERT BEGIN");
-				Abbot abbot = new Abbot();
+			String colldir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_dir;
+			String indir = colldir+"/input/";
+			String convdir = colldir+"/convert/";
+			String outdir = colldir+"/output/";
+			String validdir = colldir+"/valid/";
+			String resp = cleanDir(outdir);
+			resp = cleanDir(validdir);
+			Abbot abbot = new Abbot();
 
-				int convtype = 0;
-				if(m_ConvStr==null){
-					m_ConvStr = (String)m_session.getAttribute("SAVE:schema:"+m_dir);
-				}else{
-					m_session.setAttribute("SAVE:schema:"+m_dir,m_ConvStr);
+			int convtype = 0;
+			if(m_ConvStr==null){
+				m_ConvStr = (String)m_session.getAttribute("SAVE:schema:"+m_dir);
+			}else{
+				m_session.setAttribute("SAVE:schema:"+m_dir,m_ConvStr);
+			}
+			if(m_ConvStr!=null){
+				String wholeConvStr = m_ConvStr;
+				long convstart = LogWriter.msg(remoteaddr,"CONVERT_BEGIN,"+m_OwnerID+"/"+m_dir+","+m_ConvStr);
+				if(m_ConvStr.startsWith("1")){
+					convdir = Global.SCHEMA_DIR;
+					m_ConvStr = m_ConvStr.substring(1);
+				}else if(m_ConvStr.startsWith("2")){
+					convtype = 1;
+					m_ConvStr = m_ConvStr.substring(1);
 				}
-				if(m_ConvStr!=null){
-					if(m_ConvStr.startsWith("1")){
-						convdir = Global.SCHEMA_DIR;
-						m_ConvStr = m_ConvStr.substring(1);
-					}else if(m_ConvStr.startsWith("2")){
-						convtype = 1;
-						m_ConvStr = m_ConvStr.substring(1);
+//System.out.println("CONVERT DIR<"+indir+"> TO <"+outdir+"> WITH <"+convdir+m_ConvStr+">");
+				try {
+					abbot.convert(indir,outdir,convdir+m_ConvStr);
+				}catch(Exception ex){
+					String errmsg = ex.getMessage();
+					if(errmsg!=null){
+						errmsg = errmsg.replace(","," ");
 					}
-					System.out.println("*****CONVERT USING <"+convdir+m_ConvStr+">");
-					try {
-						abbot.convert(indir,outdir,convdir+m_ConvStr);
-					}catch(Exception ex){
-					}
+					LogWriter.msg(remoteaddr,"CONVERT_ERROR,"+ex.getMessage());
 				}
-/****/
-				System.out.println("ABBOT CONVERT END");
+//System.out.println("CONVERT DONE");
 
+				LogWriter.msg(remoteaddr,"CORRECTION_BEGIN");
 				Vector<String> outputfiles = listFiles(outdir,".xml");
-
-				//System.out.println("SED CORRECTION BEGIN");
-
 				ProcMngr pm = new ProcMngr(Global.SEDPATH,"-i_sed",outdir);
 				String convURL = "http:\\/\\/abbot.unl.edu\\/"+m_ConvStr;
 				if(convtype == 1){
@@ -91,26 +95,31 @@ private String m_ConvStr;
 						emailsuffix = emailsuffix.substring(0,suffstrt);
 					}
 				}
-
 				Vector<String> convList = new Vector<String>();
 				convList.add("s/http:\\/\\/abbot.unl.edu\\/tei_all.rng/"+convURL+"/g");
 				//convList.add("s/bpz/"+email+"/g");
 				convList.add("s/bpz/"+emailsuffix+"/g");
 				convList.add("s/Pytlik Zillig,/"+email+"/g");
 				convList.add("s/[ \t]*B.<\\/name> Conversion to TEI/<\\/name> Conversion to TEI/g");
-
 				pm.cleanup(outputfiles,convList);
-				System.out.println("SED CORRECTION END");
 
-				//System.out.println("VALIDATE BEGIN");
+				LogWriter.msg(remoteaddr,"VALIDATION_BEGIN");
 				JingUtil ju = new JingUtil();
 				for(String ofn : outputfiles){
 					ju.writeReportToFile(convdir+m_ConvStr,outdir+"/"+ofn,validdir+"/"+ofn.replace(".xml",".html"),m_ConvStr,ofn);
 				}
-				System.out.println("VALIDATE END");
 				Vector<Integer> el = ju.getErrorList();
 				m_session.setAttribute("SAVE:validationerrors:"+m_dir,el);
+				int totalerrors = 0;
+				for(Integer err : el){
+					totalerrors += err.intValue();
+				}
+				String ininfo = getFileInfo(indir,".xml");
+				String outinfo = getFileInfo(outdir,".xml");
+				LogWriter.msg(remoteaddr,"VALIDATION_END,"+ininfo+","+outinfo+","+totalerrors+","+m_OwnerID+"/"+m_dir+","+wholeConvStr+","+convstart);
+
 				SessionSaver.save(m_session,Global.BASE_USER_DIR+"/"+m_OwnerID+"/session.txt");
+			}
 		}
 	}
 
@@ -147,6 +156,32 @@ private String m_ConvStr;
 			e.printStackTrace();
 		}
 		return dir;
+	}
+
+	public String getFileInfo(String the_dirpath,String the_suffix){
+		int filecount = 0;
+		long filesize = 0L;
+		try {
+			File fpath = new File(the_dirpath);
+			if((fpath!=null)&&(fpath.isDirectory())){
+				File files[] = fpath.listFiles();
+				if(files!=null){
+					for (File f : files){
+						if((f!=null)&&(f.getName().endsWith(the_suffix))){
+							filecount++;
+							filesize += f.length();
+						}
+					}
+				}
+			}
+		}catch(Exception e){ 
+			e.printStackTrace();
+		}
+		if(filecount>0){
+			return filecount+","+filesize;
+		}else{
+			return ",";
+		}
 	}
 }
 

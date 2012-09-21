@@ -40,6 +40,14 @@ HTTP.newRequest = function() {
 	return null;
 };
 
+HTTP.watchFiles = function(url){
+        var httpRequest = HTTP.newRequest();
+        httpRequest.onreadystatechange = function(){getReturnWatch(httpRequest);};
+        httpRequest.open('GET', url, true);
+        httpRequest.send();
+        return false;
+};
+
 HTTP.sendXML = function(url,xmltxt){
 	var httpRequest = HTTP.newRequest();
 	httpRequest.onreadystatechange = function(){getReturnXML(httpRequest);};

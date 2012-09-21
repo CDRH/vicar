@@ -217,18 +217,24 @@
 		<div class="columnheader">
 			<span class="columntitle">Convert With:</span>
 		</div>
+<!--
 		<form id="convert" action="FileManager.html?dir={../@dirname}&amp;act=conv" method="post" enctype="multipart/form-data">
+-->
+		<form id="convert" action="../Convert/StreamServer.html?dir={../@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
 			<div style="margin:5px 20px;">
 				<select id="schemaselect" name="conv" style="color:blue;">
 					<xsl:apply-templates />
 				</select>
 			</div>
-<!--
-			<input type="submit" style="color:blue;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" title="Generate output files using Abbot" />
--->
+<!--ORIGINAL NON JAVASCRIPT CONVERT BUTTON-->
+		<div id="nojsmsg">
+			<input type="submit" style="color:red;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" title="Generate output files using Abbot - No progress reporting is available since Javascript is disabled" />
+		</div>
 <!--need a javascript free way to trigger convert?-->
 		</form>
-		<input type="submit" style="color:orange;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" onclick="makeSimpleFrame(this,'../Stream/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
+		<div id="nojshide">
+			<input type="submit" style="color:green;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" onclick="makeSimpleFrame(this,'../Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
+		</div>
 	</div>
 </xsl:template>
 
@@ -280,12 +286,12 @@
 				<xsl:value-of select="@name" />
 			</a>
 			<xsl:if test="@errors &lt;= 0">
-				<a target="_validation" class="error_report_green" href="../valid/{../@dirname}/{@vname}">
+				<a target="_validation" class="error_report_green" href="../valid/{../@dirname}/{@vname}" title="This conversion contains no errors.">
 					<xsl:text>OK</xsl:text>
 				</a>
 			</xsl:if>
 			<xsl:if test="@errors &gt; 0">
-				<a target="_validation" class="error_report_red" href="../valid/{../@dirname}/{@vname}">
+				<a target="_validation" class="error_report_red" href="../valid/{../@dirname}/{@vname}" title="This conversion encountered {@errors} errors!">
 					<xsl:value-of select="@errors" />
 				</a>
 			</xsl:if>

@@ -1,11 +1,13 @@
-//MonitorTest.java
+//MonitorServer.java
 
-package Server.Progress;
+package Server.Upload;
 
+import Server.Global;
 
 import java.io.InputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Vector;
 import java.util.Map;
 
@@ -31,15 +33,14 @@ import org.apache.avalon.framework.parameters.ParameterException;
 import org.apache.avalon.framework.activity.Disposable;
 import org.apache.avalon.excalibur.datasource.DataSourceComponent;
 
-public class MonitorTest extends ServiceableGenerator implements Disposable {
+public class MonitorServer extends ServiceableGenerator implements Disposable {
 
 private ServiceSelector m_selector;
 private Session m_session;
 
 private String m_OwnerID;
-
-private String m_name;
-private int m_value;
+private int m_totalsize = 0;
+private String m_dirname = "";
 
 	public void dispose() {
 		super.dispose();
@@ -50,7 +51,6 @@ private int m_value;
 	}
 
 	public void service(ServiceManager manager) throws ServiceException{
-		//System.out.println("CALLING MonitorTest SERVICE");
 		super.service(manager);
 		m_selector = (ServiceSelector)manager.lookup(DataSourceComponent.ROLE+"Selector");
 	}
@@ -60,34 +60,28 @@ private int m_value;
 		m_session = request.getSession();
 
 		m_OwnerID = (String)m_session.getAttribute("userid");
-		if(m_OwnerID==null){
-			m_session.setAttribute("userid",m_OwnerID);
-		}
+		m_totalsize = getIntFromString(request.getParameter("totsz"));
+		m_dirname = request.getParameter("dir");
 
-		m_name = (String)request.getParameter("name");
-		m_value = getIntFromString((String)request.getParameter("value"));
-		//System.out.println("NAME<"+m_name+"> VALUE<"+m_value+">");
-		MonitorData md = new MonitorData(true,m_name,m_value);
-		MonitorData md1 = new MonitorData(true,m_name+"more",m_value+20);
-		md.setNext(md1);
-		m_session.setAttribute("monitor_data",md);
+		String destdir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_dirname+"/input/";
+		System.out.println("\tSTART<"+Thread.currentThread().getName()+"> DIRNAME<"+destdir+"> TOTALSIZE<"+m_totalsize+">");
+
+		DirMonitor dm = new DirMonitor(destdir,(long)m_totalsize);
+		dm.giterdone();
+		System.out.println("\tEND");
 	}
 
 	public void generate() throws SAXException, ProcessingException {
-		System.out.println("MonitorTest:generate()");
 		try {
 			contentHandler.startDocument();
-			AttributesImpl monitorAttr = new AttributesImpl();
-			monitorAttr.addAttribute("","name","name","CDATA",""+m_name);
-			monitorAttr.addAttribute("","value","value","CDATA",""+m_value);
-			contentHandler.startElement("","MonitorTest","MonitorTest",monitorAttr);
-			contentHandler.endElement("","Monitor","Monitor");
+			AttributesImpl respAttr = new AttributesImpl();
+			contentHandler.startElement("","Response","Response",respAttr);
+			contentHandler.endElement("","Response","Response");
 			contentHandler.endDocument();
 		}catch(Exception e){
 			System.out.println("ERROR0");
 			e.printStackTrace();
 		}
-
 	}
 
 	public static int getIntFromString(String the_str){
@@ -103,4 +97,6 @@ private int m_value;
 		return ret;
 	}
 }
+
+
 

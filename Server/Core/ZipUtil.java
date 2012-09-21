@@ -40,6 +40,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 public class ZipUtil {
 
 private static final int BUFFER = 2048;
+private static final int MYBUFFER = 65000;
 /**
 * For testing only.
 */
@@ -192,21 +193,28 @@ private static final int BUFFER = 2048;
 	public int ungzip(String the_sourcefile,String the_destdir){
 		System.out.println("UNGZIP <"+the_sourcefile+"> TO <"+the_destdir+">");
 		int retval = 0;
-/****/
+//PROBLEM WITH USING AUTOCLOSEABLE AND TRY WITH RESOURCES FOR UNGZIP - CAN UNGZIP FILES MADE WITH GZIP METHOD BUT NOT THOSE MADE WITH COMMAND LINE gzip
+//REVERTED TO 'OLD WAY'
+/****
 		try {
 			Path p = Paths.get(the_sourcefile);
 			String filename = p.getFileName().toString();
 			System.out.println("GZIP FILE NAME<"+filename+">");
 			if(filename.endsWith(".gz")){
-				try(FileInputStream fis = new FileInputStream(the_sourcefile);
-				//try(InputStream fis = Files.newInputStream(p);
+				try(InputStream fis = Files.newInputStream(p);
+				//try(FileInputStream fis = new FileInputStream(the_sourcefile);
 						GZIPInputStream zis = new GZIPInputStream(new BufferedInputStream(fis));
+						//GZIPInputStream zis = new GZIPInputStream(fis);
 						FileOutputStream fos = new FileOutputStream(the_destdir+"/"+filename);
 						BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER)){
 					int count;
-					byte data[] = new byte[BUFFER];
-					while ((count = zis.read(data, 0, BUFFER)) != -1) {
+					int total = 0;
+					byte data[] = new byte[MYBUFFER];
+					while ((count = zis.read(data, 0, MYBUFFER)) != -1) {
+					//while ((count = zis.read(data)) > 0) {
 						dest.write(data, 0, count);
+						total += count;
+						System.out.println("TOT<"+total+"> COUNT<"+count+">");
 					}
 					dest.flush();
 				} catch(IOException ioex) {
@@ -220,8 +228,8 @@ private static final int BUFFER = 2048;
 			ipex.printStackTrace();
 			retval = -3;
 		}
+****/
 /****/
-/****
                 try {
                         FileInputStream fis = new FileInputStream(the_sourcefile);
                         GZIPInputStream zis = new GZIPInputStream(new BufferedInputStream(fis));
@@ -251,7 +259,7 @@ private static final int BUFFER = 2048;
                         retval = -1;
                         e.printStackTrace();
                 }
-****/
+/****/
 
 		System.out.println("UNGZIP RET <"+retval+">");
 		return retval;
