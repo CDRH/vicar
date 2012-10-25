@@ -1,4 +1,13 @@
+Updated on 10/25/2012 
 
+Added a local register/signin/password_reset functionality.  Currently this is file based but can easily be made to use mysql or similar database.
+
+Vicar was made to be functional even when the user turns off javascript.
+
+
+
+
+################################################
 Updated on 8/22/2012
 
 Vicar now monitors the progress of Abbot.convert and validation and displays a two tiered progress window.  The top progress bar shows total progress while the bottom shows the progress of the current task. (Though the actual means of determining progress is not currently accurate!)
