@@ -82,7 +82,7 @@ private String m_ConvStr;
 
 				LogWriter.msg(remoteaddr,"CORRECTION_BEGIN");
 				Vector<String> outputfiles = listFiles(outdir,".xml");
-				ProcMngr pm = new ProcMngr(Global.SEDPATH,"-i_sed",outdir);
+				ProcMngr pm = new ProcMngr(Global.SED_PATH,"-i_sed",outdir);
 				String convURL = "http:\\/\\/abbot.unl.edu\\/"+m_ConvStr;
 				if(convtype == 1){
 					convURL = m_ConvStr;

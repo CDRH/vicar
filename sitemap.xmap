@@ -3,8 +3,10 @@
 <map:components>
 
 	<map:generators default="file">
+		<map:generator name="testsession" src="Server.Test.TestSession"/>
+
+		<map:generator name="signin" src="Server.Signin.Signin"/>
 		<map:generator name="opensignin" src="Server.OpenSignin.OpenSignin"/>
-		<map:generator name="testsession" src="Server.OpenSignin.TestSession"/>
 		<map:generator name="filemanager" src="Server.Core.FileManager"/>
 		<map:generator name="filedownload" src="Server.Core.FileDownload"/>
 		<map:generator name="ajax-upload" src="Server.Upload.AjaxServer"/>
@@ -55,12 +57,15 @@
 
 
 <!--OPENSIGNIN-->
-<map:match pattern="OpenSignin/**">
-	<map:match pattern="OpenSignin/TestSession.html" >
+<map:match pattern="Test/**">
+	<map:match pattern="Test/TestSession.html" >
 		<map:generate type="testsession"/>
-		<map:transform src="Server/OpenSignin/TestSession.xsl"/>
+		<map:transform src="Server/Test/TestSession.xsl"/>
 		<map:serialize type="html5"/>
 	</map:match>
+</map:match>
+
+<map:match pattern="OpenSignin/**">
 	<map:match pattern="OpenSignin/OpenSignin.html" >
 		<map:generate type="opensignin"/>
 		<map:transform src="Server/OpenSignin/OpenSignin.xsl"/>
@@ -80,9 +85,33 @@
 </map:match>
 
 
+<!--SIGNIN-->
+<map:match pattern="Signin/**">
+	<map:match pattern="Signin/Signin.html" >
+		<map:generate type="signin"/>
+		<map:transform src="Server/Signin/Signin.xsl"/>
+		<map:serialize type="html5"/>
+	</map:match>
+	<map:match pattern="Signin/Signin.xml" >
+		<map:generate type="signin"/>
+		<map:serialize type="xml"/>
+	</map:match>
+<!--
+	<map:match pattern="Signin/Password.html" >
+		<map:generate type="password"/>
+		<map:transform src="Server/Signin/Password.xsl"/>
+		<map:serialize type="html5"/>
+	</map:match>
+	<map:match pattern="Signin/Password.xml" >
+		<map:generate type="password"/>
+		<map:serialize type="xml"/>
+	</map:match>
+-->
+	<map:redirect-to uri="../Error.html"/>
+</map:match>
+
 <!--CORE-->
 <map:match pattern="Core/**">
-
 	<!--MAIN FUNCTIONALITY-->
 	<map:match pattern="Core/FileManager.html" >
 		<map:generate type="filemanager"/>
@@ -100,7 +129,6 @@
 	<map:match pattern="Core/SchemaList.js" >
 		<map:read mime-type="text/javascript" src="Server/Core/SchemaList.js"/>
 	</map:match>
-
 
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
@@ -175,9 +203,6 @@
 		<map:transform src="Server/Convert/StreamClient.xsl">
 			<map:parameter name="use-request-parameters" value="true" />
 		</map:transform>
-<!--
-		<map:serialize type="html5"/>
--->
 		<map:serialize type="html"/>
 	</map:match>
 	<map:match pattern="Convert/StreamClient.js">

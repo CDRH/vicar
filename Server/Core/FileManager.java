@@ -11,10 +11,21 @@ import java.util.Vector;
 import java.util.Map;
 import java.util.Date;
 import java.util.Enumeration;
+
+import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
+import java.io.BufferedWriter;
+
+//NEED TO REMOVE
 import java.io.File;
+//NEED TO REMOVE
+
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.io.OutputStream;
 import java.io.FileOutputStream;
 
 import org.xml.sax.ContentHandler;
@@ -250,24 +261,30 @@ private Part m_filePart;
 			if(m_performStr==null){
 			}else if(m_performStr.equalsIgnoreCase("Upload")){ //POST command
 				if(m_filePart!=null){ //ADD_IMAGE
-					try {
+					String filedirpath = dirpath+"/input/";
+					final int BUFFER = 32*1024;
+					String fileName = m_filePart.getFileName();
+					if((fileName!=null)&&(fileName.toLowerCase().endsWith(".rng"))){
+						filedirpath = dirpath+"/convert/";
+					}
+					filedirpath += fileName;
+					System.out.println("FP<"+filedirpath+">");
+					Path destpath = Paths.get(filedirpath);
+					try(OutputStream fos = Files.newOutputStream(destpath,StandardOpenOption.CREATE);
 						InputStream fis = m_filePart.getInputStream();
-						String fileName = m_filePart.getFileName();
-						String fileType = m_filePart.getMimeType();
-						System.out.println("NON JAVASCRIPT UPLOAD FN<"+fileName+"> TYPE<"+fileType+"> TO DIR<"+m_DirStr+">");
-						int len = 0;
-						byte buf[] = new byte[1024];
-						String filedirpath = dirpath+"/input/";
-						if((fileName!=null)&&(fileName.toLowerCase().endsWith(".rng"))){
-							filedirpath = dirpath+"/convert/";
+						BufferedInputStream bis = new BufferedInputStream(fis,BUFFER)){
+						byte data[] = new byte[BUFFER];
+						int count = 0;
+						while((count = bis.read(data,0,BUFFER)) != -1){
+							//writer.write(data,0,count);
+							fos.write(data,0,count);
 						}
-						File outfile = new File(filedirpath+fileName);
-						FileOutputStream fos = new FileOutputStream(outfile);
-						while((len=fis.read(buf))>0){
-							fos.write(buf,0,len);
-						}
-					}catch(Exception ex){
-						ex.printStackTrace();
+						fos.flush();
+						fos.close();
+					}catch(InvalidPathException ifex){
+						ifex.printStackTrace();
+					}catch(IOException ioex){
+						ioex.printStackTrace();
 					}
 				}else{
 					//System.out.println("NO FILE UPLOADED");

@@ -325,6 +325,19 @@
 <body>
 	<div align="right" style="border:0px;margin:8px;padding:0px 25px 0px 0px;">
 		<div style="padding:25px 0px 25px 0px;">
+			<form style="color:blue;text-decoration:none;border:0px;margin:0px;padding:0px;" method="post" action="../Signin/Signin.html?act=signin">
+				<input type="hidden" value="false" name="jsenabled"/>
+				<span>ID: </span>
+				<input type="text" name="signinid" autocomplete="off" value="" />
+				<span>  Password: </span>
+				<input type="password" name="pwd" />
+				<input class="button" type="submit" name="perform" value="Sign In" onclick="checkJS()"/>
+			</form>
+			<a name="origsignin" href="../Signin/Signin.html?act=resetpwd" style="color:blue;text-decoration:none;margin:0px;padding:0px;">Reset Password</a>
+			<a name="origsignin" href="../Signin/Signin.html?act=register" style="color:blue;text-decoration:none;margin:0px;padding:0px;">Register</a>
+		</div>
+
+		<div style="padding:25px 0px 25px 0px;">
 			<a name="signin" href="../OpenSignin/OpenSignin.html?op=Yahoo" style="color:blue;text-decoration:none;margin:0px;padding:0px;">
 				<img src="../OpenSignin/YahooOpenID_13.png" height="22px;" alt="Sign In With Yahoo" />
 			</a>

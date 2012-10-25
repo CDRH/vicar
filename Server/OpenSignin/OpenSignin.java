@@ -49,10 +49,6 @@ static final long TEN_HOUR = ONE_HOUR * 10L;
 static final String ATTR_MAC = "openid_mac";
 static final String ATTR_ALIAS = "openid_alias";
 
-private String URL_LOGIN_SFX = "/vicar/OpenSignin/OpenSignin.html";
-private String URL_APPL = "../Core/FileManager.html?mode=1";
-private String URL_APPL_LOGOUT = "../Core/FileManager.html";
-
 private Request m_request;
 private Session m_session;
 
@@ -82,7 +78,7 @@ private int m_loginstatus = 0;
 		oimanager = new OpenIdManager();
 
 		oimanager.setRealm(Global.URL_BASE);
-		oimanager.setReturnTo(Global.URL_BASE+URL_LOGIN_SFX);
+		oimanager.setReturnTo(Global.URL_BASE+Global.URL_LOGIN_SFX);
 	}
 
 
@@ -140,7 +136,7 @@ private int m_loginstatus = 0;
 					m_session.setAttribute("personname",fn);
 					m_session.setAttribute("personemail",op_email);
 					m_loginstatus = 1;
-					m_url = URL_APPL;
+					m_url = Global.URL_APPL;
 					LogWriter.msg(RemoteAddr,"LOGIN,"+op_email);
 				}
 			}else if(m_op.equals("Test")){
@@ -148,7 +144,7 @@ private int m_loginstatus = 0;
 					if(isValidIP(RemoteAddr)){
 						//m_OwnerID = "ANONYMOUS";
 						m_OwnerID = RemoteAddr;
-						m_url = URL_APPL;
+						m_url = Global.URL_APPL;
 						m_loginstatus = 1;
 						m_session.setAttribute("personname","anonymous");
 						//m_session.setAttribute("personemail","");
@@ -160,7 +156,7 @@ private int m_loginstatus = 0;
 						m_msg = "Not yet available.";
 						m_loginstatus = 0;
 						m_OwnerID = null;
-						m_url = URL_APPL;
+						m_url = Global.URL_APPL;
 						m_delay = 5;
 					}
 			}else if(m_op.equals("Google")||m_op.equals("Yahoo")){
@@ -177,7 +173,7 @@ private int m_loginstatus = 0;
 					m_OwnerID = null;
 					m_session.setAttribute("userid",null);
 					m_session.invalidate();
-					m_url = URL_APPL;
+					m_url = Global.URL_APPL;
 					m_delay = 5;
 					m_msg = "Unable to connect to ";
 					if(m_op.equals("Google")){
@@ -192,7 +188,7 @@ private int m_loginstatus = 0;
 			m_loginstatus = 1;
 			if(m_op==null){
 			}else if(m_op.equalsIgnoreCase("logout")){
-				//System.out.println("LOGGING OUT");
+				System.out.println("OPENSIGNIN LOGGING OUT");
 				m_OwnerID = null;
 				m_session.setAttribute("userid",null);
 				String openid = (String)m_session.getAttribute("openid");
@@ -200,12 +196,13 @@ private int m_loginstatus = 0;
 				m_loginstatus = 0;
 				LogWriter.msg(RemoteAddr,"LOGOUT,"+openid);
 				if(openid==null){
+					m_url = Global.URL_APPL_LOGOUT;
 				}else if(openid.equals("anonymous")){
-					m_url = URL_APPL_LOGOUT;
+					m_url = Global.URL_APPL_LOGOUT;
 				}else if(openid.equals("google")){
-					m_url = URL_APPL_LOGOUT+"?mode=-1";
+					m_url = Global.URL_APPL_LOGOUT+"?mode=-1";
 				}else if(openid.equals("yahoo")){
-					m_url = URL_APPL_LOGOUT+"?mode=-2";
+					m_url = Global.URL_APPL_LOGOUT+"?mode=-2";
 				}
 			}
 		}
