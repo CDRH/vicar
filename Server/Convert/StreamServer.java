@@ -48,6 +48,7 @@ private ServiceSelector m_selector;
 private Session m_session;
 
 private String m_OwnerID;
+private String m_OwnerPath;
 private String m_ConvStr;
 private String m_DirStr;
 private String m_ActStr;
@@ -70,6 +71,7 @@ private String m_ActStr;
 		m_session = request.getSession();
 
 		m_OwnerID = (String)m_session.getAttribute("userid");
+		m_OwnerPath = (String)m_session.getAttribute("userpath");
 		m_ConvStr = request.getParameter("conv");
 		m_DirStr = request.getParameter("dir");
 		m_ActStr = request.getParameter("act");
@@ -96,7 +98,7 @@ private String m_ActStr;
 			}
 
 			if(m_ActStr==null){
-				String userdir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr;
+				String userdir = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr;
 				int inputcount = fileCount(userdir+"/input/");
 	
 				AbbotConvert ac = new AbbotConvert(m_session,m_DirStr,m_ConvStr);
@@ -140,8 +142,8 @@ private String m_ActStr;
 				sos.flush();
 				sos.close();
 			}else if(m_ActStr.equals("nojs")){
+System.out.println("**********NOJS EVER USED??");
 				AbbotConvert ac = new AbbotConvert(m_session,m_DirStr,m_ConvStr);
-				//System.out.println("THREADID<"+ac.getId()+">");
 				ac.batchresult();
 
 				contentHandler.startDocument();
@@ -154,7 +156,6 @@ private String m_ActStr;
 			}else if(m_ActStr.equals("noblock")){
 				AbbotConvert ac = new AbbotConvert(m_session,m_DirStr,m_ConvStr);
 				ac.start();
-				//System.out.println("THREADID<"+ac.getId()+">");
 				m_session.setAttribute("THREADID",""+ac.getId());
 
 				contentHandler.startDocument();
@@ -172,14 +173,12 @@ private String m_ActStr;
 				ThreadGroup parentGroup;
 				while((parentGroup = rootGroup.getParent())!=null){
 					rootGroup = parentGroup;
-					//System.out.println("RG<"+rootGroup.getName()+">");
 					Thread[] threads = new Thread[rootGroup.activeCount()];
 					while(rootGroup.enumerate(threads,true)==threads.length){
 						threads = new Thread[threads.length*2];
 					}
 					for(Thread t : threads){
 						if(t!=null){
-							//System.out.println("TID<"+t.getId()+">");
 							if(tid == t.getId()){
 								findthread = t;
 								break;
@@ -187,13 +186,10 @@ private String m_ActStr;
 						}
 					}
 				}
-				//System.out.println("FINDTHREAD<"+findthread.getId()+">");
 				findthread.join();
-				//System.out.println("FINDTHREAD JOINED");
 				contentHandler.startDocument();
 				AttributesImpl dsAttr = new AttributesImpl();
 				dsAttr.addAttribute("","dirname","dirname","CDATA",m_DirStr);
-				//dsAttr.addAttribute("","tid","tid","CDATA",""+ac.getId());
 				dsAttr.addAttribute("","mode","mode","CDATA","1");
 				contentHandler.startElement("","datastream","datastream",dsAttr);
 				contentHandler.endElement("","datastream","datastream");

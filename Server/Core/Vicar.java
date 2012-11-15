@@ -1,9 +1,10 @@
-//FileManager.java
+//Vicar.java
 
 package Server.Core;
 
 import Server.Global;
 import Server.SessionSaver;
+import Server.Signin.SigninXML;
 
 import edu.unl.abbot.Abbot;
 
@@ -55,15 +56,15 @@ import org.apache.cocoon.servlet.multipart.Part;
 * @version 0.1, 2/15/2012
 */
 
-public class FileManager extends ServiceableGenerator implements Disposable {
+public class Vicar extends ServiceableGenerator implements Disposable {
 
 private Session m_session;
 
 private String m_OwnerID;
+private String m_OwnerPath;
 private String m_PersonName = null;
-private String m_PersonEmail = null;
+//private String m_PersonEmail = null;
 
-private String m_mode = "0";
 private String m_msg = null;
 private int m_msgcode = 0;
 
@@ -72,6 +73,7 @@ private String m_ActStr = null;
 private String m_RenStr = null;
 private String m_FilenameStr = null;
 private String m_performStr = null;
+private String m_SigninErrMsg = null;
 private int m_isnew = 0;
 
 private String m_CurrentSchema = null;
@@ -93,9 +95,10 @@ private Part m_filePart;
 		Request request = ObjectModelHelper.getRequest(objectModel);
 		m_session = request.getSession();
 		m_OwnerID = (String)m_session.getAttribute("userid");
+		m_OwnerPath = (String)m_session.getAttribute("userpath");
 		if(m_OwnerID!=null){
 			m_PersonName = (String)m_session.getAttribute("personname");
-			m_PersonEmail = (String)m_session.getAttribute("personemail");
+			//m_PersonEmail = (String)m_session.getAttribute("personemail");
 
 			m_DirStr = request.getParameter("dir");
 			m_ActStr = request.getParameter("act");
@@ -104,42 +107,63 @@ private Part m_filePart;
 			m_performStr = request.getParameter("perform");
 			m_filePart = (Part)request.get("file_upload");
 			m_isnew = 0;
+
+			String newlogin = (String)m_session.getAttribute("newlogin");
+			if((newlogin!=null)&&(newlogin.equals("1"))){
+				SessionSaver.load(m_session,Global.BASE_USER_DIR+"/"+m_OwnerPath+"/session.txt");
+			}
 		}
-		m_mode = request.getParameter("mode");
+
+		m_SigninErrMsg = request.getParameter("err");
 
 		if((m_DirStr!=null)&&(!m_DirStr.equalsIgnoreCase("new"))){
 			//PREVENT USERS FROM SELECTING A NON EXISTENT DIRECTORY VIA EDITING THE URL
-			String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/";
+			String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr+"/";
 			if(!isDir(dirpath)){
 				m_DirStr = null;
 			}
 		}
-
+/****
 		if((m_mode!=null)&&(m_mode.equals("1"))){
-			//System.out.println("NEW LOGIN");
 			if(m_OwnerID!=null){
-				SessionSaver.load(m_session,Global.BASE_USER_DIR+"/"+m_OwnerID+"/session.txt");
+				SessionSaver.load(m_session,Global.BASE_USER_DIR+"/"+m_OwnerPath+"/session.txt");
 				//SessionSaver.Display(m_session);
 			}
 		}
+****/
 		if(m_DirStr!=null){
 			m_CurrentSchema = (String)m_session.getAttribute("SAVE:schema:"+m_DirStr);
 		}
+		m_msg = null;
+		m_msgcode = 0;
 	}
 
 	public void generate() throws SAXException, ProcessingException {
 		if(m_OwnerID == null){
+			SigninXML.generateSigninXML(contentHandler,"","","",0,Global.URL_SIGNIN,0,"","",0);
+			return;
+		}
+/****
+		if(m_OwnerID == null){
+			if(m_SigninErrMsg!=null){
+				m_msg = m_SigninErrMsg;
+				m_msgcode = 1;
+			}
 			contentHandler.startDocument();
 				AttributesImpl signinAttr = new AttributesImpl();
-				signinAttr.addAttribute("","mode","mode","CDATA",""+m_mode);
 				contentHandler.startElement("","signin","signin",signinAttr);
+				AttributesImpl msgAttr = new AttributesImpl();
+				msgAttr.addAttribute("","msgcode","msgcode","CDATA",""+m_msgcode);
+				contentHandler.startElement("","msg","msg",msgAttr);
+				if(m_msg!=null){
+					contentHandler.characters(m_msg.toCharArray(),0,m_msg.length());
+				}
+				contentHandler.endElement("","msg","msg");
 				contentHandler.endElement("","signin","signin");
 			contentHandler.endDocument();
 			return;
 		}
-
-		m_msg = null;
-		m_msgcode = 0;
+****/
 		//GET commands
 		if(m_ActStr==null){
 		}else if(m_ActStr.equalsIgnoreCase("del")){
@@ -149,7 +173,7 @@ private Part m_filePart;
 			}
 		}else if(m_ActStr.equalsIgnoreCase("delconfirm")){
 			if(m_DirStr!=null){
-				String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr;
+				String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr;
 				String resp = removeDir(dirpath);
 				if(resp==null){
 				}else{
@@ -158,28 +182,24 @@ private Part m_filePart;
 			}
 		}else if(m_ActStr.equalsIgnoreCase("unzip")){
 			if((m_DirStr!=null)&&(m_FilenameStr!=null)){
-				String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
+				String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr+"/input/";
 				ZipUtil zu = new ZipUtil();
 				if(zu.unzip(dirpath+m_FilenameStr,dirpath)>=0){
 					String resp = removeFile(dirpath+m_FilenameStr);
 				}
 			}
 		}else if(m_ActStr.equalsIgnoreCase("untar")){
-			//System.out.println("UNTAR FN<"+m_FilenameStr+">");
 			if((m_DirStr!=null)&&(m_FilenameStr!=null)&&(m_FilenameStr.endsWith(".tar"))){
-				String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
-				//System.out.println("UNTAR<"+dirpath+"> FN<"+m_FilenameStr+">");
+				String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr+"/input/";
 				ZipUtil zu = new ZipUtil();
 				if(zu.untar(dirpath+m_FilenameStr,dirpath)>=0){
 					String resp = removeFile(dirpath+m_FilenameStr);
 				}
 			}
 		}else if(m_ActStr.equalsIgnoreCase("untargz")){
-			//System.out.println("FN<"+m_FilenameStr+">");
 			if((m_DirStr!=null)&&(m_FilenameStr!=null)&&(m_FilenameStr.endsWith(".tar.gz"))){
-				String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/input/";
+				String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr+"/input/";
 				ZipUtil zu = new ZipUtil();
-				//System.out.println("UNTARGZ<"+dirpath+"> FN<"+m_FilenameStr+">");
 				if(zu.ungzip(dirpath+m_FilenameStr,dirpath)>=0){
 					String resp = removeFile(dirpath+m_FilenameStr);
 					int indx = m_FilenameStr.indexOf(".gz");
@@ -198,12 +218,12 @@ private Part m_filePart;
 		Vector<String> convertfiles = null;
 		Vector<String> outputfiles = null;
 		Vector<String> validfiles = null;
-		if(m_DirStr==null){ //LIST ALL COLLECTIONS FOR USER OwnerID
-			mydirs = listDirs(Global.BASE_USER_DIR+"/"+m_OwnerID);
+		if(m_DirStr==null){ //LIST ALL COLLECTIONS FOR USER OwnerPath
+			mydirs = listDirs(Global.BASE_USER_DIR+"/"+m_OwnerPath);
 		}else if(m_DirStr.equalsIgnoreCase("new")){
 			if((m_RenStr==null)||(m_RenStr.length() < 1)){ //CREATE NEW COLLECTION
 				if(m_performStr==null){
-					String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID;
+					String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath;
 					createDir(dirpath+"/NEW");
 					dirpath = dirpath+"/"+m_DirStr+"/";
 					inputfiles = listFiles(dirpath+"input");
@@ -212,8 +232,7 @@ private Part m_filePart;
 					validfiles = listFiles(dirpath+"valid");
 					m_isnew = 1;
 				}else{
-					//System.out.println("CANCELLING NEW COLLECTiON");
-					String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID;
+					String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath;
 					String resp = removeDir(dirpath+"/"+m_DirStr);
 					mydirs = listDirs(dirpath);
 					m_DirStr = null;
@@ -224,15 +243,13 @@ private Part m_filePart;
 					String dirpath = null;
 					if(m_RenStr.matches("[a-zA-Z]+$")){ //FILTERING FOR NON DIR COMPATIBLE OR NEFARIOUS (i.e.'../' OR ESCAPE) CHAR.
 //NEED TO CHECK THAT RenStr IS UNIQUE SO IT DOESNT WRITE OVER AN EXISTING COLLECTION
-						dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_RenStr+"/";
+						dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_RenStr+"/";
 						if(isDir(dirpath) == false){
-							//System.out.println("\tDOESNT Exist already - being renamed");
-							renameDir(Global.BASE_USER_DIR+"/"+m_OwnerID,"NEW",m_RenStr);
+							renameDir(Global.BASE_USER_DIR+"/"+m_OwnerPath,"NEW",m_RenStr);
 							m_DirStr = m_RenStr;
-							dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/";
+							dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr+"/";
 							m_isnew = 0;
 						}else{
-							//System.out.println("\tExists already");
 							m_msg = "A collection by that name already exists.";
 							m_msgcode = 1;
 							m_isnew = 1;
@@ -241,7 +258,7 @@ private Part m_filePart;
 						m_msg = "Names can only contain letters a-z and A-Z with no spaces.";
 						m_msgcode = 1;
 						m_DirStr = "new";
-						dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/";
+						dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr+"/";
 						m_isnew = 1;
 					}
 					inputfiles = listFiles(dirpath+"input");
@@ -249,14 +266,14 @@ private Part m_filePart;
 					outputfiles = listFiles(dirpath+"output",".xml");
 					validfiles = listFiles(dirpath+"valid");
 				}else{ //CANCEL NEW COLLECTION NAME
-					String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID;
+					String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath;
 					String resp = removeDir(dirpath+"/"+m_DirStr);
 					mydirs = listDirs(dirpath);
 					m_DirStr = null;
 				}
 			}
 		}else{ //LIST FILES IN THE COLLECTION
-			String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/";
+			String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr+"/";
 			//BUT FIRST CHECK FOR NON JAVASCRIPT ENABLED FORM POST OF FILES
 			if(m_performStr==null){
 			}else if(m_performStr.equalsIgnoreCase("Upload")){ //POST command
@@ -268,7 +285,6 @@ private Part m_filePart;
 						filedirpath = dirpath+"/convert/";
 					}
 					filedirpath += fileName;
-					System.out.println("FP<"+filedirpath+">");
 					Path destpath = Paths.get(filedirpath);
 					try(OutputStream fos = Files.newOutputStream(destpath,StandardOpenOption.CREATE);
 						InputStream fis = m_filePart.getInputStream();
@@ -300,8 +316,9 @@ private Part m_filePart;
 		try {
 			contentHandler.startDocument();
 				AttributesImpl filemanagerAttr = new AttributesImpl();
+				filemanagerAttr.addAttribute("","userid","userid","CDATA",""+m_OwnerID);
 				filemanagerAttr.addAttribute("","personname","personname","CDATA",""+m_PersonName);
-				filemanagerAttr.addAttribute("","personemail","personemail","CDATA",""+m_PersonEmail);
+				//filemanagerAttr.addAttribute("","personemail","personemail","CDATA",""+m_PersonEmail);
 				contentHandler.startElement("","filemanager","filemanager",filemanagerAttr);
 
 				AttributesImpl msgAttr = new AttributesImpl();
@@ -363,7 +380,7 @@ private Part m_filePart;
 
 						if(m_DirStr!=null){
 							SchemaList sl = new SchemaList();
-							Vector<SchemaData> sdl = sl.getSchemaList(m_OwnerID,m_DirStr,m_CurrentSchema);
+							Vector<SchemaData> sdl = sl.getSchemaList(m_OwnerPath,m_DirStr,m_CurrentSchema);
 							sl.generateSchemaXML(contentHandler,sdl);
 						}
 
@@ -406,12 +423,15 @@ private Part m_filePart;
 * Needs error checking!
 */
 	public String createDir(String the_dirpath){
-
-		new File(the_dirpath).mkdirs();
-		new File(the_dirpath+"/input/").mkdirs();
-		new File(the_dirpath+"/convert/").mkdirs();
-		new File(the_dirpath+"/output/").mkdirs();
-		new File(the_dirpath+"/valid/").mkdirs();
+		try{
+			Boolean b =new File(the_dirpath).mkdirs();
+			b = new File(the_dirpath+"/input/").mkdirs();
+			b = new File(the_dirpath+"/convert/").mkdirs();
+			b = new File(the_dirpath+"/output/").mkdirs();
+			b = new File(the_dirpath+"/valid/").mkdirs();
+		}catch(SecurityException se){
+			se.printStackTrace();
+		}
 		return the_dirpath;
 	}
 
@@ -463,7 +483,7 @@ private Part m_filePart;
 								outputcnt = subfiles.length;
 							}
 						}
-						dir.add(new FileData(m_OwnerID,userdir.getName(),inputcnt,""+(new Date(userdir.lastModified()))));
+						dir.add(new FileData(m_OwnerPath,userdir.getName(),inputcnt,""+(new Date(userdir.lastModified()))));
 						//System.out.println("INPUT CNT<"+inputcnt+"> OUTPUT CNT<"+outputcnt+">");
 						//userfile.lastModified();
 					}

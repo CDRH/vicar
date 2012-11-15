@@ -14,6 +14,19 @@
 </html>
 </xsl:template>
 
+<xsl:template match="signin">
+<head>
+	<title>Signin</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Cache-Control" content="no-cache" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta name="robots" content="noindex,nofollow" />
+	<xsl:if test="url/text() !='null'">
+		<meta http-equiv="REFRESH" content="{url/@delay};url={url/text()}" />
+	</xsl:if>
+</head>
+</xsl:template>
+
 
 <xsl:template match="filemanager">
 <head>
@@ -24,17 +37,17 @@
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta name="robots" content="noindex,nofollow" />
 	<!--unicode 160 gets past some odd bug that prevents the html5 serializer from working with these script lines-->
-	<script type="text/javascript" language="JavaScript" src="../Modernizr/modernizr.js">&#160;</script>
-	<script type="text/javascript" language="JavaScript" src="../Utils/AjaxClient.js">&#160;</script>
-	<script type="text/javascript" language="JavaScript" src="../Upload/PopupFrame.js">&#160;</script>
-	<script type="text/javascript" language="JavaScript" src="../Upload/AjaxUpload.js">&#160;</script>
+	<script type="text/javascript" language="JavaScript" src="Modernizr/modernizr.js">&#160;</script>
+	<script type="text/javascript" language="JavaScript" src="Utils/AjaxClient.js">&#160;</script>
+	<script type="text/javascript" language="JavaScript" src="Upload/PopupFrame.js">&#160;</script>
+	<script type="text/javascript" language="JavaScript" src="Upload/AjaxUpload.js">&#160;</script>
 	<script type="text/javascript" language="JavaScript" src="SchemaList.js">&#160;</script>
 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">&#160;</script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js">&#260;</script>
-	<link rel="stylesheet" type="text/css" href="FileManager.css" />
-	<link rel="stylesheet" type="text/css" href="../Upload/AjaxUpload.css" />
-	<link rel="stylesheet" type="text/css" href="../Upload/PopupFrame.css" />
+	<link rel="stylesheet" type="text/css" href="Vicar.css" />
+	<link rel="stylesheet" type="text/css" href="Upload/AjaxUpload.css" />
+	<link rel="stylesheet" type="text/css" href="Upload/PopupFrame.css" />
 
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css" />
 
@@ -57,16 +70,36 @@
 <body id="bodyid" onload="UploadInit()">
 <!--BANNER-->
 	<div style="padding:0.5em;margin:0.5em;color:blue;background:yellow;">
-		<a style="position:relative;float:right;color:blue;" href="../OpenSignin/OpenSignin.html?op=logout">Sign out</a>
-		<span>Welcome</span>
-		<span style="font-size:100%;color:blue;">
-			<xsl:value-of select="@personname" />
-			<xsl:if test="@personemail != ''">
-				<xsl:text> (</xsl:text>
-				<xsl:value-of select="@personemail" />
-				<xsl:text>)</xsl:text>
-			</xsl:if>
-		</span>
+		<a href="Account.html">
+			<span>Welcome</span>
+			<span style="font-size:100%;color:blue;">
+<!--
+				<xsl:value-of select="@personname" />
+				<xsl:if test="@userid != ''">
+					<xsl:text> (</xsl:text>
+					<xsl:value-of select="@userid" />
+					<xsl:text>)</xsl:text>
+				</xsl:if>
+-->
+				<xsl:choose>
+					<xsl:when test="@personname != ''">
+						<xsl:value-of select="@personname" />
+							<xsl:if test="@userid!= ''">
+							<xsl:text> (</xsl:text>
+							<xsl:value-of select="@userid" />
+							<xsl:text>)</xsl:text>
+						</xsl:if>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@userid" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</span>
+		</a>
+		<a style="position:relative;float:right;color:blue;" href="Signout.html">Sign out</a>
+<!--
+		<a style="position:relative;float:right;color:blue;" href="OpenSignin.html?op=logout">Sign out</a>
+-->
 	</div>
 
 	<xsl:apply-templates />
@@ -89,7 +122,7 @@
 			</td>
 			<xsl:if test="@count &lt; @maxcount">
 				<td>
-					<a id="collection_create" style="margin:0em 1em;" href="FileManager.html?dir=new" title="Add New Collection">+</a>
+					<a id="collection_create" style="margin:0em 1em;" href="Vicar.html?dir=new" title="Add New Collection">+</a>
 				</td>
 			</xsl:if>
 			<xsl:if test="@count &gt;= @maxcount">
@@ -107,7 +140,7 @@
 		<tr>
 			<td></td>
 			<td>
-				<a style="font-size:130%;color:blue;text-decoration:none;margin:0em 1em;padding:0em;" href="FileManager.html?dir={@name}" title="Created {@date}">
+				<a style="font-size:130%;color:blue;text-decoration:none;margin:0em 1em;padding:0em;" href="Vicar.html?dir={@name}" title="Created {@date}">
 					<xsl:value-of select="@name"/>
 					<xsl:text> (</xsl:text>
 					<xsl:value-of select="@count"/>
@@ -131,7 +164,7 @@
 	<table style="margin:10px 5px;padding:0px;">
 		<tr>
 			<td style="margin:0px;padding:0px;">
-				<a style="margin:0px;padding:0px;color:blue;text-decoration:none;" href="FileManager.html">
+				<a style="margin:0px;padding:0px;color:blue;text-decoration:none;" href="Vicar.html">
 					<span style="font-size:130%;">Collections </span>
 				</a>
 			</td>
@@ -142,12 +175,12 @@
 				</span>
 				<xsl:if test="@new=0">
 					<xsl:if test="../msg/@msgcode = 0">
-						<a id="collection_delete" href="FileManager.html?dir={@dirname}&amp;act=del" title="Delete this collection">x</a>
+						<a id="collection_delete" href="Vicar.html?dir={@dirname}&amp;act=del" title="Delete this collection">x</a>
 					</xsl:if>
 					<xsl:if test="../msg/@msgcode &lt; 0">
 						<span style="color:red;font-size:130%;">Delete this Collection? </span>
-						<a id="collection_delete" href="FileManager.html?dir={@dirname}&amp;act=delconfirm" title="Delete this collection">Yes</a>
-						<a id="collection_delete" href="FileManager.html?dir={@dirname}&amp;act=delcancel" title="Keep this collection">Cancel</a>
+						<a id="collection_delete" href="Vicar.html?dir={@dirname}&amp;act=delconfirm" title="Delete this collection">Yes</a>
+						<a id="collection_delete" href="Vicar.html?dir={@dirname}&amp;act=delcancel" title="Keep this collection">Cancel</a>
 					</xsl:if>
 				</xsl:if>
 			</td>
@@ -155,7 +188,7 @@
 	</table>
 
 	<xsl:if test="@new=1">
-		<form style="padding:10px;margin:10px;" action="FileManager.html?dir={@dirname}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+		<form style="padding:10px;margin:10px;" action="Vicar.html?dir={@dirname}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 			<div>
 				<span>Enter a new name for this collection: </span>
 				<input type="text" name="ren" autocomplete="off" />
@@ -175,7 +208,7 @@
 				<span>Drag and drop input and conversion (.rng) files here</span>
 			</div>
 
-			<form id="upload_form" style="padding:0.5em;margin:0.5em;" action="FileManager.html?dir={@dirname}" method="post" enctype="multipart/form-data">
+			<form id="upload_form" style="padding:0.5em;margin:0.5em;" action="Vicar.html?dir={@dirname}" method="post" enctype="multipart/form-data">
 				<span>Add files </span>
 				<input type="hidden" id="dirname" name="dirname" value="{@dirname}" />
 				<input type="file" id="file_upload" name="file_upload" multiple="multiple" title="Navigate or drag/drop files here."></input>
@@ -217,23 +250,26 @@
 		<div class="columnheader">
 			<span class="columntitle">Convert With:</span>
 		</div>
-<!--
-		<form id="convert" action="FileManager.html?dir={../@dirname}&amp;act=conv" method="post" enctype="multipart/form-data">
--->
-		<form id="convert" action="../Convert/StreamServer.html?dir={../@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
+		<div id="nojsmsg">
+		<form id="convert" action="Convert/StreamServer.html?dir={../@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
+			<div style="margin:5px 20px;">
+				<select id="schemaselectnojs" name="conv" style="color:blue;">
+					<xsl:apply-templates />
+				</select>
+			</div>
+			<input type="submit" style="color:red;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" title="Generate output files using Abbot - No progress reporting is available since Javascript is disabled" />
+		</form>
+		</div>
+
+		<div id="nojshide">
+		<form id="convert" action="Convert/StreamServer.html?dir={../@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
 			<div style="margin:5px 20px;">
 				<select id="schemaselect" name="conv" style="color:blue;">
 					<xsl:apply-templates />
 				</select>
 			</div>
-<!--ORIGINAL NON JAVASCRIPT CONVERT BUTTON-->
-		<div id="nojsmsg">
-			<input type="submit" style="color:red;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" title="Generate output files using Abbot - No progress reporting is available since Javascript is disabled" />
-		</div>
-<!--need a javascript free way to trigger convert?-->
 		</form>
-		<div id="nojshide">
-			<input type="submit" style="color:green;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" onclick="makeSimpleFrame(this,'../Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
+		<input type="submit" style="color:green;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" onclick="makeSimpleFrame(this,'Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
 		</div>
 	</div>
 </xsl:template>
@@ -266,10 +302,10 @@
 		</div>
 		<xsl:apply-templates select="file"/>
 		<div style="padding:0em 0em 0em 0.3em">
-			<a href="../Download/{@dirname}/{@dirname}.zip">Download all in a single zip</a>
+			<a href="Download/{@dirname}/{@dirname}.zip">Download all in a single zip</a>
 		</div>
 		<div style="padding:0em 0em 0em 0.3em">
-			<a href="../Download/{@dirname}/{@dirname}.tar.gz">Download all in a single tar.gz</a>
+			<a href="Download/{@dirname}/{@dirname}.tar.gz">Download all in a single tar.gz</a>
 		</div>
 	</div>
 </xsl:template>
@@ -282,16 +318,16 @@
 			</span>
 		</xsl:if>
 		<xsl:if test="@op = 1">
-			<a style="color:blue;text-decoration:none;" href="../Download/{../@dirname}/{@name}">
+			<a style="color:blue;text-decoration:none;" href="Download/{../@dirname}/{@name}">
 				<xsl:value-of select="@name" />
 			</a>
 			<xsl:if test="@errors &lt;= 0">
-				<a target="_validation" class="error_report_green" href="../valid/{../@dirname}/{@vname}" title="This conversion contains no errors.">
+				<a target="_validation" class="error_report_green" href="valid/{../@dirname}/{@vname}" title="This conversion contains no errors.">
 					<xsl:text>OK</xsl:text>
 				</a>
 			</xsl:if>
 			<xsl:if test="@errors &gt; 0">
-				<a target="_validation" class="error_report_red" href="../valid/{../@dirname}/{@vname}" title="This conversion encountered {@errors} errors!">
+				<a target="_validation" class="error_report_red" href="valid/{../@dirname}/{@vname}" title="This conversion encountered {@errors} errors!">
 					<xsl:value-of select="@errors" />
 				</a>
 			</xsl:if>
@@ -300,79 +336,19 @@
 			<span style="margin:0px 10px;color:red;">xml?</span>
 		</xsl:if>
 		<xsl:if test="@zip = 2">
-			<a style="color:blue;text-decoration:none;" href="FileManager.html?act=unzip&amp;dir={../@dirname}&amp;fn={@name}"> Unzip this file</a>
+			<a style="color:blue;text-decoration:none;" href="Vicar.html?act=unzip&amp;dir={../@dirname}&amp;fn={@name}"> Unzip this file</a>
 		</xsl:if>
 		<xsl:if test="@zip = 3">
-			<a style="color:blue;text-decoration:none;" href="FileManager.html?act=untar&amp;dir={../@dirname}&amp;fn={@name}"> Untar this file</a>
+			<a style="color:blue;text-decoration:none;" href="Vicar.html?act=untar&amp;dir={../@dirname}&amp;fn={@name}"> Untar this file</a>
 		</xsl:if>
 		<xsl:if test="@zip = 4">
-			<a style="color:blue;text-decoration:none;" href="FileManager.html?act=untargz&amp;dir={../@dirname}&amp;fn={@name}"> Ungzip and Untar this file</a>
+			<a style="color:blue;text-decoration:none;" href="Vicar.html?act=untargz&amp;dir={../@dirname}&amp;fn={@name}"> Ungzip and Untar this file</a>
 		</xsl:if>
 	</div>
-</xsl:template>
-
-
-<!--SIGNIN-->
-<xsl:template match="signin">
-<head>
-	<title>Simple structure for testing components</title>
-	<meta http-equiv="Cache-Control" content="no-cache" />
-	<meta http-equiv="Pragma" content="no-cache" />
-	<meta name="description" content="Collection" />
-	<meta name="robots" content="noindex,nofollow" />
-	<link rel="stylesheet" type="text/css" href="FileManager.css" />
-</head>
-<body>
-	<div align="right" style="border:0px;margin:8px;padding:0px 25px 0px 0px;">
-		<div style="padding:25px 0px 25px 0px;">
-			<form style="color:blue;text-decoration:none;border:0px;margin:0px;padding:0px;" method="post" action="../Signin/Signin.html?act=signin">
-				<input type="hidden" value="false" name="jsenabled"/>
-				<span>ID: </span>
-				<input type="text" name="signinid" autocomplete="off" value="" />
-				<span>  Password: </span>
-				<input type="password" name="pwd" />
-				<input class="button" type="submit" name="perform" value="Sign In" onclick="checkJS()"/>
-			</form>
-			<a name="origsignin" href="../Signin/Signin.html?act=resetpwd" style="color:blue;text-decoration:none;margin:0px;padding:0px;">Reset Password</a>
-			<a name="origsignin" href="../Signin/Signin.html?act=register" style="color:blue;text-decoration:none;margin:0px;padding:0px;">Register</a>
-		</div>
-
-		<div style="padding:25px 0px 25px 0px;">
-			<a name="signin" href="../OpenSignin/OpenSignin.html?op=Yahoo" style="color:blue;text-decoration:none;margin:0px;padding:0px;">
-				<img src="../OpenSignin/YahooOpenID_13.png" height="22px;" alt="Sign In With Yahoo" />
-			</a>
-		</div>
-		<div style="padding:0px 0px 8px 0px;">
-			<a name="signin" href="../OpenSignin/OpenSignin.html?op=Google" valign="bottom" style="font-size:72%;font-weight:bold;background:lightgrey;color:#222;border:1px solid #7D7D7D;text-decoration:none;margin:0px;padding:3px 1px 4px 2px;">
-				<img src="../OpenSignin/GoogleGImage.png" height="17px;" style="margin:0px;padding:0px;vertical-align:middle;" />
-				<span style="margin:4px;padding:0px;">Sign In through Google</span>
-			</a>
-		</div>
-		<div style="padding:0px 0px 8px 0px;margin:2em 0em;">
-			<a name="signin" href="../OpenSignin/OpenSignin.html?op=Test" style="outline:none;color:blue;text-decoration:none;" title="Anonymous login currently only for testing purposes and is limited to requests from unl.edu IP addresses.">
-				<span style="margin:4px;padding:0px;">Anonymous Sign In</span>
-			</a>
-		</div>
-	</div>
-	<div style="font-size:140%;margin:0.5em;">
-		<xsl:if test="@mode = 0">
-			<div style="color:red;">You have successfuly logged out of your anonymous account.</div>
-		</xsl:if>
-		<xsl:if test="@mode = -1">
-			<div style="color:red;">You have successfuly logged out of this site but this does not log you out of your Google account.</div>
-		</xsl:if>
-		<xsl:if test="@mode = -2">
-			<div style="color:red;">You have successfuly logged out of this site but this does not log you out of your Yahoo account.</div>
-		</xsl:if>
-		<div style="color:blue;font-size:120%;font-weight:bold;">Vicar - gateway to Abbot</div>
-		<div>Other features and login options will follow.</div>
-	</div>
-</body>
 </xsl:template>
 
 <xsl:template match="*">
 </xsl:template>
 
 </xsl:stylesheet>
-
 

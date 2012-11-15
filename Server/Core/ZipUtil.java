@@ -191,7 +191,6 @@ private static final int MYBUFFER = 65000;
 * Gunzip the file in sourcefile and place into destdir.
 */
 	public int ungzip(String the_sourcefile,String the_destdir){
-		System.out.println("UNGZIP <"+the_sourcefile+"> TO <"+the_destdir+">");
 		int retval = 0;
 //PROBLEM WITH USING AUTOCLOSEABLE AND TRY WITH RESOURCES FOR UNGZIP - CAN UNGZIP FILES MADE WITH GZIP METHOD BUT NOT THOSE MADE WITH COMMAND LINE gzip
 //REVERTED TO 'OLD WAY'
@@ -242,9 +241,8 @@ private static final int MYBUFFER = 65000;
                                 //NOT SAFE ASSUMPTION FOR ALL SYSTEMS THOUGH OK FOR ABBOT
                                 //IT WOULD BE BETTER TO MAKE THIS SAFER OR US java.nio.vile.Path in java 7
                                 the_sourcefile = the_sourcefile.substring(indx+1);
-                                System.out.println("UNGZIP SOURCEFILENAME<"+the_sourcefile+">");
                         }else{
-                                System.out.println("UNGZIP SOURCEFILENAME HAS NO .GZ SUFFIX");
+                                //System.out.println("UNGZIP SOURCEFILENAME HAS NO .GZ SUFFIX");
                         }
                         FileOutputStream fos = new FileOutputStream(the_destdir+the_sourcefile);
                         BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
@@ -260,8 +258,6 @@ private static final int MYBUFFER = 65000;
                         e.printStackTrace();
                 }
 /****/
-
-		System.out.println("UNGZIP RET <"+retval+">");
 		return retval;
 	}
 
@@ -278,17 +274,13 @@ private static final int MYBUFFER = 65000;
 			if((fi!=null)&&(fi.isDirectory())){
 				File flist[] = fi.listFiles();
 				for (File datafile : flist){
-					//System.out.println(datafile.getName());
 					if(datafile.isDirectory()){
 						//System.out.println("DIRECTORY IGNORED");
 					}else if(datafile.getName().startsWith(".")){
 						//System.out.println("HIDDEN FILE IGNORED");
-					//}else if(datafile.getName().endsWith(".tar")){
-					//	System.out.println("DONT RECURSE");
 					}else if(datafile.getName().endsWith(the_suffix)){
 						//CREATE TAR ENTRY
 						TarArchiveEntry entry = new TarArchiveEntry(datafile.getName());
-						//System.out.println("DATALEN<"+datafile.length()+">");	
 						entry.setSize(datafile.length());
 						//entry.setModTime(0);
 						//entry.setUserId(0);
@@ -317,56 +309,6 @@ private static final int MYBUFFER = 65000;
 			//aos.close();
 		}catch(IOException|ArchiveException ex){
 		}
-/****
-		try {
-			File fo = new File(the_destfile);
-			OutputStream os = new FileOutputStream(fo);
-			ArchiveOutputStream aos = new ArchiveStreamFactory().createArchiveOutputStream("tar",os);
-
-			File fi = new File(the_sourcedir);
-			if((fi!=null)&&(fi.isDirectory())){
-				File flist[] = fi.listFiles();
-				for (File datafile : flist){
-					//System.out.println(datafile.getName());
-					if(datafile.isDirectory()){
-						//System.out.println("DIRECTORY IGNORED");
-					}else if(datafile.getName().startsWith(".")){
-						//System.out.println("HIDDEN FILE IGNORED");
-					//}else if(datafile.getName().endsWith(".tar")){
-					//	System.out.println("DONT RECURSE");
-					}else if(datafile.getName().endsWith(the_suffix)){
-						//CREATE TAR ENTRY
-						TarArchiveEntry entry = new TarArchiveEntry(datafile.getName());
-						//System.out.println("DATALEN<"+datafile.length()+">");	
-						entry.setSize(datafile.length());
-						//entry.setModTime(0);
-						//entry.setUserId(0);
-						//entry.setGroupId(0);
-						//entry.setUserName("avalon");
-						//entry.setGroupName("excalibur");
-						//entry.setMode(0100000);
-						entry.setMode(0644);
-						aos.putArchiveEntry(entry);
-
-						//READ FILE AND PUT DATA IN TAR
-						byte data[] = new byte[BUFFER];
-						try(FileInputStream fis = new FileInputStream(datafile);
-							BufferedInputStream origin = new BufferedInputStream(fis, BUFFER)){
-							int count;
-							while((count = origin.read(data, 0, BUFFER)) != -1) {
-								aos.write(data, 0, count);
-							}
-							//origin.close();
-						}catch(IOException ioex){
-						}
-						aos.closeArchiveEntry();
-					}
-				}
-			}
-			aos.close();
-		}catch(Exception ex){
-		}
-****/
 		return 0;
 	}
 
@@ -375,15 +317,13 @@ private static final int MYBUFFER = 65000;
 */
 	public int untar(String the_sourcefile,String the_destdir){
 		int retval = 0;
-		System.out.println("UNTAR <"+the_sourcefile+"> TO <"+the_destdir+">");
 		try(FileInputStream fis = new FileInputStream(new File(the_sourcefile));
 				BufferedInputStream bis = new BufferedInputStream(fis); 
 				ArchiveInputStream ais = new ArchiveStreamFactory().createArchiveInputStream(bis)){
 			ArchiveEntry ae = ais.getNextEntry();
 			while(ae!=null){
-				//System.out.println("Entry<"+ae.getName()+"> DIR?<"+ae.isDirectory()+">");
 				if(ae.getName().startsWith("./._")){
-					System.out.println("UNTAR IGNORE MAC OSX META FILE");
+					//System.out.println("UNTAR IGNORE MAC OSX META FILE");
 				}else{
 					byte data[] = new byte[BUFFER];
 					try (FileOutputStream fos = new FileOutputStream(the_destdir+ae.getName());
@@ -404,7 +344,6 @@ private static final int MYBUFFER = 65000;
 			e.printStackTrace();
 			retval = -2;
 		}
-		System.out.println("UNTAR RETVAL<"+retval+">");
 		return retval;
 	}
 }

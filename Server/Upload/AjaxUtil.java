@@ -35,15 +35,14 @@ private static final int BUFFER = 32*1024;;
 			count = 0;
 			while((count = bis.read(data,0,BUFFER)) != -1){
 				fos.write(data,0,count);
-				//System.out.println("\t\tAUFN<"+the_filename+">");
 				byteswritten += count;
 			}
 		}catch (InvalidPathException ifex){
 			byteswritten = -byteswritten;
-			//ifex.printStackTrace();
+			ifex.printStackTrace();
 		}catch (IOException ioex){
 			byteswritten = -byteswritten;
-			//ioex.printStackTrace();
+			ioex.printStackTrace();
 		}
 		return byteswritten;
 	}
@@ -67,14 +66,12 @@ private static final int BUFFER = 32*1024;;
 			boolean headerdone = false;
 			while((!headerdone)&&(bis.read(header,0,3)!=-1)&&(hs.length()<testlen)){
 				hs += new String(header);
-				//System.out.println("HS<"+hs+">");
 				if(hs.indexOf(";ba")>0){
 					headerdone = true;
 					int yettoget = hs.indexOf(";ba")+8-hs.length();
 					header = new byte[yettoget];
 					bis.read(header,0,yettoget);
 					hs += new String(header);
-					//System.out.println("DONEHEADER<"+hs+">");
 				}
 			}
 
@@ -90,10 +87,10 @@ private static final int BUFFER = 32*1024;;
 			}
 		}catch (InvalidPathException ifex){
 			byteswritten = -byteswritten;
-			//ifex.printStackTrace();
+			ifex.printStackTrace();
 		}catch (IOException ioex){
 			byteswritten = -byteswritten;
-			//ioex.printStackTrace();
+			ioex.printStackTrace();
 		}
 		return byteswritten;
 	}

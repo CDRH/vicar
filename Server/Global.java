@@ -12,29 +12,40 @@ package Server;
 public class Global {
 
 
-/****/
+/****
 //LOCAL
-public static String URL_BASE = "http://127.0.0.1:8888";
-public static String BASE_USER_DIR = "/tmp/vicar";
+public static String BASE_USER_DIR = "/var/vicar";
 public static String SCHEMA_DIR = "/users/franksmutniak/Desktop/abbottestdata/schema/";
 public static String SED_PATH = "/usr/bin/sed";
-public static String LOGFILE_PATH = "/tmp/vicar/log.txt";
-public static String ACCTFILE_PATH = "/tmp/vicar/map.ser";
-/****/
-
-/****
-//ABBOT
-public static String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
-public static String BASE_USER_DIR = "/tmp/vicar";
-public static String SCHEMA_DIR = "/var/www/localhost/htdocs/";
-public static String SED_PATH = "/bin/sed";
-public static String LOGFILE_PATH = "/tmp/vicar/log.txt";
-public static String ACCTFILE_PATH = "/tmp/vicar/map.ser";
+public static String URL_BASE = "http://127.0.0.1:8888";
 ****/
 
-public static String URL_LOGIN_SFX = "/vicar/OpenSignin/OpenSignin.html";
-public static String URL_APPL = "../Core/FileManager.html?mode=1";
-public static String URL_APPL_LOGOUT = "../Core/FileManager.html";
+/****/
+//ABBOT
+public static String BASE_USER_DIR = "/var/vicar";
+public static String SCHEMA_DIR = "/var/www/localhost/htdocs/";
+public static String SED_PATH = "/bin/sed";
+public static String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
+/****/
+
+public static String LOGFILE_PATH = BASE_USER_DIR+"/log.txt";
+
+//SIGNIN
+public static String ACCTFILE_PATH = BASE_USER_DIR+"/map.ser";
+
+//public static String URL_SIGNIN = "../Signin/Signin.html";
+//public static String URL_APPL = "../Core/FileManager.html";
+
+public static String TITLE = "Vicar - Gateway to Abbot";
+public static String URL_SIGNIN = "Signin.html";
+public static String URL_APPL = "Vicar.html";
+
+//FSS - UNFORTUNATELY THIS IS A HARDCODED LINK - SEE IF IT CAN BE MADE RELATIVE!
+//public static String URL_LOGIN_SFX = "/vicar/Signin/OpenSignin.html";
+public static String URL_LOGIN_SFX = "/vicar/OpenSignin.html";
+
+public static String GMAIL_ID = "[username]";
+public static String GMAIL_PWD = "[pwd]";
 
 	public Global(){
 	}

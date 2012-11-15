@@ -64,7 +64,7 @@ private static String TOKEN = "$";
 				}
 			}
 		}catch(NoSuchFileException nsfex){
-			System.out.println("SessionSaver:FILE MISSING");
+			System.out.println("SessionSaver:FILE MISSING ON LOAD");
 			//nsfex.printStackTrace();
 		}catch(InvalidPathException ipex){
 			ipex.printStackTrace();

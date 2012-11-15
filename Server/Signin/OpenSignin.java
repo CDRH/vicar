@@ -1,6 +1,6 @@
 //OpenSignin.java
 
-package Server.OpenSignin;
+package Server.Signin;
 
 import Server.Global;
 import Server.LogWriter;
@@ -56,11 +56,11 @@ private String m_OwnerID;
 private String m_SessionID = "";
 
 private int m_delay = 0;
-private String m_msg = null;
+private int m_msgcode = 0;
+private String m_msgtext = null;
 
 private OpenIdManager oimanager;
 private String m_op = null;
-private int m_loginstatus = 0;
 
 
 	public void dispose() {
@@ -87,7 +87,6 @@ private int m_loginstatus = 0;
 		m_session = m_request.getSession();
 		m_op = m_request.getParameter("op");
 		m_OwnerID = (String)m_session.getAttribute("userid");
-		m_loginstatus = 0;
 	}
 
 
@@ -104,7 +103,7 @@ private int m_loginstatus = 0;
 
 		if(m_OwnerID==null){
 			//System.out.println("NOT LOGGED IN");
-			m_loginstatus = 0;
+			//System.out.println("OP<"+m_op+">");
 			if(m_op==null){
 				//System.out.println("NONCE<"+m_nonce+">");
 				int nn = checkNonce(m_request.getParameter("openid.response_nonce"));
@@ -122,9 +121,12 @@ private int m_loginstatus = 0;
 					if(op_email==null){
 						m_OwnerID = "ANONYMOUS";
 					}else{
-						m_OwnerID = op_email.replace("@","__");
+						m_OwnerID = op_email;
 					}
+
+					m_session.setAttribute("newlogin","1");
 					m_session.setAttribute("userid",m_OwnerID);
+					m_session.setAttribute("userpath",m_OwnerID.replace("@","__"));
 
 					String fn = "";
 					if(op_firstname!=null){
@@ -134,31 +136,9 @@ private int m_loginstatus = 0;
 						fn += " "+op_lastname;
 					}
 					m_session.setAttribute("personname",fn);
-					m_session.setAttribute("personemail",op_email);
-					m_loginstatus = 1;
 					m_url = Global.URL_APPL;
 					LogWriter.msg(RemoteAddr,"LOGIN,"+op_email);
 				}
-			}else if(m_op.equals("Test")){
-					//System.out.println("RA<"+RemoteAddr+"> RH<"+RemoteHost+">");
-					if(isValidIP(RemoteAddr)){
-						//m_OwnerID = "ANONYMOUS";
-						m_OwnerID = RemoteAddr;
-						m_url = Global.URL_APPL;
-						m_loginstatus = 1;
-						m_session.setAttribute("personname","anonymous");
-						//m_session.setAttribute("personemail","");
-						m_session.setAttribute("personemail",m_OwnerID);
-						m_session.setAttribute("userid",m_OwnerID);
-						m_session.setAttribute("openid","anonymous");
-						LogWriter.msg(RemoteAddr,"LOGIN,anonymous");
-					}else{
-						m_msg = "Not yet available.";
-						m_loginstatus = 0;
-						m_OwnerID = null;
-						m_url = Global.URL_APPL;
-						m_delay = 5;
-					}
 			}else if(m_op.equals("Google")||m_op.equals("Yahoo")){
 				try {
 					Endpoint endpoint = oimanager.lookupEndpoint(m_op);
@@ -167,98 +147,34 @@ private int m_loginstatus = 0;
 					m_session.setAttribute(ATTR_ALIAS, endpoint.getAlias());
 					m_session.setAttribute("openid",m_op.toLowerCase());
 					m_url = oimanager.getAuthenticationUrl(endpoint, association);
-					m_msg = null;
+					m_msgcode = 0;
+					m_msgtext = null;
 				}catch(Exception ex){
-					m_loginstatus = 0;
 					m_OwnerID = null;
 					m_session.setAttribute("userid",null);
+					m_session.setAttribute("userpath",null);
 					m_session.invalidate();
 					m_url = Global.URL_APPL;
 					m_delay = 5;
-					m_msg = "Unable to connect to ";
+					m_msgcode = -1;
+					m_msgtext = "Unable to connect to ";
 					if(m_op.equals("Google")){
-						m_msg += "Google";
+						m_msgtext += "Google";
 					}else if(m_op.equals("Yahoo")){
-						m_msg += "Yahoo";
+						m_msgtext += "Yahoo";
 					}
 				}
 			}
 		}else{
 			//System.out.println("LOGGED IN");
-			m_loginstatus = 1;
-			if(m_op==null){
-			}else if(m_op.equalsIgnoreCase("logout")){
-				System.out.println("OPENSIGNIN LOGGING OUT");
-				m_OwnerID = null;
-				m_session.setAttribute("userid",null);
-				String openid = (String)m_session.getAttribute("openid");
-				m_session.invalidate();
-				m_loginstatus = 0;
-				LogWriter.msg(RemoteAddr,"LOGOUT,"+openid);
-				if(openid==null){
-					m_url = Global.URL_APPL_LOGOUT;
-				}else if(openid.equals("anonymous")){
-					m_url = Global.URL_APPL_LOGOUT;
-				}else if(openid.equals("google")){
-					m_url = Global.URL_APPL_LOGOUT+"?mode=-1";
-				}else if(openid.equals("yahoo")){
-					m_url = Global.URL_APPL_LOGOUT+"?mode=-2";
-				}
-			}
 		}
-		OpenLoginXML(contentHandler,m_loginstatus,RemoteAddr,SessionID,m_url,m_msg,m_delay);
-	}
-
-	public boolean isValidIP(String the_IP){
-		boolean retval = false;
-		if(the_IP==null){
-		}else if(the_IP.equals("127.0.0.1")){
-			retval = true;
-		}else if(the_IP.startsWith("129.93.")){
-			retval = true;
-		}else if(the_IP.startsWith("66.45.131.")){
-			retval = true;
-		}
-		return retval;
+		int dispose = 0;
+		SigninXML.generateSigninXML(contentHandler,"ID","ACT",null,m_delay,m_url,m_msgcode,m_msgtext,"",dispose);
 	}
 
 	public long generateKey() {
 		// Default non-caching behaviour. We will implement this later.
 		return 0;
-	}
-
-	public void OpenLoginXML(ContentHandler contentHandler,int the_loginstatus,String the_RemoteAddr,String the_SessionID,String the_url,String the_msg,int the_delay)
-			throws SAXException, ProcessingException {
-		try {
-			contentHandler.startDocument();
-			AttributesImpl openidAttr = new AttributesImpl();
-			openidAttr.addAttribute("","IP","IP","CDATA",the_RemoteAddr);
-			openidAttr.addAttribute("","SessionID","SessionID","CDATA",""+the_SessionID);
-			openidAttr.addAttribute("","loginstatus","loginstatus","CDATA",""+the_loginstatus);
-			contentHandler.startElement("","openid","openid",openidAttr);
-
-
-			AttributesImpl urlAttr = new AttributesImpl();
-			urlAttr.addAttribute("","delay","delay","CDATA",""+the_delay);
-			contentHandler.startElement("","url","url",urlAttr);
-			if(the_url!=null){
-				contentHandler.characters(the_url.toCharArray(),0,the_url.length());
-			}
-			contentHandler.endElement("","url","url");
-			//contentHandler.endElement("","msg","msg");
-
-			AttributesImpl msgAttr = new AttributesImpl();
-			contentHandler.startElement("","msg","msg",msgAttr);
-			if(the_msg!=null){
-				contentHandler.characters(the_msg.toCharArray(),0,the_msg.length());
-			}
-			contentHandler.endElement("","msg","msg");
-
-			contentHandler.endElement("","openid","openid");
-			contentHandler.endDocument();
-		}catch(Exception e){ 
-			e.printStackTrace();
-		}
 	}
 
 /**

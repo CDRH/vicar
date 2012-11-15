@@ -16,6 +16,7 @@ function makeSimpleFrame(obj,url){
 	clickedobj = obj;
 	var schsel = document.getElementById('schemaselect');
 	var ssval = schsel.options[schsel.selectedIndex].value;
+	//alert('VAL'+ssval);
 	var pos = getPos(obj);
         var t = "<div class='innerpopup' style='width:400px;border:3px solid red;'>\n";
         t += "<iframe id='"+((new Date()).getTime())+"' width='99%' height='130px' style='border:0px;' src='"+url+"&conv="+ssval+"'></iframe>";

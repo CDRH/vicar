@@ -39,6 +39,7 @@ private ServiceSelector m_selector;
 private Session m_session;
 
 private String m_OwnerID;
+private String m_OwnerPath;
 private int m_totalsize = 0;
 private String m_dirname = "";
 
@@ -60,15 +61,14 @@ private String m_dirname = "";
 		m_session = request.getSession();
 
 		m_OwnerID = (String)m_session.getAttribute("userid");
+		m_OwnerPath = (String)m_session.getAttribute("userpath");
 		m_totalsize = getIntFromString(request.getParameter("totsz"));
 		m_dirname = request.getParameter("dir");
 
-		String destdir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_dirname+"/input/";
-		System.out.println("\tSTART<"+Thread.currentThread().getName()+"> DIRNAME<"+destdir+"> TOTALSIZE<"+m_totalsize+">");
+		String destdir = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_dirname+"/input/";
 
 		DirMonitor dm = new DirMonitor(destdir,(long)m_totalsize);
 		dm.giterdone();
-		System.out.println("\tEND");
 	}
 
 	public void generate() throws SAXException, ProcessingException {
@@ -79,7 +79,6 @@ private String m_dirname = "";
 			contentHandler.endElement("","Response","Response");
 			contentHandler.endDocument();
 		}catch(Exception e){
-			System.out.println("ERROR0");
 			e.printStackTrace();
 		}
 	}

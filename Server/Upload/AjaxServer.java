@@ -39,6 +39,7 @@ private ServiceSelector m_selector;
 private Session m_session;
 
 private String m_OwnerID;
+private String m_OwnerPath;
 private String m_filename = "";
 private String m_mimetype = "";
 private String m_filesize = "";
@@ -68,6 +69,7 @@ private int m_complete = 0;
 		m_session = request.getSession();
 
 		m_OwnerID = (String)m_session.getAttribute("userid");
+		m_OwnerPath = (String)m_session.getAttribute("userpath");
 		//if(m_OwnerID==null){
 		//	m_session.setAttribute("userid",m_OwnerID);
 		//}
@@ -85,11 +87,8 @@ private int m_complete = 0;
 			}
 			System.out.println("NEED TO USE FILE PATH AS THIS COULD COME FROM A NON UNIX SYSTEM!!!");
 		}
-		//System.out.println("START<"+Thread.currentThread().getName()+"> FN<"+m_filename+"> SIZE<"+m_filesize+"> TOTALSIZE<"+m_totalsize+">");
 		m_complete = 0;
-		String destdir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_dirname;
-
-		//System.out.println("CODE IS MESSY - BETTER TO HAVE ONE AjaxUtil.write...() WHICH DETECTS TEXT OR BASE64 AND UNPACKS APPROPRIATELY");
+		String destdir = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_dirname;
 		if(m_filename!=null){
 			try (ServletInputStream sis = ((HttpRequest)request).getInputStream()){
 				if((m_mimetype==null)||(m_mimetype.equals(""))||(m_mimetype.startsWith("application/"))){
@@ -136,7 +135,6 @@ private int m_complete = 0;
 
 	public void generate() throws SAXException, ProcessingException {
 		generateResponseXML(contentHandler,m_dirname,m_complete,m_filename,m_size,m_msg);
-		//System.out.println("FINISH<"+Thread.currentThread().getName()+"> FN<"+m_filename+"> SIZE<"+m_size+">");
 	}
 
 	public void generateResponseXML(ContentHandler contentHandler,String the_dirname,int the_complete,String the_filename,int the_size,String the_msg) throws SAXException, ProcessingException {
@@ -157,7 +155,7 @@ private int m_complete = 0;
 			contentHandler.endElement("","Response","Response");
 			contentHandler.endDocument();
 		}catch(Exception e){
-			System.out.println("ERROR0");
+			System.out.println("AjaxServer ERROR");
 			e.printStackTrace();
 		}
 	}

@@ -24,6 +24,7 @@ import org.apache.cocoon.environment.Session;
 public class AbbotConvert extends Thread {
 
 private String m_OwnerID;
+private String m_OwnerPath;
 private Session m_session;
 private String m_dir;
 private String m_ConvStr;
@@ -42,8 +43,9 @@ private String m_ConvStr;
 	public void batchresult(){
 		String remoteaddr = (String)m_session.getAttribute("IPADDR");
 		m_OwnerID = (String)m_session.getAttribute("userid");
+		m_OwnerPath = (String)m_session.getAttribute("userpath");
 		if(m_dir!=null){
-			String colldir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_dir;
+			String colldir = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_dir;
 			String indir = colldir+"/input/";
 			String convdir = colldir+"/convert/";
 			String outdir = colldir+"/output/";
@@ -60,7 +62,7 @@ private String m_ConvStr;
 			}
 			if(m_ConvStr!=null){
 				String wholeConvStr = m_ConvStr;
-				long convstart = LogWriter.msg(remoteaddr,"CONVERT_BEGIN,"+m_OwnerID+"/"+m_dir+","+m_ConvStr);
+				long convstart = LogWriter.msg(remoteaddr,"CONVERT_BEGIN,"+m_OwnerPath+"/"+m_dir+","+m_ConvStr);
 				if(m_ConvStr.startsWith("1")){
 					convdir = Global.SCHEMA_DIR;
 					m_ConvStr = m_ConvStr.substring(1);
@@ -68,7 +70,6 @@ private String m_ConvStr;
 					convtype = 1;
 					m_ConvStr = m_ConvStr.substring(1);
 				}
-//System.out.println("CONVERT DIR<"+indir+"> TO <"+outdir+"> WITH <"+convdir+m_ConvStr+">");
 				try {
 					abbot.convert(indir,outdir,convdir+m_ConvStr);
 				}catch(Exception ex){
@@ -78,7 +79,6 @@ private String m_ConvStr;
 					}
 					LogWriter.msg(remoteaddr,"CONVERT_ERROR,"+ex.getMessage());
 				}
-//System.out.println("CONVERT DONE");
 
 				LogWriter.msg(remoteaddr,"CORRECTION_BEGIN");
 				Vector<String> outputfiles = listFiles(outdir,".xml");
@@ -87,7 +87,8 @@ private String m_ConvStr;
 				if(convtype == 1){
 					convURL = m_ConvStr;
 				}
-				String email = m_OwnerID.replace("__","@");
+				//String email = m_OwnerID.replace("__","@");
+				String email = m_OwnerID;
 				String emailsuffix = email;
 				if(emailsuffix!=null){
 					int suffstrt = emailsuffix.indexOf("@");
@@ -116,16 +117,15 @@ private String m_ConvStr;
 				}
 				String ininfo = getFileInfo(indir,".xml");
 				String outinfo = getFileInfo(outdir,".xml");
-				LogWriter.msg(remoteaddr,"VALIDATION_END,"+ininfo+","+outinfo+","+totalerrors+","+m_OwnerID+"/"+m_dir+","+wholeConvStr+","+convstart);
+				LogWriter.msg(remoteaddr,"VALIDATION_END,"+ininfo+","+outinfo+","+totalerrors+","+m_OwnerPath+"/"+m_dir+","+wholeConvStr+","+convstart);
 
-				SessionSaver.save(m_session,Global.BASE_USER_DIR+"/"+m_OwnerID+"/session.txt");
+				SessionSaver.save(m_session,Global.BASE_USER_DIR+"/"+m_OwnerPath+"/session.txt");
 			}
 		}
 	}
 
 
 	public String cleanDir(String the_dirpath){
-		//System.out.println("CLEAN<"+the_dirpath+">");
 		File f = new File(the_dirpath);
 		if(f!=null){
 			if(f.isDirectory()){

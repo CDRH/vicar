@@ -40,7 +40,8 @@ private Map<String,Object> m_usermap = new HashMap<String,Object>();
 	}
 
 	public FileDB(){
-		System.out.println("RECORDS LOADED<"+loadDB()+">");
+		int reccnt = loadDB();
+		//System.out.println("RECORDS LOADED<"+reccnt+">");
 	}
 
 	public int saveDB(){
@@ -172,8 +173,8 @@ private Map<String,Object> m_usermap = new HashMap<String,Object>();
 	}
 
 	public Object getEntry(String the_key){
-		Display();
-		System.out.println("GET ENTRY <"+the_key+">");
+		//Display();
+		//System.out.println("GET ENTRY <"+the_key+">");
 		Object entryVal = null;
 		synchronized(this){
 			entryVal = m_usermap.get(the_key);
@@ -194,8 +195,8 @@ private Map<String,Object> m_usermap = new HashMap<String,Object>();
 		Iterator it = m_usermap.entrySet().iterator();
 		while(it.hasNext()){
 			Map.Entry pairs = (Map.Entry)it.next();
-			System.out.println("DISPLAY "+pairs.getKey());
-			((AcctData)pairs.getValue()).Display();
+			//System.out.println("DISPLAY "+pairs.getKey());
+			//((AcctData)pairs.getValue()).Display();
 		}
 	}
 }

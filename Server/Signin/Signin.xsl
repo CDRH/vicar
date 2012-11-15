@@ -7,109 +7,100 @@
 
 
 <xsl:template match="/">
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 	<xsl:apply-templates/>
 </html>
 </xsl:template>
 
-<!--SI_SIGNIN-->
 <xsl:template match="signin">
 <head>
-	<title>Sign In</title>
+	<title>
+		<xsl:value-of select="title/text()"/>
+	</title>
 	<meta name="description" content="Sign In" />
 	<meta name="robots" content="noindex,nofollow" />
 	<meta name="pragma" content="no-cache" />
-	<style type="text/css">
-		form {
-			margin:0.25em;
-		}
-		body {
-			margin:0em;
-			border:0em;
-			padding:0em;
-			outline:none;
-			font-family:arial;
-			font-size:120%;
-		}
-		body *{
-			outline:none;
-		}
-		a {
-			text-decoration:none;
-			margin:0.25em;
-			color:blue;
-		}
-		.infomsg {
-			min-height:18px;
-			margin:0.25em;
-			color:green;
-		}
-		.warnmsg {
-			min-height:18px;
-			margin:0.25em;
-			color:red;
-		}
-		.banner {
-			font-size:110%;
-			color:green;
-		}
-		.instruct {
-			font-size:90%;
-			color:black;
-		}
-		.instructsmall {
-			font-size:70%;
-			color:black;
-		}
-		.button {
-			font-size:85%;
-			border-radius:3px;
-			-moz-border-radius:3px;
-			-webkit-border-radius:3px;
-			-khtml-border-radius:3px;
-			font-family:arial;
-		}
-	</style>
-        <xsl:if test="url/text() !='null'">
-                <meta http-equiv="REFRESH" content="{url/@delay};url={url/text()}" />
-        </xsl:if>
+	<link rel="stylesheet" type="text/css" href="Signin.css" />
+	<xsl:if test="url/text() !='NONE'">
+		<meta http-equiv="REFRESH" content="{url/@delay};url={url/text()}" />
+	</xsl:if>
 </head>
 <body>
-<!--
-<h2>
-	<span>ACTION:</span>
-	<xsl:value-of select="@act"/>
-</h2>
--->
-
-	<xsl:if test="msg/@code = 0">
-		<div class="infomsg">
-			<span> </span>
-		</div>
-	</xsl:if>
-	<xsl:if test="msg/@code &gt; 0">
-		<div class="infomsg">
-			<xsl:value-of select="msg/text()"/>
-		</div>
-	</xsl:if>
-	<xsl:if test="msg/@code &lt; 0">
-		<div class="warnmsg">
-			<xsl:value-of select="msg/text()"/>
-		</div>
-	</xsl:if>
+<xsl:if test="url/text() ='NONE'">
+	<div style="color:blue;font-size:120%;font-weight:bold;margin:1em;position:absolute;top:45%;">
+		<xsl:value-of select="title/text()"/>
+	</div>
 
 	<xsl:if test="@act = 'signin' or @act = 'null'">
-		<div class="banner">Sign In </div>
-		<form method="post" action="Signin.html?act=signin">
-			<span>ID: </span>
-			<input type="text" name="signinid" autocomplete="off" value="" />
-			<span>  Password: </span>
-			<input type="password" name="pwd" />
-			<input class="button" type="submit" name="perform" value="Sign In" />
-			<input class="button" type="submit" name="perform" value="Cancel" onclick="checkJS()"/>
-		</form>
-		<a href="Signin.html?act=resetpwd">Reset Password</a>
-		<a href="Signin.html?act=register">Register</a>
+		<div align="right" style="border:0px;margin:8px;padding:0px 25px 0px 0px;">
+			<xsl:if test="msg/@code = 0">
+				<div class="infomsg">
+					<span> </span>
+				</div>
+			</xsl:if>
+			<xsl:if test="msg/@code &gt; 0">
+				<div class="infomsg">
+					<span>
+						<xsl:value-of select="msg/text()"/>
+					</span>
+				</div>
+			</xsl:if>
+			<xsl:if test="msg/@code &lt; 0">
+				<div class="warnmsg">
+					<span>
+						<xsl:value-of select="msg/text()"/>
+					</span>
+				</div>
+			</xsl:if>
+		</div>
+		<div align="right" style="border:0px;margin:8px;padding:0px 25px 0px 0px;">
+			<div style="padding:25px 0px 25px 0px;">
+				<form style="color:blue;text-decoration:none;border:0px;margin:0px;padding:0px;" method="post" action="Signin.html?act=signin">
+					<input type="hidden" value="false" name="jsenabled"/>
+					<span>ID: </span>
+					<input type="text" name="signinid" autocomplete="off" value="" />
+					<span>  Password: </span>
+					<input type="password" name="pwd" />
+					<input class="button" type="submit" name="perform" value="Sign In" />
+				</form>
+			</div>
+			<a name="origsignin" href="Signin.html?act=register" style="text-decoration:none;">
+				<span class="highlightlink">Register</span>
+			</a>
+			<a name="origsignin" href="Signin.html?act=resetpwd" style="text-decoration:none;">
+				<span class="highlightlink">Reset Password</span>
+			</a>
+
+			<div style="padding:35px 0px 5px 0px;">OR</div>
+			<div style="padding:25px 0px 25px 0px;">
+				<a name="signin" href="OpenSignin.html?op=Yahoo" style="color:blue;text-decoration:none;margin:0px;padding:0px;">
+					<img src="YahooOpenID_13.png" height="22px;" alt="Sign In With Yahoo" />
+				</a>
+			</div>
+			<div style="padding:15px 0px 5px 0px;">OR</div>
+			<div style="padding:25px 0px 25px 0px;">
+				<a name="signin" href="OpenSignin.html?op=Google" valign="bottom" style="font-size:60%;font-weight:bold;background:lightgrey;color:#222;border:1px solid #7D7D7D;text-decoration:none;margin:0px;padding:3px 1px 4px 2px;">
+					<img src="GoogleGImage.png" height="17px;" style="margin:0px;padding:0px;vertical-align:middle;" />
+					<span style="margin:4px;padding:0px;">Sign In through Google</span>
+				</a>
+			</div>
+		</div>
+		<div style="font-size:140%;margin:0.5em;">
+			<xsl:if test="@mode = 0">
+				<div style="color:red;">You have successfuly logged out of your anonymous account.</div>
+			</xsl:if>
+			<xsl:if test="@mode = -1">
+				<div style="color:red;">You have successfuly logged out of this site but this does not log you out of your Google account.</div>
+			</xsl:if>
+			<xsl:if test="@mode = -2">
+				<div style="color:red;">You have successfuly logged out of this site but this does not log you out of your Yahoo account.</div>
+			</xsl:if>
+<!--
+			<div style="color:blue;font-size:120%;font-weight:bold;position:absolute;top:10px;">
+				<xsl:value-of select="title/text()"/>
+			</div>
+-->
+		</div>
 	</xsl:if>
 
 	<xsl:if test="@act = 'register'">
@@ -119,14 +110,10 @@
 		<form method="post" action="Signin.html?act=register">
 			<span>ID: </span>
 			<input type="text" name="signinid" autocomplete="off" value="" />
-			<span>  Password: </span>
+			<span class="label">  Password: </span>
 			<input type="password" name="pwd" />
 			<span>  Password Again: </span>
 			<input type="password" name="pwdalt" />
-<!--
-			<span>I have read and agree with the Terms Of Service and Privacy Policy.</span>
-			<input type="checkbox" name="consent" />
--->
 			<input class="button" type="submit" name="perform" value="Register" />
 			<input class="button" type="submit" name="perform" value="Cancel" />
 		</form>
@@ -140,7 +127,7 @@
 		<div class="banner">Reset Password </div>
 		<div class="instruct">Enter your email address and a password reset link will be sent to you via email.</div>
 		<form method="post" action="Signin.html?act=resetpwd">
-			<span>ID: </span>
+			<span class="label">ID: </span>
 			<input type="text" name="signinid" autocomplete="off" value="" />
 			<input class="button" type="submit" name="perform" value="Reset" />
 			<input class="button" type="submit" name="perform" value="Cancel" />
@@ -157,7 +144,7 @@
 		<div class="instructsmall">Passwords must contain a more than 5 characters but fewer than 20.</div>
 		<form method="post" action="Signin.html?act=resetpwdlink">
 			<input type="hidden" name="signinid" value="{@ID}" />
-			<span>New Password: </span>
+			<span class="label">New Password: </span>
 			<input type="password" name="pwd" />
 			<span>  New Password Again: </span>
 			<input type="password" name="pwdalt" />
@@ -169,10 +156,22 @@
 	<xsl:if test="@act = 'resetpwdlinkdone'">
 		<a href="Signin.html?act=signin">Sign In</a>
 	</xsl:if>
+</xsl:if>
 </body>
-
 </xsl:template>
 
 </xsl:stylesheet>
+
+<!--
+			<span>I have read and agree with the Terms Of Service and Privacy Policy.</span>
+			<input type="checkbox" name="consent" />
+-->
+<!--
+		<div style="padding:0px 0px 8px 0px;margin:2em 0em;">
+			<a name="signin" href="../Signin/OpenSignin.html?op=Test" style="outline:none;color:blue;text-decoration:none;" title="Anonymous login currently only for testing purposes and is limited to requests from unl.edu IP addresses.">
+				<span style="margin:4px;padding:0px;">Anonymous Sign In</span>
+			</a>
+		</div>
+-->
 
 

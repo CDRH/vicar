@@ -1,7 +1,10 @@
+
+Updated on 11/15/2012 
+Fixed 'no javascript' operation.  Built out Register/PasswordReset/PasswordChange functionality for local signin.  Improved integration between local and openid signin.  Changed local storage from '/tmp' to '/var' directory. Shortended main URL paths.
+
+
 Updated on 10/25/2012 
-
 Added a local register/signin/password_reset functionality.  Currently this is file based but can easily be made to use mysql or similar database.
-
 Vicar was made to be functional even when the user turns off javascript.
 
 

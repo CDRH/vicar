@@ -14,10 +14,10 @@
 	<title>Abbot Conversion</title>
 	<meta charset="UTF-8" />
 	<xsl:if test="@mode = 0">
-		<meta http-equiv="refresh" content="1;url=../Convert/StreamServer.html?dir={@dirname}&amp;act=join" />
+		<meta http-equiv="refresh" content="1;url=StreamServer.html?dir={@dirname}&amp;act=join" />
 	</xsl:if>
 	<xsl:if test="@mode = 1">
-		<meta http-equiv="refresh" content="1;url=../Core/FileManager.html?dir={@dirname}" />
+		<meta http-equiv="refresh" content="1;url=../Vicar.html?dir={@dirname}" />
 	</xsl:if>
 </head>
 <body>

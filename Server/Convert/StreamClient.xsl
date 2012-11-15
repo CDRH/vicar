@@ -44,8 +44,8 @@
 		<div id="progressbar" style="margin:auto;width:95%;height:15px;background:white;margin:4px 0px;"></div>
 		<div id="msgline1" style="height:20px;"></div>
 		<div id="progressbar1" style="margin:auto;width:95%;height:15px;background:white;margin:4px 0px;"></div>
-		<input type="submit" style="margin:4px 0px 0px 0px;" value="Cancel" id="cancelbutton" onclick="window.parent.location.href='../Core/FileManager.html?dir={$dir}'" />
-		<input type="submit" style="margin:4px 0px 0px 0px;" value="Done" id="donebutton" onclick="window.parent.location.href='../Core/FileManager.html?dir={$dir}'" />
+		<input type="submit" style="margin:4px 0px 0px 0px;" value="Cancel" id="cancelbutton" onclick="window.parent.location.href='../Vicar.html?dir={$dir}'" />
+		<input type="submit" style="margin:4px 0px 0px 0px;" value="Done" id="donebutton" onclick="window.parent.location.href='../Vicar.html?dir={$dir}'" />
            
 	</div>
 </body>

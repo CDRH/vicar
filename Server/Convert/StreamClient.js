@@ -1,5 +1,5 @@
 //SAVE BUTTON
-var baseurl = '../Convert/StreamServer.xml';
+var baseurl = 'StreamServer.xml';
 var msgbox;
 var msgline;
 var msgline1;

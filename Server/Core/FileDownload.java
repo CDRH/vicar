@@ -46,6 +46,7 @@ import org.apache.avalon.framework.component.ComponentException;
 public class FileDownload extends ServletGenerator implements Disposable {
 
 private String m_OwnerID;
+private String m_OwnerPath;
 private Session m_session;
 private String m_DirStr;
 private String m_FilenameStr;
@@ -85,6 +86,7 @@ private String m_FilenameStr;
 		String requestURL = request.getRequestURI();
 
 		m_OwnerID = (String)m_session.getAttribute("userid");
+		m_OwnerPath = (String)m_session.getAttribute("userpath");
 
 		Vector<String> urlpartList = new Vector<String>();
 		StringTokenizer stok = new StringTokenizer(requestURL,"/");
@@ -115,30 +117,26 @@ private String m_FilenameStr;
 				sos.println("<html><head><title>Filename Needed</title></head><body><h2>Filename Needed</h2></body></html>");
 			}else{
 				res.setContentType("xml");
-				String downloadfiledir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/output/";
+				String downloadfiledir = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr+"/output/";
 				String downloadfilename = downloadfiledir+m_FilenameStr;
 				if(m_FilenameStr.endsWith(".zip")){
-					//System.out.println("GENERATING ZIP DIR<"+m_DirStr+"> FN<"+m_FilenameStr+">");
 					if(m_DirStr!=null){
 						downloadfilename = downloadfiledir+"/"+m_DirStr+".zip";
 						ZipUtil zu = new ZipUtil();
 						zu.zip(downloadfiledir,"xml",downloadfilename);
 					}
 				}else if(m_FilenameStr.endsWith(".tar.gz")){
-					//System.out.println("GENERATING TAR.GZ DIR<"+m_DirStr+"> FN<"+m_FilenameStr+">");
 					ZipUtil zu = new ZipUtil();
 					downloadfilename = downloadfiledir+"/"+m_DirStr+".tar";
 					zu.tar(downloadfiledir,".xml",downloadfilename);
 					if(zu.gzip(downloadfilename,downloadfilename+".gz")>=0){
-						System.out.println("REMOVAL OF INTERMEDIATE TAR<"+downloadfilename+"> HAPPENING?");
 						downloadfilename+=".gz";
 					}
 				}else if(m_FilenameStr.endsWith(".html")){
-					downloadfiledir = Global.BASE_USER_DIR+"/"+m_OwnerID+"/"+m_DirStr+"/valid/";
+					downloadfiledir = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr+"/valid/";
 					downloadfilename = downloadfiledir+"/"+m_FilenameStr;
 					res.setContentType("html");
 				}
-				//System.out.println("\tDLF<"+downloadfilename+">");
 				File f = new File(downloadfilename);
 				if((f!=null)&&(f.exists())){
 					try(FileInputStream fis = new FileInputStream(f);BufferedInputStream bis = new BufferedInputStream(fis)){
