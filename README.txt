@@ -1,6 +1,6 @@
 
 Updated on 11/15/2012 
-Fixed 'no javascript' operation.  Built out Register/PasswordReset/PasswordChange functionality for local signin.  Improved integration between local and openid signin.  Changed local storage from '/tmp' to '/var' directory. Shortended main URL paths.
+Fixed 'no javascript' operation.  Built out Register/PasswordReset/PasswordChange functionality for local signin.  Improved integration between local and openid signin.  Changed local storage from '/tmp' to '/var' directory. Shortened main URL paths.
 
 
 Updated on 10/25/2012 
