@@ -1,3 +1,6 @@
+Updated 12/20/2012
+Significant documentation upgrade  - added AboutVicar.html and VicarSoftware.html as well as javadoc and xsl comments.
+
 
 Updated on 11/15/2012 
 Fixed 'no javascript' operation.  Built out Register/PasswordReset/PasswordChange functionality for local signin.  Improved integration between local and openid signin.  Changed local storage from '/tmp' to '/var' directory. Shortened main URL paths.
