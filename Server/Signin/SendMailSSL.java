@@ -1,4 +1,3 @@
-//originally from http://www.mkyong.com/java/javamail-api-sending-email-via-gmail-smtp-example/
 
 package Server.Signin;
  
@@ -10,9 +9,21 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.MessagingException;
- 
+
+/**
+* Based on sample code from http://www.mkyong.com/java/javamail-api-sending-email-via-gmail-smtp-example/
+* Requires the addition of mail.jar from http://www.oracle.com/technetwork/java/javamail/index.html
+* The addition of mail.jar likely requires the removal of geronimo-spec-javamail-1.3.1-rc5.jar which comes in the cocoon 2.1.11 distribution as it collides with mail.jar.
+* 
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/ 
 public class SendMailSSL {
 Session m_session;
+
+/**
+* Simple main for standalone testing.
+*/
 	public static void main(String[] args) {
 		if(args.length>=3){
 			String toaddr = args[0];
@@ -24,6 +35,13 @@ Session m_session;
 		}
 	}
 
+/**
+* Constructor to set the username and password.
+* Hardcoded for google accounts.
+*
+* @param the_username The username (without the @gmail.com suffix).
+* @param the_pwd The password.
+*/
 	public SendMailSSL(final String the_username,final String the_pwd){
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
@@ -40,6 +58,14 @@ Session m_session;
 		//m_session.setDebug(true); 
 	}
 
+/**
+* Send an email.
+* 
+* @param the_sourceaddr The full email address that this email should appear to come from.
+* @param the_recipient The full email address of the recipient.
+* @param the_subject The subject of the message.
+* @param the_text The body of the message.
+*/
 	public void SendMail(String the_sourceaddr,String the_recipient,String the_subject,String the_text){	
 		try {
 			Message message = new MimeMessage(m_session);

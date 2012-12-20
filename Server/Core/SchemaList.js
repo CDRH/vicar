@@ -1,3 +1,6 @@
+/*
+* Used by the Vicar.html web page to distinguish schema file names based on type in the schema select list.
+*/
 function selectedOption(sel){
 	var p = sel.options[sel.selectedIndex].value;
 	//alert(p);

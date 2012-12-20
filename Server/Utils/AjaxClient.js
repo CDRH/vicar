@@ -4,6 +4,7 @@
 // by David Flanagan
 // O'Reilly Media Inc. 2006
 // but significantly mutated since then
+//USED BY Convert/StreamClient.js to get conversion progress from Convert/StreamServer.xml and by AjaxUpload.js to send uploaded files to Upload/AjaxServer.xml
 
 var HTTP = {
 };

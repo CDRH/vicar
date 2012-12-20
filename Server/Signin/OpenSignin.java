@@ -1,5 +1,3 @@
-//OpenSignin.java
-
 package Server.Signin;
 
 import Server.Global;
@@ -28,17 +26,17 @@ import org.apache.avalon.framework.service.ServiceException;
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.avalon.framework.activity.Disposable;
 
-//JOpenId
 import org.expressme.openid.Association;
 import org.expressme.openid.Endpoint;
 import org.expressme.openid.OpenIdManager;
 
 /**
+* A generator which implements sign in via OpenID.
 * Requires JOpenId-1.08.jar from http://code.google.com/p/jopenid/
-* This file is based in part on OpenIdServlet.java from the sample code.
+* This file is based heavily on OpenIdServlet.java from the jopenid sample code.
 *
 * @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
-* @version 0.1, 2/15/2012
+* @version 0.8, 12/15/2012
 */
 public class OpenSignin extends ServiceableGenerator implements Disposable {
 
@@ -62,15 +60,17 @@ private String m_msgtext = null;
 private OpenIdManager oimanager;
 private String m_op = null;
 
-
+@Override
 	public void dispose() {
 		super.dispose();
 	}
 
+@Override
 	public void recycle() {
 		super.recycle();
 	}
 
+@Override
 	public void service(ServiceManager manager) throws ServiceException{
 		super.service(manager);
 
@@ -81,7 +81,7 @@ private String m_op = null;
 		oimanager.setReturnTo(Global.URL_BASE+Global.URL_LOGIN_SFX);
 	}
 
-
+@Override
 	public void setup(SourceResolver resolver, Map objectModel,String src, Parameters par) {
 		m_request = ObjectModelHelper.getRequest(objectModel);
 		m_session = m_request.getSession();
@@ -89,7 +89,7 @@ private String m_op = null;
 		m_OwnerID = (String)m_session.getAttribute("userid");
 	}
 
-
+@Override
 	public void generate() throws SAXException, ProcessingException {
 		String RemoteAddr = m_request.getRemoteAddr();
 		String ForwardFor = m_request.getHeader("X-Forwarded-For");

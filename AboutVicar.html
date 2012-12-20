@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>Vicar operation</title>
+<style type="text/css">
+	a {
+		color:blue;
+		text-decoration:none;
+		outline:none;
+	}
+	div {
+		font-size:105%;
+		font-family:Arial;
+		margin:0.5em;
+	}
+	.banner {
+		font-size:145%;
+		color:black;
+	}
+	.header {
+		margin:1em 0.5em 0.75em 0.5em;
+		font-size:135%;
+		color:gray;
+	}
+</style>
+
+</head>
+<body>
+<a href="Signin.html" style="position:relative;float:right;top:0px;"><div>Sign In</div></a>
+<div class="banner">Welcome to Vicar! (version 0.8, Dec 15, 2012)</div>
+
+<div>
+Vicar is an <a href="http://www.mellon.org">Andrew Mellon Foundation</a> funded web application which provides researchers with an easy and fast way to convert their data files into a <a href="http://monkproject.org">MONK</a> compatible format using <a href="http://monkproject.org/docs/abbot.html">Abbot</a>.  Vicar was developed by Frank Smutniak at the <a href="http://cdrh.unl.edu">Center for Digital Research in the Humanities</a> at the University of Nebraska - Lincoln.
+</div>
+
+<div>MONK (Metadata Offer New Knowledge) is a web based system for undertaking text analysis and visualization with large full-text literary archives.  These archives are represented in various dialects of the TEI XML schema.  Disparate uses and interpretations for the TEI element set has led to complications in the use of MONK for any TEI file.
+</div>
+
+<div>
+Abbot, a standalone XSLT program written by Brian Pytlik-Zillig, was created to read different files and convert them to a core set of TEI elements named TEI-A such that MONK could use them consistently.  Abbot harvests the schema of a collection of submitted files and creates another XSLT program to convert those files to TEI-A for use in MONK or elsewhere.  Further work by Stephen Ramsey gave Abbot a clojure wrapper which allows its invocation by Vicar and other software components.
+</div>
+
+<div>
+Vicar provides researchers with access to an up to date version of Abbot on a server at the University of Nebraska - Lincoln.  Vicar allows users to upload multiple large XML or compressed collections of XML files and process those files using Abbot with standard or user supplied custom schemas.  Validation checks are performed on the resultant TEI-A output files.  Output files can then be downloaded individually or as a single compressed file.
+</div>
+
+<div>
+Vicar diminishes the need for MONK users to install and maintain a local copy of Abbot.
+</div>
+
+<div class="header">Access</div>
+<div>
+In order for your data files to persist between sessions you are required to sign in.
+</div>
+<div>
+You may sign in with a local account or use an account from either yahoo.com or gmail.com as these support <a href="http://openid.net/get-an-openid/what-is-openid/">OpenID</a>.  Create a local account directly with Vicar by clicking on the REGISTER link and entering your email address and a new vicar specific password.  You will receive a confirmation link via email.  Click on this link to activate your account.
+</div>
+<div>
+If you have a yahoo.com or gmail.com account you can bypass Vicar registration and use one of these accounts instead.  Clicking on the respective links allows you to sign into your yahoo.com or gmail.com account and have the respective site relay verification to Vicar confirming that you are who you say you are.  (Since you sign in directly with these entities Vicar does not see your password.)
+</div>
+<div>
+Access to your data collections is tied to your email address.  If you are registered directly with Vicar using a yahoo.com or gmail.com email address, you can access that same collections via an openid signin with the same email address.  Similarly, if you created collections via an openid sign in and you then create a local account via registration with Vicar, you will have access to those same collections.
+OR
+You can sign in via openid using either a yahoo.com or gmail.com account or you could choose to register for an account directly with Vicar.  If you choose the latter but then sign in using an openid account with the email address that you used for a local sign in, you will be given access to those same collections. (If you want to use your yahoo.com or gmail.com account you do not need to register with Vicar.)
+</div>
+
+<div class="header">Operation</div>
+<div>
+You can create collections and upload your input and schema files once you are signed in.  Click on CREATE NEW COLLECTION and enter a name containing only letters a-z and A-Z with no spaces.  Press SAVE to create your collection.  Since it is new it will be empty.  Clicking on COLLECTIONS will show the list of all your collections.  Select a collection name to see it's contents and add files.  Delete your collection and it's contents by clicking on the associated red X.
+</div>
+
+<div>
+You can add individual files or multiple files at once if such actions are supported by your browser (see Notes).  You can also upload a zip file containing multiple XML data files.  Click on the UNZIP link and the contents of the zip file will be unpacked into this collection.
+</div>
+
+<div>
+Once you have files in your collection you will see a dropdown menu with schema names and a button with 3 green 'greater than' arrows.  The schema list will show Vicar provided schema names listed in blue.  User supplied schema names appear at the end of the list in black.
+</div>
+
+<div>
+Select a schema and then click on the arrows button to invoke file conversion.  Vicar will show the progress of the Abbot conversion and will populate an output directory with the result of it's run.  Each file will, to it's right, have a green OK in a green outline or a red number in a red outline.  This is the result of schema validation.  The red number is the number of errors found by the validation software.  Clicking on the red number will show the errors reported from the validation stage.
+</div>
+
+<div>
+Click on an individual XML output file to display it's contents and save it on your local computer.  If the output contains multiple files you will be given an option to package and download them as a single zip file.
+</div>
+
+<div>
+Your files will persist in your collections until you delete them or until your account is inactive for a duration TBD.
+</div>
+
+<div class="header">Notes</div>
+<div>
+Vicar works best with most up to date browsers which support HTML5.  HTML5 compatibility is needed for multiple file uploads but single uploads will still be possible without it.
+</div>
+
+<div>
+Vicar works best with javascript enabled.  A browser which has javascript disabled will not allow mutliple uploads nor will it display progress bars related to uploads or conversions but should otherwise be functional. 
+</div>
+
+<div>
+During this beta stage no single uploaded input file can exceed 15MB.
+</div>
+
+<div>See Also: <a href="VicarSoftware.html">VicarSoftware.html</a> </div>
+
+</body>
+</html>
+
+

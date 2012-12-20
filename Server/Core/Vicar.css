@@ -1,30 +1,41 @@
 <!--
 /*hide from old browsers*/
+
+/*used with modernizr to differentiate presentations to browsers which have javascript enabled and those which do not*/
 	html.js #nojsmsg {display:none;}
 	html.no-js #nojsmsg {display:block;}
 	html.no-js #nojshide {display:none;}
+
+/*basic cleanup*/
 	body *{outline:none;}
 	body {margin:0.5em;padding:0em;font-family:arial,sans-serif;}
-
-	progress {background-color:white;width:99%;margin:10px;border:1px solid blue;}
-
 	a {color:blue;}
 
+/*progress bar used to display file uploads*/
+	progress {background-color:white;width:99%;margin:10px;border:1px solid blue;}
+
+/*simple error message differentiation from other text*/
 	#errmsg {font-size:110%;color:red;}
 
-	#collection_delete {outline:none;text-decoration:none;color:red;border:1px solid red;background:white;font-size:100%;font-family:sans-serif;padding:0px 2px 0px 2px;border-radius:8px;-moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;}
+/*used to make simple green plus in an oval and red x in an oval for collection creation and deletion*/
 	#collection_create {outline:none;text-decoration:none;color:green;border:1px solid green;background:white;font-size:100%;font-family:sans-serif;padding:0px 1px 0px 2px;border-radius:8px;-moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;}
+	#collection_delete {outline:none;text-decoration:none;color:red;border:1px solid red;background:white;font-size:100%;font-family:sans-serif;padding:0px 2px 0px 2px;border-radius:8px;-moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;}
 
+
+/*used to make simple green OK in an oval and red [quantity] in an oval for displaying error status of validated files*/
 	.error_report_green {outline:none;text-decoration:none;color:green;border:1px solid green;background:white;font-size:100%;font-family:sans-serif;padding:0px 2px 0px 2px;border-radius:8px;-moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;}
 	.error_report_red {outline:none;text-decoration:none;color:red;border:1px solid red;background:white;font-size:100%;font-family:sans-serif;padding:0px 2px 0px 2px;border-radius:8px;-moz-border-radius:8px;-webkit-border-radius:8px;-khtml-border-radius:8px;}
 
 
+/*provide basic display help for the 3 columns of the main vicar page*/
 	.innercolumn {display:inline;min-width:32%;float:left;margin:0em 0em 2em 0em;}
 	.outercolumn {display:inline;min-width:32%;float:left;margin:0em 0em 2em 0em;}
 
 	.columnheader {font-weight:bold;font-size:110%;margin:0.5em 0em;}
 	.columntitle {padding:0em 0em 0em 0.3em;}
 
+
+/*media selector to discriminate between different screen size categories and provide column presentation overrides*/
 	@media all and (max-width:320px){
 		#smartphonesize{display:block;}
 		#tabletsize{display:none;}

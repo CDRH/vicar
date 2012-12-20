@@ -1,5 +1,3 @@
-//Account.java
-
 package Server.Signin;
 
 import Server.Global;
@@ -31,6 +29,14 @@ import org.apache.avalon.framework.parameters.ParameterException;
 import org.apache.avalon.framework.activity.Disposable;
 //import org.apache.avalon.excalibur.datasource.DataSourceComponent;
 
+/**
+* A generator to allow users access to their account information.
+* This is currently very simple as the only account information available is access to Password changes via {@link Password}.
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/
+
 public class Account extends ServiceableGenerator implements Disposable {
 
 
@@ -40,22 +46,26 @@ private ServiceSelector m_selector;
 
 private String m_OwnerID;
 
+@Override
 	public void dispose() {
 		super.dispose();
 		//manager.release(m_dataSource);
 		//m_dataSource = null;
 	}
 
+@Override
 	public void recycle() {
 		super.recycle();
 	}
 
+@Override
 	public void service(ServiceManager manager) throws ServiceException{
 		//System.out.println("CALLING Account SERVICE");
 		super.service(manager);
 		//m_selector = (ServiceSelector)manager.lookup(DataSourceComponent.ROLE+"Selector");
 	}
 
+@Override
 	public void setup(SourceResolver resolver, Map objectModel,
 			String src, Parameters par) {
 		Request request = ObjectModelHelper.getRequest(objectModel);
@@ -64,6 +74,7 @@ private String m_OwnerID;
 		m_OwnerID = (String)m_session.getAttribute("userid");
 	}
 
+@Override
 	public void generate() throws SAXException, ProcessingException {
 			/****
 			m_session.setAttribute("newlogin","1");
@@ -74,7 +85,6 @@ private String m_OwnerID;
 			String openid = (String)m_session.getAttribute("openid");
 		generateAccountXML(contentHandler,Global.URL_APPL,openid,0,null);
 	}
-
 
 	public static void generateAccountXML(ContentHandler contentHandler,String the_mainurl,String the_openid,int the_msgCode,String the_msgTxt)
 			throws SAXException, ProcessingException {

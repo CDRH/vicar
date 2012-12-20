@@ -1,5 +1,3 @@
-//AjaxUtil.java
-
 package Server.Upload;
 
 import java.nio.file.Files;
@@ -14,6 +12,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+
+/**
+* Provides {@link AjaxServer} with InputStream to file conversion.
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/
 public class AjaxUtil {
 
 private static final int BUFFER = 32*1024;;
@@ -23,6 +28,10 @@ private static final int BUFFER = 32*1024;;
 
 /**
 * Read raw bytes of a text stream and write the data to file specified by the filename.
+* @param the_path The directory where the file should be written.
+* @param the_filename The name which should be given to the uploaded file.
+* @param the_sis The InputStream which contains the file data.
+* @return The number of bytes written.  This number is negative if nonzero but an exception occurred.
 */
 	public static int writeFileFromInputStream(String the_path,String the_filename,InputStream the_sis){
 		int byteswritten = 0;
@@ -50,6 +59,10 @@ private static final int BUFFER = 32*1024;;
 
 /**
 * Read base64 data by stripping the preamble, converting the data to raw bytes, and then storing in the specified file.
+* @param the_path The directory where the file should be written.
+* @param the_filename The name which should be given to the uploaded file.
+* @param the_sis The InputStream which contains the file data.
+* @return The number of bytes written.  This number is negative if nonzero but an exception occurred.
 */
 	public static int writeBase64FileFromInputStream(String the_path,String the_filename,InputStream the_sis){
 		int byteswritten = 0;

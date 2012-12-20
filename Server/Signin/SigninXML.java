@@ -1,5 +1,3 @@
-//SigninXML.java
-
 package Server.Signin;
 
 import org.xml.sax.ContentHandler;
@@ -7,6 +5,12 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.SAXException;
 import org.apache.cocoon.ProcessingException;
 
+/**
+* Provides a common method for use by {@link Signin}, {@link OpenSignin}, and {@link Signout} to produce XML output for their respective XSLT conversions.
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/
 public class SigninXML {
 
 	public static void generateSigninXML(ContentHandler contentHandler,String the_ID,String the_actStr,String the_title,int the_delay,String the_url,int the_msgcode,String the_msgtext,String the_mode,int the_dispose)

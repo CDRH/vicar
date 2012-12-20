@@ -1,5 +1,3 @@
-//FileDB.java
-
 package Server.Signin;
 
 import Server.Global;
@@ -23,12 +21,22 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.ClassNotFoundException;
 
+/**
+* Provides simple operations on a serialized file for storing and retrieving user account information.
+* (If this proves to be the best way to proceed then efforts will be made to get the currently commented out try_with_resources versions of the code operational.)
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/
 public class FileDB {
 
 private static Path destpath = Paths.get(Global.ACCTFILE_PATH);
 
 private Map<String,Object> m_usermap = new HashMap<String,Object>();
 
+/**
+* Simple main for testing.
+*/
 	public static void main(String args[]){
 		FileDB fdb = new FileDB();
 		fdb.setEntry("aaa@example.com",new Integer("1"));
@@ -44,6 +52,9 @@ private Map<String,Object> m_usermap = new HashMap<String,Object>();
 		//System.out.println("RECORDS LOADED<"+reccnt+">");
 	}
 
+/**
+* Saves current usermap information into the file referenced by destpath.
+*/
 	public int saveDB(){
 		int records = 0;
 
@@ -77,6 +88,9 @@ private Map<String,Object> m_usermap = new HashMap<String,Object>();
 		return records;
 	}
 
+/**
+* Loads account information from the file referenced by destpath into the usermap.
+*/
 	public int loadDB(){
 		int size = 0;
 /****
@@ -163,6 +177,12 @@ private Map<String,Object> m_usermap = new HashMap<String,Object>();
 		return size;
 	}
 
+/**
+* Updates the usermap with the key/value pair and saves it to the data storage file referenced by destpath.
+* @param the_key The unique name by which an entry will be searched.
+* @param the_obj The entry to be added or updated in the usermap.
+* @return The entry placed in the map.
+*/
 	public Object setEntry(String the_key,Object the_obj){
 		Object entryVal = null;
 		synchronized(this){
@@ -172,6 +192,10 @@ private Map<String,Object> m_usermap = new HashMap<String,Object>();
 		return entryVal;
 	}
 
+/**
+* Retrieves a key/value pair from the usermap based on the key.
+* @param the_key The unique name by which an entry will be searched.
+*/
 	public Object getEntry(String the_key){
 		//Display();
 		//System.out.println("GET ENTRY <"+the_key+">");
@@ -182,6 +206,10 @@ private Map<String,Object> m_usermap = new HashMap<String,Object>();
 		return entryVal;
 	}
 
+/**
+* Removes an key/value pair from the usermap and the data storage file referenced by destpath.
+* @param the_key The unique name by which an entry will be searched.
+*/
 	public Object delEntry(String the_key){
 		Object entryVal = null;
 		synchronized(this){
@@ -191,6 +219,9 @@ private Map<String,Object> m_usermap = new HashMap<String,Object>();
 		return entryVal;
 	}
 
+/**
+* Simple display for testing.
+*/
 	public void Display(){
 		Iterator it = m_usermap.entrySet().iterator();
 		while(it.hasNext()){
@@ -201,35 +232,3 @@ private Map<String,Object> m_usermap = new HashMap<String,Object>();
 	}
 }
 
-/*****
-//LogWriter.java
-
-package Server;
-
-import java.io.*;
-import java.nio.file.*;
-import java.nio.file.Files;
-import java.nio.charset.StandardCharsets;
-import java.io.*;
-import java.util.Date;
-
-public class LogWriter {
-
-private static Path destpath = Paths.get(Global.LOGFILE_PATH);
-
-	public static void main(String args[]){
-		LogWriter.msg("IPADDR","hello world!");
-		LogWriter.msg("IPADDR","hello world!");
-	}
-
-	public LogWriter(){
-	}
-
-	public static long msg(String the_ipaddr,String the_msg){
-		Date d = new Date();
-		long ts = d.getTime();
-		the_msg = the_ipaddr+","+d+","+ts+","+the_msg;
-		return ts;
-	}
-}
-*****/

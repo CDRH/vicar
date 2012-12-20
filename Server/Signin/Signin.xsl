@@ -12,6 +12,7 @@
 </html>
 </xsl:template>
 
+<!-- passes user on to specified page upon successful sign in, or offers a one of several forms -->
 <xsl:template match="signin">
 <head>
 	<title>
@@ -29,8 +30,10 @@
 <xsl:if test="url/text() ='NONE'">
 	<div style="color:blue;font-size:120%;font-weight:bold;margin:1em;position:absolute;top:45%;">
 		<xsl:value-of select="title/text()"/>
+		<a style="color:gray;font-size:60%;margin:0.5em;" href="AboutVicar.html">more info</a>
 	</div>
 
+	<!-- sign in for either first time or in response to a sign out -->
 	<xsl:if test="@act = 'signin' or @act = 'null'">
 		<div align="right" style="border:0px;margin:8px;padding:0px 25px 0px 0px;">
 			<xsl:if test="msg/@code = 0">
@@ -103,6 +106,7 @@
 		</div>
 	</xsl:if>
 
+	<!-- implements register form -->
 	<xsl:if test="@act = 'register'">
 		<div class="banner">Register</div>
 		<div class="instruct">Enter your email address for ID and then enter a new password twice.</div>

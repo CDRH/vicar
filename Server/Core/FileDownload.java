@@ -1,11 +1,11 @@
-//FileDownload.java
-
 package Server.Core;
 
 import Server.Global;
 
+/****
 import org.junit.*;
 import static org.junit.Assert.*;
+****/
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +22,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 import org.apache.cocoon.generation.ServletGenerator;
+//import org.apache.cocoon.generation.ServiceableGenerator;
 import org.apache.cocoon.ProcessingException;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.environment.ObjectModelHelper;
@@ -36,14 +37,17 @@ import org.apache.avalon.framework.component.ComponentException;
 
 
 /**
-* Reads a specified data file from the directory structure into a ServletOutputStream for delivery to a browser via http.
-* This allows a user to click on the name of an output file in a collection and have that file downloaded to their local computer.
+* A Generator which returns a specified data file from the directory structure into a ServletOutputStream for delivery to a browser via http.
+* This allows a user to click on the name of an output file and have that file downloaded to their local computer.
+*
+* This class inherits from ServletGenerator instead of the usual ServiceableGenerator for as it needs access to ServletOutputStream.  The ServletOutputStream can introduce the file contents as a stream rather than XML as would be typical for a ServiceableGenerator.
 *
 * @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
-* @version 0.1, 2/15/2012
+* @version 0.8, 12/15/2012
 */
 
 public class FileDownload extends ServletGenerator implements Disposable {
+//public class FileDownload extends ServiceableGenerator implements Disposable {
 
 private String m_OwnerID;
 private String m_OwnerPath;
@@ -51,16 +55,16 @@ private Session m_session;
 private String m_DirStr;
 private String m_FilenameStr;
 
+/****
 @Test
 	public void testFileDownload(){
 		assertTrue(true);
 	}
+****/
 
 @Override
 	public void dispose() {
 		super.dispose();
-		//manager.release(m_dataSource);
-		//m_dataSource = null;
 	}
 
 @Override
@@ -75,7 +79,8 @@ private String m_FilenameStr;
 	}
 
 /**
-* Gets userid from session and directory and filename information from Request.
+* Gets the userid and ownerpath from session and the directory and filename information from Request.
+* The ownerpath indicates the subdirectory under the global data location in which this particular user's data files will be stored.
 */
 @Override
 	public void setup(SourceResolver resolver,Map objectModel,String src, Parameters par) {
@@ -102,7 +107,7 @@ private String m_FilenameStr;
 
 /**
 * Determines the data file to be read and packages into a ServletOutputStream for delivery to a browser via http.
-* If the the directory or the filename is not specified then an html error message is returned.
+* If the the directory or the filename is not specified then a simple html error message is returned.
 */
 @Override
 	public void generate() throws SAXException, ProcessingException {

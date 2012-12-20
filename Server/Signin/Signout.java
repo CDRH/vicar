@@ -1,5 +1,3 @@
-//Signout.java
-
 package Server.Signin;
 
 import Server.Global;
@@ -28,7 +26,11 @@ import org.apache.avalon.framework.service.ServiceException;
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.avalon.framework.activity.Disposable;
 
-
+/**
+* A generator which signs a user out of their account by clearing session information and returning the user to the Sign in page with messages appropriate to their session termination. 
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/
 public class Signout extends ServiceableGenerator implements Disposable {
 
 private Request m_request;
@@ -41,27 +43,29 @@ private int m_delay = 0;
 private int m_msgcode = 0;
 private String m_msgtext = null;
 
-
+@Override
 	public void dispose() {
 		super.dispose();
 	}
 
+@Override
 	public void recycle() {
 		super.recycle();
 	}
 
+@Override
 	public void service(ServiceManager manager) throws ServiceException{
 		super.service(manager);
 	}
 
-
+@Override
 	public void setup(SourceResolver resolver, Map objectModel,String src, Parameters par) {
 		m_request = ObjectModelHelper.getRequest(objectModel);
 		m_session = m_request.getSession();
 		m_OwnerID = (String)m_session.getAttribute("userid");
 	}
 
-
+@Override
 	public void generate() throws SAXException, ProcessingException {
 		String RemoteAddr = m_request.getRemoteAddr();
 		String ForwardFor = m_request.getHeader("X-Forwarded-For");

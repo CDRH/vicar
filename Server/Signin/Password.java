@@ -1,5 +1,3 @@
-//Password.java
-
 package Server.Signin;
 
 import Server.Global;
@@ -31,6 +29,11 @@ import org.apache.avalon.framework.parameters.ParameterException;
 import org.apache.avalon.framework.activity.Disposable;
 import org.apache.avalon.excalibur.datasource.DataSourceComponent;
 
+/**
+* A generator which allows a signed in user to change thier password.
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/
 public class Password extends ServiceableGenerator implements Disposable {
 
 private Session m_session;
@@ -45,22 +48,26 @@ private String m_PasswordNewAgain;
 
 private String m_remoteAddr = null;
 
+@Override
 	public void dispose() {
 		super.dispose();
 		manager.release(m_dataSource);
 		m_dataSource = null;
 	}
 
+@Override
 	public void recycle() {
 		super.recycle();
 	}
 
+@Override
 	public void service(ServiceManager manager) throws ServiceException{
 		//System.out.println("CALLING Password SERVICE");
 		super.service(manager);
 		m_selector = (ServiceSelector)manager.lookup(DataSourceComponent.ROLE+"Selector");
 	}
 
+@Override
 	public void setup(SourceResolver resolver, Map objectModel,
 			String src, Parameters par) {
 		Request request = ObjectModelHelper.getRequest(objectModel);
@@ -82,6 +89,11 @@ private String m_remoteAddr = null;
 		//System.out.println("OwnerID<"+m_OwnerID+"> PWD<"+m_PasswordCurr+"> PWDNEW<"+m_PasswordNew+"> PWDNEWAGAIN<"+m_PasswordNewAgain+"> PERFORM<"+m_perfStr+">");
 	}
 
+/**
+* Produces XML output for the password change page Password.html.
+* If the session attribute <i>userid</i> is null then it is assumed that the user is not signed in and XML is generated which will cause Password.html to return the user to the signin page. 
+*/
+@Override
 	public void generate() throws SAXException, ProcessingException {
 		if(m_OwnerID == null){
 			contentHandler.startDocument();
@@ -132,60 +144,6 @@ private String m_remoteAddr = null;
 				dispose = 1;
 				//System.out.println("CANCEL");
 			}
-/****
-			if(true){
-				m_session.setAttribute("PWDRESET","false");
-				if(m_perfStr==null){
-				}else if(m_perfStr.equals("Cancel")){
-					//m_actStr = "signin";
-				}else if(m_perfStr.equals("Reset")){
-					if((m_OwnerID==null)||(m_OwnerID.length()<1)){
-						messageText = "Please enter your email address and a reset link will be sent to you.";
-						messageCode = 1;
-					}else if(Utils.isValidEmailFormat(m_OwnerID)){
-						AcctMngr am = new AcctMngr();
-						AcctData currad = am.getAcct(m_OwnerID);
-						if(currad!=null){
-							am.Display();
-							MD5 md5 = new MD5();
-							Date d = new Date();
-							String ts = ""+d.getTime();
-							System.out.println("TIME<"+ts+">");
-							String confirmpwd = md5.getMD5(m_OwnerID.toUpperCase()+ts);
-							AcctData newad = new AcctData(m_OwnerID,currad.getPwd(),AcctData.STATUS_ACTIVE,confirmpwd);
-							System.out.println("REQUEST FOR LINK SETTING AUX TO <"+confirmpwd+">");
-							am.setAcct(newad.getID(),newad);
-							SendMailSSL sm = new SendMailSSL(Global.GMAIL_ID,Global.GMAIL_PWD);
-							String emailtext="Please click on "+Global.URL_BASE+"/vicar/Password/Password.html?act=resetpwdlink&signinid="+m_OwnerID+"&pwdalt="+confirmpwd+" to reset your password.";
-							sm.SendMail(Global.GMAIL_ID+"@gmail.com",m_OwnerID,"Vicar Password Reset",emailtext);
-							messageText = "Please check your email for a password reset link.";
-							messageCode = 1;
-						}else{
-							messageText = "No such account. Please try again.";
-							messageCode = -1;
-						}
-					}else{
-						messageText = "Invalid email format. Please try again.";
-						messageCode = -1;
-					}
-				}
-			}else if(m_perfStr.equalsIgnoreCase("resetpwdlink")){
-				if(m_perfStr==null){
-					AcctMngr am = new AcctMngr();
-					AcctData currad = am.getAcct(m_OwnerID);
-					if((currad!=null)&&(m_PasswordNew!=null)&&(m_PasswordNew.equals(m_PasswordNewAgain))){
-						//LINKVALID
-						m_session.setAttribute("PWDRESET","true");
-					}else{
-						messageText = "This reset link is now invalid. Please return to the signin screen and try again.";
-						messageCode = -1;
-						m_session.setAttribute("PWDRESET","false");
-					}
-				}else if(m_perfStr.startsWith("Cancel")){
-					dispose = 1;
-				}
-			}
-****/
 		}catch(Exception e){
 			System.out.println("PASSWORD ERROR");
 			e.printStackTrace();
@@ -194,7 +152,7 @@ private String m_remoteAddr = null;
 	}
 
 
-	public static void generatePasswordXML(ContentHandler contentHandler,String the_OwnerID,int the_msgcode,String the_msgtext,int the_dispose)
+	private static void generatePasswordXML(ContentHandler contentHandler,String the_OwnerID,int the_msgcode,String the_msgtext,int the_dispose)
 			throws SAXException, ProcessingException {
 		try {
 			contentHandler.startDocument();

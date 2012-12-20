@@ -1,5 +1,3 @@
-//SessionSaver.java
-
 package Server;
 
 import java.io.BufferedWriter;
@@ -19,11 +17,13 @@ import java.io.IOException;
 import org.apache.cocoon.environment.Session;
 
 /**
+* Saves a user's settings to the file specified by {@link Global#SESSION_FILE} which is stored in the user's path.
+* Used by {@link Convert.AbbotConvert} to store the most recently used schema file name and the vector of errors found during validation.  This file is read by {@link Core.Vicar} following sign in.
+* Any session attribute prefixed with 'SAVE:' is saved.
 *
 * @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
-* @version 0.1, 2/15/2012
+* @version 0.8, 12/15/2012
 */
-
 public class SessionSaver {
 
 private Session m_session;
@@ -32,6 +32,11 @@ private static String TOKEN = "$";
 	public SessionSaver(){
 	}
 
+/**
+* Loads the session information from the session file and restores the session attribute values indicated by each data line.
+* @param the_session The session for action on its attributes.
+* @param the_pathname The path to the session storage file.
+*/
 	public static void load(Session the_session,String the_pathname){
 		try {
 			Path p = Paths.get(the_pathname);
@@ -73,6 +78,11 @@ private static String TOKEN = "$";
 		}
 	}
 
+/**
+* Saves all session attributes prefixed with 'SAVE:' and parsed by TOKEN.
+* @param the_session The session for action on its attributes.
+* @param the_pathname The path to the session storage file.
+*/
 	public static void save(Session the_session,String the_pathname){
 		Path p = Paths.get(the_pathname);
 
@@ -92,6 +102,10 @@ private static String TOKEN = "$";
 		}
 	}
 
+/**
+* Displays all saveable attributes in the current session.
+* For debugging purposes.
+*/
 	public static void Display(Session the_session){
 		try {
 			System.out.println("SESSION ATTRIBUTES:");

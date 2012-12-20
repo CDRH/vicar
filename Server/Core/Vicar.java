@@ -1,12 +1,8 @@
-//Vicar.java
-
 package Server.Core;
 
 import Server.Global;
 import Server.SessionSaver;
 import Server.Signin.SigninXML;
-
-import edu.unl.abbot.Abbot;
 
 import java.util.Vector;
 import java.util.Map;
@@ -48,12 +44,12 @@ import org.apache.avalon.framework.activity.Disposable;
 import org.apache.cocoon.servlet.multipart.Part;
 
 /**
-* Implements the collections structure in a unix directory and provides a way for the user to invoke Abbot.
+* Generator which implements the collections structure in a unix directory and provides a way for the user to invoke Abbot.
 * Allows creation of individual collections.  Allows user to upload files, uncompress if necessary, convert the files using Abbot, and then download them.  If necessary the user can compress the files before download.
-* Requires abbot-0.3.3-standalone.jar
+* This generator also handles single file uploads delivered by the upload form when javascript is not enabled by the browser.  (File uploads are otherwise handled by {@link Server.Upload.AjaxServer}.)
 *
 * @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
-* @version 0.1, 2/15/2012
+* @version 0.8, 12/15/2012
 */
 
 public class Vicar extends ServiceableGenerator implements Disposable {
@@ -79,18 +75,22 @@ private int m_isnew = 0;
 private String m_CurrentSchema = null;
 private Part m_filePart;
 
+@Override
 	public void dispose() {
 		super.dispose();
 	}
 
+@Override
 	public void recycle() {
 		super.recycle();
 	}
 
+@Override
 	public void service(ServiceManager manager) throws ServiceException{
 		super.service(manager);
 	}
 
+@Override
 	public void setup(SourceResolver resolver, Map objectModel, String src, Parameters par) {
 		Request request = ObjectModelHelper.getRequest(objectModel);
 		m_session = request.getSession();
@@ -98,7 +98,6 @@ private Part m_filePart;
 		m_OwnerPath = (String)m_session.getAttribute("userpath");
 		if(m_OwnerID!=null){
 			m_PersonName = (String)m_session.getAttribute("personname");
-			//m_PersonEmail = (String)m_session.getAttribute("personemail");
 
 			m_DirStr = request.getParameter("dir");
 			m_ActStr = request.getParameter("act");
@@ -110,7 +109,7 @@ private Part m_filePart;
 
 			String newlogin = (String)m_session.getAttribute("newlogin");
 			if((newlogin!=null)&&(newlogin.equals("1"))){
-				SessionSaver.load(m_session,Global.BASE_USER_DIR+"/"+m_OwnerPath+"/session.txt");
+				SessionSaver.load(m_session,Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+Global.SESSION_FILE);
 			}
 		}
 
@@ -123,14 +122,6 @@ private Part m_filePart;
 				m_DirStr = null;
 			}
 		}
-/****
-		if((m_mode!=null)&&(m_mode.equals("1"))){
-			if(m_OwnerID!=null){
-				SessionSaver.load(m_session,Global.BASE_USER_DIR+"/"+m_OwnerPath+"/session.txt");
-				//SessionSaver.Display(m_session);
-			}
-		}
-****/
 		if(m_DirStr!=null){
 			m_CurrentSchema = (String)m_session.getAttribute("SAVE:schema:"+m_DirStr);
 		}
@@ -138,32 +129,12 @@ private Part m_filePart;
 		m_msgcode = 0;
 	}
 
+@Override
 	public void generate() throws SAXException, ProcessingException {
 		if(m_OwnerID == null){
 			SigninXML.generateSigninXML(contentHandler,"","","",0,Global.URL_SIGNIN,0,"","",0);
 			return;
 		}
-/****
-		if(m_OwnerID == null){
-			if(m_SigninErrMsg!=null){
-				m_msg = m_SigninErrMsg;
-				m_msgcode = 1;
-			}
-			contentHandler.startDocument();
-				AttributesImpl signinAttr = new AttributesImpl();
-				contentHandler.startElement("","signin","signin",signinAttr);
-				AttributesImpl msgAttr = new AttributesImpl();
-				msgAttr.addAttribute("","msgcode","msgcode","CDATA",""+m_msgcode);
-				contentHandler.startElement("","msg","msg",msgAttr);
-				if(m_msg!=null){
-					contentHandler.characters(m_msg.toCharArray(),0,m_msg.length());
-				}
-				contentHandler.endElement("","msg","msg");
-				contentHandler.endElement("","signin","signin");
-			contentHandler.endDocument();
-			return;
-		}
-****/
 		//GET commands
 		if(m_ActStr==null){
 		}else if(m_ActStr.equalsIgnoreCase("del")){
@@ -277,7 +248,7 @@ private Part m_filePart;
 			//BUT FIRST CHECK FOR NON JAVASCRIPT ENABLED FORM POST OF FILES
 			if(m_performStr==null){
 			}else if(m_performStr.equalsIgnoreCase("Upload")){ //POST command
-				if(m_filePart!=null){ //ADD_IMAGE
+				if(m_filePart!=null){
 					String filedirpath = dirpath+"/input/";
 					final int BUFFER = 32*1024;
 					String fileName = m_filePart.getFileName();
@@ -321,6 +292,7 @@ private Part m_filePart;
 				//filemanagerAttr.addAttribute("","personemail","personemail","CDATA",""+m_PersonEmail);
 				contentHandler.startElement("","filemanager","filemanager",filemanagerAttr);
 
+				//MESSAGES
 				AttributesImpl msgAttr = new AttributesImpl();
 				msgAttr.addAttribute("","msgcode","msgcode","CDATA",""+m_msgcode);
 				contentHandler.startElement("","msg","msg",msgAttr);
@@ -330,6 +302,7 @@ private Part m_filePart;
 				contentHandler.endElement("","msg","msg");
 
 				if(mydirs!=null){
+					//COLLECTION LISTING
 					AttributesImpl mydirsAttr = new AttributesImpl();
 					mydirsAttr.addAttribute("","maxcount","maxcount","CDATA",""+maxcount);
 					mydirsAttr.addAttribute("","count","count","CDATA",""+mydirs.size());
@@ -344,13 +317,15 @@ private Part m_filePart;
 					}
 					contentHandler.endElement("","dirs","dirs");
 				}else{
+					//LISTING FOR A SPECIFIC COLLECTION
 					if(inputfiles!=null){
 						AttributesImpl collectionAttr = new AttributesImpl();
 						collectionAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
 						collectionAttr.addAttribute("","new","new","CDATA",""+m_isnew);
 						contentHandler.startElement("","collection","collection",collectionAttr);
 
-						if(inputfiles!=null){
+						//INPUT FILE LISTING FOR A SPECIFIC COLLECTION
+						//if(inputfiles!=null){
 							AttributesImpl inputfilesAttr = new AttributesImpl();
 							inputfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
 							inputfilesAttr.addAttribute("","count","count","CDATA",""+inputfiles.size());
@@ -376,8 +351,9 @@ private Part m_filePart;
 								contentHandler.endElement("","file","file");
 							}
 							contentHandler.endElement("","inputfiles","inputfiles");
-						}
+						//}
 
+						//SCHEMA LISTING FOR A SPECIFIC COLLECTION
 						if(m_DirStr!=null){
 							SchemaList sl = new SchemaList();
 							Vector<SchemaData> sdl = sl.getSchemaList(m_OwnerPath,m_DirStr,m_CurrentSchema);
@@ -420,7 +396,9 @@ private Part m_filePart;
 	}
 
 /**
-* Needs error checking!
+* Set up a basic directory structure for a new user collection.
+* @param the_dirpath The path where the subdirectories reside.
+* @return The name of the path.
 */
 	public String createDir(String the_dirpath){
 		try{
@@ -435,6 +413,14 @@ private Part m_filePart;
 		return the_dirpath;
 	}
 
+/**
+* Rename a user collection.
+* The default internal name for a new collection is 'NEW' and it must be renamed before it can be used.
+* @param the_dirpath The path where the user collection resides.
+* @param the_oldname The existing name of the collection.
+* @param the_newname The user selected name of the collection.
+* @return The name of the path of the new collection.
+*/
 	public String renameDir(String the_dirpath,String the_oldname,String the_newname){
 		String oldpath = the_dirpath+"/"+the_oldname;
 		String newpath = the_dirpath+"/"+the_newname;
@@ -445,6 +431,11 @@ private Part m_filePart;
 		return newpath;
 	}
 
+/**
+* Check that a particular path points to a directory.
+* @param the_dirpath The path to be checked.
+* @return A boolean value of true if the path is an existing directory and false if it is not.
+*/
 	public boolean isDir(String the_dirpath){
 		boolean isdir = false;
 		if(the_dirpath!=null){
@@ -462,6 +453,12 @@ private Part m_filePart;
 		return isdir;
 	}
 
+/**
+* List the user collections at the specified path.
+* This is used for listing the collections held by a particular user.
+* @param the_dirpath The path where the files reside.
+* @return A Vector of FileData objects pertaining to the collections.
+*/
 	public Vector<FileData> listDirs(String the_dirpath){
 		Vector<FileData> dir = new Vector<FileData>();
 		try {
@@ -495,6 +492,12 @@ private Part m_filePart;
 		return dir;
 	}
 
+/**
+* Remove the specified directory and it's contents.
+* The depth of the directory structure is fixed and known so a recursive implementation is unnecessary.
+* @param the_dirpath The path where the files reside.
+* @return The path which has been removed.
+*/
 	public String removeDir(String the_dirpath){
 		//System.out.println("DELETE<"+the_dirpath+">");
 		File f = new File(the_dirpath);
@@ -503,7 +506,6 @@ private Part m_filePart;
 				//DIR MUST BE EMPTY BEFORE DELETION
 				//System.out.println("DELETE DIR X<"+f.getName()+">");
 				File dirlist[] = f.listFiles();
-//CURRENTLY NOT RECURSIVE FOR SAFETY
 				for (File userdir : dirlist){
 					//System.out.println("DELETE DIR Y<"+userdir.getName()+">");
 					if(userdir.isDirectory()){
@@ -531,6 +533,11 @@ private Part m_filePart;
 		return the_dirpath;
 	}
 
+/**
+* Remove all files in a directory but leave the directory intact.
+* @param the_dirpath The path where the files reside.
+* @return The path which has been cleaned.
+*/
 	public String cleanDir(String the_dirpath){
 		//System.out.println("CLEAN<"+the_dirpath+">");
 		File f = new File(the_dirpath);
@@ -545,6 +552,11 @@ private Part m_filePart;
 		return the_dirpath;
 	}
 
+/**
+* List the names of all files in a directory.
+* @param the_dirpath The path where the files reside.
+* @return A Vector of Strings containing the file names.
+*/
 	public Vector<String> listFiles(String the_dirpath){
 		Vector<String> dir = new Vector<String>();
 		try {
@@ -563,6 +575,12 @@ private Part m_filePart;
 		return dir;
 	}
 
+/**
+* List the names of all files in a directory with the specified suffix.
+* @param the_dirpath The path where the files reside.
+* @param the_suffix The file suffix for which the listing is sought.
+* @return A Vector of Strings containing the file names.
+*/
 	public Vector<String> listFiles(String the_dirpath,String the_suffix){
 		Vector<String> dir = new Vector<String>();
 		try {
@@ -583,6 +601,11 @@ private Part m_filePart;
 		return dir;
 	}
 
+/**
+* Removes a file from a particular path.
+* @param the_filepath The path of the file to be removed.
+* @return The path of the deleted file if successful, null otherwise.
+*/
 	public String removeFile(String the_filepath){
 		String retval = null;
 		try{

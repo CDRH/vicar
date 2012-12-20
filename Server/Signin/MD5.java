@@ -1,11 +1,16 @@
-//MD5.java
 package Server.Signin;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+* Utilities for using MD5 digests to make unique 40 byte one way encryptions.
+*/
 public class MD5 {
 
+/**
+* Simple main for standalone testing.
+*/
 	public static void main(String args[]){
 		MD5 u = new MD5();
 		String s = "Four Score and Seven Years Ago...";
@@ -13,8 +18,8 @@ public class MD5 {
 		System.out.println("MD5<"+md5+">");
 	}
 
-	public MD5(){
-	}
+//	public MD5(){
+//	}
 
 	public String getMD5(String the_message){
 		if(the_message==null){
@@ -35,16 +40,9 @@ public class MD5 {
 		return null;
 	}
 
-	public String encryptPassword(String the_pwd,int the_length){
-		String digest = getMD5(the_pwd);
-		if(digest!=null){
-			return digest.substring(0,the_length);
-		}else{
-			return null;
-		}
-	}
-
-//The function byteArrayToHexString is from http://www.devx.com/tips/Tip/13540
+/**
+* The function byteArrayToHexString is from http://www.devx.com/tips/Tip/13540
+*/
 	private static String byteArrayToHexString(byte in[]) {
 		byte ch = 0x00;
 		int i = 0; 

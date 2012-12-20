@@ -1,6 +1,5 @@
 //SAVE BUTTON
-var url = '../Upload/AjaxServer.xml';
-var watchurl = '../Upload/MonitorServer.xml';
+var url = 'Upload/AjaxServer.xml';
 var msgbox;
 //var progressbox;
 var progressbarjq;
@@ -58,6 +57,7 @@ var dirname;
 		var reader = new FileReader();
 		reader.onload = function(e){
 			var sendurl = url+'?fn='+file.name+'&mt='+file.type+'&sz='+file.size+'&dir='+dirname+'&totsz='+sentbytes;
+			//alert(sendurl);
 			HTTP.sendXML(sendurl,e.target.result);
 		};
 		if(file.type.indexOf("text") == 0){
@@ -73,8 +73,9 @@ var dirname;
 
 	function getReturnXML(httpRequest){
 		if(httpRequest.readyState==4){
+			//alert(httpRequest.readyState);
 			if(httpRequest.status==200){
-				//alert(httpRequest.responseText);
+				//alert(httpRequest.status);
 				var xmldoc = httpRequest.responseXML;
 				var response = xmldoc.getElementsByTagName('Response')[0];
 				var complete = response.getAttribute("complete");
@@ -89,7 +90,8 @@ var dirname;
 					$("#progressbar").progressbar('value',p);
 				}else{
 					//location.replace('FileManager.html?dir='+dirname);
-					window.location.href='FileManager.html?dir='+dirname;
+					//window.location.href='FileManager.html?dir='+dirname;
+					window.location.href='Vicar.html?dir='+dirname;
 				}
 			}else{
 				//alert("httpRequest status error:"+httpRequest.status);

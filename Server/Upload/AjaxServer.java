@@ -1,5 +1,3 @@
-//AjaxServer.java
-
 package Server.Upload;
 
 import Server.Global;
@@ -33,6 +31,18 @@ import org.apache.avalon.framework.parameters.ParameterException;
 import org.apache.avalon.framework.activity.Disposable;
 import org.apache.avalon.excalibur.datasource.DataSourceComponent;
 
+/**
+* A Generator which handles the multiple file uploads from an HTML5 form or div as called by AjaxUpload.js.
+* This generator responds to Ajax calls from AjaxUpload.js which provides Core/Vicar.xsl with it's UploadInit() function which is loaded when the page's body is loaded.
+* An upload is triggered by either Vicar.xsl's div with id of <i>upload_msgbox</i> or form with id <i>upload_form</i>.
+* AjaxServer gives an XML response containing the number of bytes written so that AjaxUpload.js can calculate percent uploaded and control a progress bar's appearance.
+*
+* If javascript is not enabled then multiple simultaneous file uploads are not possible and single file uploads are handled by {@link Server.Core.Vicar}.
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/
+
 public class AjaxServer extends ServiceableGenerator implements Disposable {
 
 private ServiceSelector m_selector;
@@ -51,19 +61,27 @@ private int m_size = 0;
 private String m_msg = "";
 private int m_complete = 0;
 
+@Override
 	public void dispose() {
 		super.dispose();
 	}
 
+@Override
 	public void recycle() {
 		super.recycle();
 	}
 
+@Override
 	public void service(ServiceManager manager) throws ServiceException{
 		super.service(manager);
 		m_selector = (ServiceSelector)manager.lookup(DataSourceComponent.ROLE+"Selector");
 	}
 
+/**
+* Collects the session attributes and parameters.
+* 
+*/ 
+@Override
 	public void setup(SourceResolver resolver, Map objectModel,String src, Parameters par) {
 		Request request = ObjectModelHelper.getRequest(objectModel);
 		m_session = request.getSession();
@@ -89,6 +107,7 @@ private int m_complete = 0;
 		}
 		m_complete = 0;
 		String destdir = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_dirname;
+		//System.out.println("AjaxServer DESTDIR<"+destdir+">");
 		if(m_filename!=null){
 			try (ServletInputStream sis = ((HttpRequest)request).getInputStream()){
 				if((m_mimetype==null)||(m_mimetype.equals(""))||(m_mimetype.startsWith("application/"))){
@@ -115,6 +134,7 @@ private int m_complete = 0;
 					}
 				}else if(m_mimetype.indexOf("text") >= 0){
 					m_size = AjaxUtil.writeFileFromInputStream(destdir+"/input/",m_filename,(InputStream)sis);
+					//System.out.println("TEXT SIZE<"+m_size+">");
 					m_msg = "Uploaded file "+m_filename+" of type "+m_mimetype+" and size "+m_size+".";
 				}else if(m_mimetype.indexOf("image") >= 0){
 					//While no image file uploads are expected for abbot/vicar it is a good sanity check
@@ -133,10 +153,16 @@ private int m_complete = 0;
 		}
 	}
 
+
+@Override
 	public void generate() throws SAXException, ProcessingException {
 		generateResponseXML(contentHandler,m_dirname,m_complete,m_filename,m_size,m_msg);
 	}
 
+
+/**
+* Provides the XML response returned by generate.
+*/
 	public void generateResponseXML(ContentHandler contentHandler,String the_dirname,int the_complete,String the_filename,int the_size,String the_msg) throws SAXException, ProcessingException {
 		try {
 			contentHandler.startDocument();

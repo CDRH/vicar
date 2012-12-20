@@ -1,87 +1,31 @@
-//SchemaList.java
-
 package Server.Core;
 
 import Server.Global;
 
 import java.util.Vector;
-import java.util.Map;
-import java.util.Date;
-import java.util.Properties;
-import java.util.Enumeration;
 import java.io.File;
-import java.io.InputStream;
-import java.io.FileOutputStream;
 import java.io.FileInputStream;
+import java.util.Properties;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+import org.apache.cocoon.ProcessingException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import org.apache.cocoon.generation.ServiceableGenerator;
-import org.apache.cocoon.ProcessingException;
-import org.apache.cocoon.environment.SourceResolver;
-import org.apache.cocoon.environment.ObjectModelHelper;
-import org.apache.cocoon.environment.Request;
-import org.apache.cocoon.environment.Session;
+/**
+* Produces a list of {@link SchemaData} for for population of a select list on the main page by {@link Vicar}.
 
-import org.apache.avalon.framework.service.ServiceManager;
-import org.apache.avalon.framework.service.ServiceException;
-import org.apache.avalon.framework.parameters.Parameters;
-import org.apache.avalon.framework.activity.Disposable;
-
-import org.apache.cocoon.servlet.multipart.Part;
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.1, 12/15/2012
+* 
+* @see SchemaData
+* @see Vicar
+*/
+public class SchemaList {
 
 /**
-* Does stuff.
-*
-* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
-* @version 0.1, 2/15/2012
+* Generate the XML representation of the SchemaData list for use in the XML output produced by {@link Vicar}.
 */
-
-public class SchemaList extends ServiceableGenerator implements Disposable {
-
-private String m_OwnerID;
-
-private String m_DirStr = null;
-
-	public void dispose() {
-		super.dispose();
-	}
-
-	public void recycle() {
-		super.recycle();
-	}
-
-	public void service(ServiceManager manager) throws ServiceException{
-		super.service(manager);
-	}
-
-	public void setup(SourceResolver resolver, Map objectModel, String src, Parameters par) {
-		Request request = ObjectModelHelper.getRequest(objectModel);
-		Session session = request.getSession();
-		m_OwnerID = (String)session.getAttribute("userid");
-		m_DirStr = request.getParameter("dir");
-	}
-
-	public void generate() throws SAXException, ProcessingException {
-		if(m_OwnerID == null){
-			contentHandler.startDocument();
-				AttributesImpl signinAttr = new AttributesImpl();
-				signinAttr.addAttribute("","mode","mode","CDATA","-1");
-				contentHandler.startElement("","signin","signin",signinAttr);
-				contentHandler.endElement("","signin","signin");
-			contentHandler.endDocument();
-			return;
-		}
-
-		Vector<SchemaData> schemaList = getSchemaList(m_OwnerID,m_DirStr,"1tei_bare.rng");
-
-		contentHandler.startDocument();
-		generateSchemaXML(contentHandler,schemaList);
-		contentHandler.endDocument();
-	}
-
 	public void generateSchemaXML(ContentHandler contentHandler,Vector<SchemaData> the_schemaList) throws SAXException, ProcessingException {
 		try {
 			AttributesImpl schemalistAttr = new AttributesImpl();
@@ -109,11 +53,29 @@ private String m_DirStr = null;
 		}
 	}
 
-	public Vector<SchemaData> getSchemaList(String the_OwnerID,String the_DirStr,String the_current){
+/**
+* Returns a list of SchemaData objects for all schema files; both system supplied and those uploaded by the user into the current collection.
+* @param the_OwnerPath The Owner's subpath.
+* @param the_DirStr The user collection name.
+* @param the_current The name of the currently selected schema file.
+* @return A Vector of SchemaData objects.
+*/
+	public Vector<SchemaData> getSchemaList(String the_OwnerPath,String the_DirStr,String the_current){
 		Vector<SchemaData> schemaList = new Vector<SchemaData>();
+
+		//LIST ALL SYSTEM SUPPLIED SCHEMAS
 		Vector<String> standardSchemaList = listFiles(Global.SCHEMA_DIR,".rng");
-		String comment = "In a future iteration Brian will be able to put an appropriate comment here that tells something about this particular schema";
+		String defaultcomment = "In a future iteration Brian will be able to put an appropriate comment here that tells something about this particular schema";
 		String url = "";
+
+System.out.println("THERE ARE BETTER WAYS TO DO THIS RATHER THAN LOOK UP THE FILE EACH TIME WE NEED A LIST BUT THIS IS OK FOR NOW");
+		Properties prop = new Properties();
+		boolean commentsvalid = true;
+		try {
+			prop.load(new FileInputStream(Global.SCHEMA_DESC));
+		}catch(Exception ex){
+			commentsvalid = false;
+		}
 		for(String schemaName : standardSchemaList){
 			int iscurrent = 0;
 			if((the_current!=null)&&(the_current.startsWith("1"))){
@@ -121,16 +83,24 @@ private String m_DirStr = null;
 					iscurrent = 1;
 				}
 			}
+			String comment = "";
+			if(commentsvalid){
+				comment = prop.getProperty(schemaName,defaultcomment);
+			}
+			//PUT tei-xl.rng AT THE TOP OF THE LIST AND SET IT AS DEFAULT FIRST TIME
 			if(schemaName.equals("tei-xl.rng")){
 				schemaList.insertElementAt(new SchemaData(schemaName,Global.SCHEMA_DIR+schemaName,1,iscurrent,comment,url),0);
 			}else{
 				schemaList.add(new SchemaData(schemaName,Global.SCHEMA_DIR+schemaName,1,iscurrent,comment,url));
 			}
 		}
+
+		//LIST ALL USER SUPPLIED SCHEMAS
 		if(the_DirStr!=null){
-			String userschemaDir = Global.BASE_USER_DIR+"/"+the_OwnerID+"/"+the_DirStr+"/convert/";
+			String userschemaDir = Global.BASE_USER_DIR+"/"+the_OwnerPath+"/"+the_DirStr+"/convert/";
+			System.out.println("SCHEMALIST <"+userschemaDir+">");
 			Vector<String> userSchemaList = listFiles(userschemaDir,".rng");
-			comment = "";
+			String comment = "";
 			url = "";
 			for(String schemaName : userSchemaList){
 				int iscurrent = 0;
@@ -143,19 +113,15 @@ private String m_DirStr = null;
 			}
 		}
 
-/***
-				Properties prop = new Properties();
-				prop.load(new FileInputStream(m_DirStr));
-				Enumeration schemaList = prop.propertyNames();
-
-				while(schemaList.hasMoreElements()){
-					String s = (String)schemaList.nextElement();
-				}
-***/
 		return schemaList;
 	}
 
-
+/**
+* List the names of files in a path with a particular suffix.
+* @param the_dirpath The path where the files reside.
+* @param the_suffix The suffix that a file should have to be listed by this method.
+* @return A vector of the names of the files.
+*/
 	private Vector<String> listFiles(String the_dirpath,String the_suffix){
 		Vector<String> dir = new Vector<String>();
 		try {

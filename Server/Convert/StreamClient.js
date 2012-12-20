@@ -22,8 +22,6 @@ var donebutton;
 
 		contentlen = 0;
 		var url = baseurl+'?dir='+dir+'&conv='+conv;
-		//var url = baseurl;
-		//alert(url);
 		HTTP.doGet(url);
 	}
 

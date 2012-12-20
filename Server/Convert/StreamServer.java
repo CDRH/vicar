@@ -1,9 +1,6 @@
-//StreamServer.java
-
 package Server.Convert;
 
 import Server.Global;
-import Server.SessionSaver;
 
 import java.io.InputStream;
 import java.io.File;
@@ -42,6 +39,22 @@ import org.apache.avalon.excalibur.datasource.DataSourceComponent;
 
 import org.apache.cocoon.servlet.multipart.Part;
 
+/**
+* A Generator which launches conversion, correction, and validation of data files via AbbotConvert.java and reports progress.
+* <br />
+* If no directory path or no conversion schema is provided then this method generates XML containing an error message and returns it via an ServletOutputStream.
+* If all necessary information is supplied then {@link AbbotConvert} is called as a separate thread.  This thread continues and monitors the progress of AbbotConvert which includes Abbot and then validation.
+* <br />
+* Under normal operation with javascript enabled this generator is used only by StreamClient.html.
+* <br />
+* This thread responds with XML output in a 'long polling' scheme such that it does not terminate until all actions are complete.  The XML stream pauses while there is no change in status and the HTTP connection is kept open.
+* <br />
+* If javascript is not enabled then Vicar.html will call StreamServer.java directly to produce StreamServer.html.  This call will use the parameter act=noblock.
+* This will launch the AbbotConvert thread and immediately return an XML response which contains an attribute of mode=0.  This 0 mode results in StreamServer.html calling itself again with parameter act=join which blocks and waits for the completion of the AbbotConvert thread.  Once the act=join call is complete StreamServer.java:generate() returns with an XML response with mode=1 which results in StreamServer.html returning the browser to the Vicar.html page.
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/
 public class StreamServer extends ServletGenerator implements Disposable {
 
 private ServiceSelector m_selector;
@@ -53,18 +66,25 @@ private String m_ConvStr;
 private String m_DirStr;
 private String m_ActStr;
 
+@Override
 	public void dispose() {
 		super.dispose();
 	}
 
+@Override
 	public void recycle() {
 		super.recycle();
 	}
 
+@Override
 	public void compose(ComponentManager manager) throws ComponentException {
 		super.compose(manager);
 	}
 
+/**
+* Collects session attributes and parameters <i>userid, userpath, Conversion Directory, Data Directory, and Action.</i>
+*/
+@Override
 	public void setup(SourceResolver resolver, Map objectModel,String src, Parameters par) {
 		Request request = ObjectModelHelper.getRequest(objectModel);
 		response = ObjectModelHelper.getResponse(objectModel);
@@ -77,6 +97,11 @@ private String m_ActStr;
 		m_ActStr = request.getParameter("act");
 	}
 
+/**
+* Responds with XML based on how it is called.
+* See class level description for more information.
+*/
+@Override
 	public void generate() throws SAXException, ProcessingException {
 		try {
 			ServletOutputStream sos = ((HttpResponse)response).getOutputStream();
@@ -98,6 +123,8 @@ private String m_ActStr;
 			}
 
 			if(m_ActStr==null){
+				//CALLED BY StreamClient.html WHEN JAVASCRIPT IS ENABLED
+				//FOLLOWS A 'long polling' SCHEME TO RETURN INFORMATION ON PROGRESS WHILE KEEPING THE HTTP CONNECTION OPEN
 				String userdir = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr;
 				int inputcount = fileCount(userdir+"/input/");
 	
@@ -141,19 +168,11 @@ private String m_ActStr;
 				sos.println("</datastream>");
 				sos.flush();
 				sos.close();
-			}else if(m_ActStr.equals("nojs")){
-System.out.println("**********NOJS EVER USED??");
-				AbbotConvert ac = new AbbotConvert(m_session,m_DirStr,m_ConvStr);
-				ac.batchresult();
-
-				contentHandler.startDocument();
-				AttributesImpl dsAttr = new AttributesImpl();
-				dsAttr.addAttribute("","dirname","dirname","CDATA",m_DirStr);
-				dsAttr.addAttribute("","mode","mode","CDATA","1");
-				contentHandler.startElement("","datastream","datastream",dsAttr);
-				contentHandler.endElement("","datastream","datastream");
-				contentHandler.endDocument();
 			}else if(m_ActStr.equals("noblock")){
+				//USED BY NON JAVASCRIPT INVOKATION IN Vicar.html OF StreamServer.html
+				//STARTS THE AbbotConvert THREAD AND RETURNS AN XML RESPONSE IMMEDIATELY
+				//RESPONDING WITH MODE '0' RESULTS IN StreamServer.html CALLING ITSELF AGAIN WITH ActStr==join
+				//WHERE IT BLOCKS WAITING FOR THE COMPLETION OF THE AbbotConvert THREAD
 				AbbotConvert ac = new AbbotConvert(m_session,m_DirStr,m_ConvStr);
 				ac.start();
 				m_session.setAttribute("THREADID",""+ac.getId());
@@ -166,7 +185,10 @@ System.out.println("**********NOJS EVER USED??");
 				contentHandler.startElement("","datastream","datastream",dsAttr);
 				contentHandler.endElement("","datastream","datastream");
 				contentHandler.endDocument();
+
 			}else if(m_ActStr.equals("join")){
+				//WAITS FOR COMPLETION OF THE AbbotConvert THREAD AND REPORTS THAT COMPLETION AS WELL AS mode = 1
+				//MODE 1 INDICATES THAT StreamServer.html SHOULD RETURN TO Vicar.html
 				int tid = getIntFromString((String)m_session.getAttribute("THREADID"));
 				Thread findthread = null;
 				ThreadGroup rootGroup = Thread.currentThread().getThreadGroup();
@@ -200,6 +222,11 @@ System.out.println("**********NOJS EVER USED??");
 		}
 	}
 
+/**
+* Returns the number of files in the path.
+* @param the_path The path of the directory.
+* @return The number of files.
+*/
 	private int fileCount(String the_path){
 		int count = 0;
 		try {
@@ -212,6 +239,11 @@ System.out.println("**********NOJS EVER USED??");
 		return count;
 	}
 
+/**
+* Converts a text representation of an integer into the integer.  If no conversion can be made then 0 is returned.
+* @param the_str The text representation of an integer.
+* @return The integer represented by the text or 0 if no such representation.
+*/
 	private int getIntFromString(String the_str){
 		int ret = 0;
 		if(the_str!=null){

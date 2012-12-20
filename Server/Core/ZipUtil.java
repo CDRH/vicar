@@ -1,10 +1,9 @@
-//ZipUtil.java
-
-
 package Server.Core;
 
+/****
 import org.junit.*;
 import static org.junit.Assert.*;
+****/
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,7 +33,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 * Utilities for zip/unzip, gzip/gunzip, and tar/untar.  Tar/untar relies on commons-compress-1.3.jar from http://commons.apache.org/compress/  
 *
 * @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
-* @version 0.1, 2/15/2012
+* @version 0.8, 12/15/2012
 */
 
 public class ZipUtil {
@@ -77,9 +76,11 @@ private static final int MYBUFFER = 65000;
 	public ZipUtil(){
 	}
 
+/****
 @Test public void testziputil(){
 	assertTrue(true);
 }
+****/
 
 /**
 * Zip all files in sourcedir with suffix and place result into destfile.

@@ -3,18 +3,18 @@
 	<description> simple example build file </description>
 
 <!--LAPTOP-->
-<!--
 	<property name="cocoonpath" location="/Users/franksmutniak/ImportedSoftware/cocoon-2.1.11" />
 	<property name="builddir" location="${cocoonpath}/build/webapp/WEB-INF/classes/"/>
 	<property name="libdir" location="${cocoonpath}/build/webapp/WEB-INF/lib/"/>
 	<property name="corelibdir" location="${cocoonpath}/lib/core/"/>
--->
 
 <!--ABBOT-->
+<!--
 	<property name="cocoonpath" location="/var/lib/tomcat-7/" />
 	<property name="builddir" location="${cocoonpath}/webapps/cocoon/WEB-INF/classes/"/>
 	<property name="libdir" location="${cocoonpath}/webapps/cocoon/WEB-INF/lib/"/>
 	<property name="corelibdir" location="/usr/share/tomcat-servlet-api-3.0/lib/"/>
+-->
 
 
 	<path id="CP">
@@ -24,14 +24,22 @@
 		<pathelement path="${libdir}/avalon-framework-impl-4.3.jar"/>
 		<pathelement path="${libdir}/commons-lang-2.3.jar"/>
 		<pathelement path="${libdir}/cocoon-2.1.11.jar"/>
+
+		<!-- commons-compress used by Server.Core.ZipUtil.java-->
 		<pathelement path="${libdir}/commons-compress-1.3.jar"/>
 
+		<!-- junit not currently needed-->
 		<pathelement path="${libdir}/junit-4.10.jar"/>
+
+		<!-- JOpenId used by Server.Signin.OpenSignin.java-->
 		<pathelement path="${libdir}/JOpenId-1.08.jar"/>
+		<!-- abbot-0.x.y.jar used by Server.Convert.AbbotConvert.java-->
 		<pathelement path="${libdir}/abbot-0.4.9.jar"/>
+		<!-- jing-20030619.jar used by Server.Convert.AbbotConvert.java-->
 		<pathelement path="${libdir}/jing-20030619.jar"/>
+		<!-- if using mail.jar then remove ${libdir}/geronimo-spec-javamail-1.3.1-rc5.jar from dir if exists -->
 		<pathelement path="${libdir}/mail.jar"/>
-		<!--	if using mail.jar then remove ${libdir}/geronimo-spec-javamail-1.3.1-rc5.jar from dir if exists -->
+		<!-- servlet 3.0-->
 		<pathelement path="${corelibdir}/servlet-api.jar"/>
 	</path>
 
@@ -55,33 +63,34 @@
 	<target name="compile">
 		<javac deprecation="on" srcdir="Server" destdir="${builddir}" includeantruntime="false">
 			<classpath refid = "CP"/>
-			<!--SUPPRESS jing-20030619.jar RELATED JAR WARNINGS BELOW WITH '-path' -->
-<!--
-			<compilerarg value="-Xlint:-path"/>
-			<compilerarg value="-version"/>
--->
 		</javac>
 	</target>
 
+	<!-- create an archive for sftp'ing to server-->
 	<target name="archive" description="make code archive" >
-		<tar destfile="Archive.tar" basedir="." includes="build.xml,sitemap.xmap,README.txt,VICAR.txt,Error.html,Server/*,Server/Core/*,Server/Modernizr/*,Server/Signin/*,Server/Convert/*,Server/Upload/*,Server/Utils/*,Server/Test/*"/>
+		<tar destfile="Archive.tar" basedir="." includes="build.xml,sitemap.xmap,README.txt,AboutVicar.html,VicarSoftware.html,Error.html,Server/*,Server/Core/*,Server/Modernizr/*,Server/Signin/*,Server/Convert/*,Server/Upload/*,Server/Utils/*,Server/Test/*"/>
 	</target>
 
+	<!-- used to create a small incremental archive to update a server-->
 	<target name="archive_specific" description="make code archive" >
 		<tar destfile="Archive_specific.tar" basedir="." includes="INSTALL.txt,OPERATION.txt" />
 	</target>
 
+	<!-- create javadoc pages but do not include Sample and Test directories -->
 	<target name="javadocs" description="javadoc generation">
 		<delete dir="javadocs" />
 		<mkdir dir="javadocs" />
-		<javadoc destdir="javadocs" defaultexcludes="yes">
+		<javadoc destdir="javadocs" defaultexcludes="yes" >
 			<classpath refid = "CP"/>
-			<fileset dir="Core">
+			<fileset dir="Server">
+				<exclude name="**/Sample/**" />
+				<exclude name="**/Test/**" />
 				<include name="**/*.java" />
 			</fileset>
 		</javadoc>
 	</target>
 
+	<!-- for junit testing - not currently used as build/testing may change -->
 	<target name="junit" depends="all" description="junit test">
 		<junit printsummary="yes" fork="yes" haltonfailure="yes">
 			<test name="Core.ZipUtil" />

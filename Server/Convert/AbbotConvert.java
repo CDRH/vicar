@@ -1,5 +1,3 @@
-//AbbotConvert.java
-
 package Server.Convert;
 
 import Server.Global;
@@ -21,6 +19,13 @@ import java.io.Serializable;
 
 import org.apache.cocoon.environment.Session;
 
+/**
+* Manages all operations needed for a conversion of an input file to an output file using a schema file, correcting for specific known errors produced by Abbot in the output files, and then performing validation checks.
+* Requires the most recent abbot jar file.  See https://github.com/CDRH/abbot
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/
 public class AbbotConvert extends Thread {
 
 private String m_OwnerID;
@@ -35,7 +40,7 @@ private String m_ConvStr;
 		m_ConvStr = the_ConvStr;
 	}
 
-	@Override
+@Override
 	public void run(){
 		batchresult();
 	}
@@ -87,7 +92,6 @@ private String m_ConvStr;
 				if(convtype == 1){
 					convURL = m_ConvStr;
 				}
-				//String email = m_OwnerID.replace("__","@");
 				String email = m_OwnerID;
 				String emailsuffix = email;
 				if(emailsuffix!=null){
@@ -98,7 +102,6 @@ private String m_ConvStr;
 				}
 				Vector<String> convList = new Vector<String>();
 				convList.add("s/http:\\/\\/abbot.unl.edu\\/tei_all.rng/"+convURL+"/g");
-				//convList.add("s/bpz/"+email+"/g");
 				convList.add("s/bpz/"+emailsuffix+"/g");
 				convList.add("s/Pytlik Zillig,/"+email+"/g");
 				convList.add("s/[ \t]*B.<\\/name> Conversion to TEI/<\\/name> Conversion to TEI/g");
@@ -119,7 +122,7 @@ private String m_ConvStr;
 				String outinfo = getFileInfo(outdir,".xml");
 				LogWriter.msg(remoteaddr,"VALIDATION_END,"+ininfo+","+outinfo+","+totalerrors+","+m_OwnerPath+"/"+m_dir+","+wholeConvStr+","+convstart);
 
-				SessionSaver.save(m_session,Global.BASE_USER_DIR+"/"+m_OwnerPath+"/session.txt");
+				SessionSaver.save(m_session,Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+Global.SESSION_FILE);
 			}
 		}
 	}

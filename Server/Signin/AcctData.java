@@ -1,9 +1,13 @@
-//AcctData.java
-
 package Server.Signin;
 
 import java.io.Serializable;
 
+/**
+* Data object for user account information.
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/
 public class AcctData implements Serializable {
 
 private String m_ID;
@@ -17,8 +21,6 @@ public static int STATUS_CLOSED = 3;
 
 private static final long serialVersionUID = 42L;
 
-	public static void main(String args[]){
-	}
 
 	public AcctData(String the_ID,String the_Pwd,int the_Status,String the_Aux){
 		super();

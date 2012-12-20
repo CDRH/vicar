@@ -1,5 +1,3 @@
-//Signin.java
-
 package Server.Signin;
 
 import Server.Global;
@@ -31,6 +29,12 @@ import org.apache.avalon.framework.parameters.ParameterException;
 import org.apache.avalon.framework.activity.Disposable;
 import org.apache.avalon.excalibur.datasource.DataSourceComponent;
 
+/**
+* A generator which implements sign in, registration, registration confirmation, and password reminder operations for local (non OpenID) signins.
+*
+* @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
+* @version 0.8, 12/15/2012
+*/
 public class Signin extends ServiceableGenerator implements Disposable {
 
 
@@ -52,21 +56,25 @@ private String m_remoteHost = null;
 
 private String m_mode = "";
 
+@Override
 	public void dispose() {
 		super.dispose();
 		manager.release(m_dataSource);
 		m_dataSource = null;
 	}
 
+@Override
 	public void recycle() {
 		super.recycle();
 	}
 
+@Override
 	public void service(ServiceManager manager) throws ServiceException{
 		super.service(manager);
 		m_selector = (ServiceSelector)manager.lookup(DataSourceComponent.ROLE+"Selector");
 	}
 
+@Override
 	public void setup(SourceResolver resolver, Map objectModel,
 			String src, Parameters par) {
 		Request request = ObjectModelHelper.getRequest(objectModel);
@@ -107,6 +115,7 @@ private String m_mode = "";
 		m_mode = Utils.HTMLFilter(request.getParameter("mode"));
 	}
 
+@Override
 	public void generate() throws SAXException, ProcessingException {
 		String messageText = "";
 		int messageCode = 0;
@@ -144,14 +153,6 @@ private String m_mode = "";
 					messageText = "Invalid email format. Please try again.";
 					messageCode = -1;
 				}
-/****
-			}else if(m_actStr.equalsIgnoreCase("signout")){
-				m_session.setAttribute("PWDRESET","false");
-				m_session.setAttribute("userid",null);
-				m_session.setAttribute("userpath",null);
-				m_session.setAttribute("email",null);
-				m_session.invalidate();
-****/
 			}else if(m_actStr.equalsIgnoreCase("register")){
 				m_session.setAttribute("PWDRESET","false");
 				if(m_perfStr==null){

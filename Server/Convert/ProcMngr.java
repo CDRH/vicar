@@ -1,5 +1,3 @@
-//ProcMngr.java
-
 package Server.Convert;
 
 import java.util.Vector;
@@ -10,11 +8,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
+* Invokes a system command.  Used by AbbotConvert.java to deliver small fixes to the Abbot output files using 'sed.'
 *
 * @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
-* @version 0.1, 2/15/2012
+* @version 0.8, 12/15/2012
 */
-
 public class ProcMngr {
 
 private ProcessBuilder m_builder = null;
@@ -24,6 +22,9 @@ private String m_dir = null;
 private Vector<String> m_fileList = null; 
 private Vector<String> m_convList = null; 
 
+/**
+* Main for testing and to serve as an example.
+*/
 	public static void main(String args[]){
 		String cmdbase = "/usr/bin/sed";
 
@@ -50,12 +51,20 @@ private Vector<String> m_convList = null;
 		pm.cleanup(schemaList,convList);
 	}
 
+/**
+* Used by {@link AbbotConvert} to perform <i>sed</i> operations on output files.
+*/
 	public ProcMngr(String the_cmdbase,String the_cmdflag,String the_dir){
 		m_cmdbase = the_cmdbase;
 		m_cmdflag = the_cmdflag;
 		m_dir = the_dir;
 	}
 
+/**
+* Used by {@link AbbotConvert} to perform <i>sed</i> operations on output files.
+* @param the_schemaList List of schema file names on which an operation is to be performed.
+* @param the_convList List of <i>sed</i> conversions to be performed.
+*/
 	public void cleanup(Vector<String> the_schemaList,Vector<String> the_convList){
 		for(String schema : the_schemaList){
 			for(String conv : the_convList){

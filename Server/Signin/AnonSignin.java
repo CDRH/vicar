@@ -1,5 +1,3 @@
-//AnonSignin.java
-
 package Server.Signin;
 
 import Server.Global;
@@ -29,9 +27,12 @@ import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.avalon.framework.activity.Disposable;
 
 /**
-*
+* Allows anonymous signin for cases where user can accept no persistence of their data between sessions.
+* This allows users to perform small jobs or test out the application with little commitment.
+* NOT CURRENTLY USED.
+* 
 * @author Frank Smutniak, Center for Digital Research in the Humanities, http://cdrh.unl.edu
-* @version 0.1, 2/15/2012
+* @version 0.8, 12/15/2012
 */
 public class AnonSignin extends ServiceableGenerator implements Disposable {
 

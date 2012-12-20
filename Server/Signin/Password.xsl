@@ -11,6 +11,7 @@
 </html>
 </xsl:template>
 
+<!- reverts user to sign in if their session is expired -->
 <xsl:template match="signin">
 <head>
 	<title>Signin</title>
@@ -22,6 +23,7 @@
 </body>
 </xsl:template>
 
+<!-- implements password change page -->
 <xsl:template match="password">
 <head>
 	<title>Change Password</title>
