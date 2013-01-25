@@ -37,7 +37,7 @@
 <div class="header">ORGANIZATION</div>
 
 <div>
-Vicar is an Apache Cocoon based application which consists of an ant build.xml file, a cocoon sitemap.xmap file, and java source code, javascript, css, and XSLT files in the Server directory.  The Server directory contains a few top level files and six subdirectories.
+Vicar is an Apache Cocoon based application which consists of an ant build.xml and build.local.properties file, a cocoon sitemap.xmap file, and java source code, javascript, css, and XSLT files in the Server directory.  The Server directory contains a few top level files and six subdirectories.
 </div>
 
 <div>
@@ -84,7 +84,7 @@ All other files in Server.Upload, Server.Convert, and Server.Core exist to suppo
 <div class="header">DATA STORAGE</div>
 
 <div>
-All vicar data files are stored in the path specified by BASE_USER_DIR in Server.Global.java.
+All vicar data files are stored in the path specified by BASE_USER_DIR in src/edu/unl/abbot/vicar/Global.java.
 </div>
 
 <div>
@@ -115,7 +115,7 @@ Download Vicar from https://github.com/CDRH/vicar.
 <div class="subheader">SET UP DIRECTORIES AND EDIT BUILD.XML</div>
 
 <div>
-To install Vicar on your local cocoon server you will need to create one directory for the Vicar software and locate 3 others.  You will need to declare these directories in build.xml.
+To install Vicar on your local cocoon server you will need to create one directory for the Vicar software and locate 3 others.  You will need to declare these directories in build.xml or build.local.properties.
 </div>
 <ul>
 	<li>
@@ -130,7 +130,11 @@ To install Vicar on your local cocoon server you will need to create one directo
 </ul>
 
 <div>
-If you have a jetty install (install which is started with the cocoon.sh command), these 3 directories will be found in your cocoon install's subdirectory build/webapp/WEB-INF/ (classes, lib, and lib/core, respectively).a  If you have a tomcat install, the first 2 directories will be in the cocoon directory which was created by the unpacking of the cocoon.war file.   For tomcat 7, this is in /var/lib/tomcat-7/webapps/webapp/.  The third directory will be part of the tomcat install.  For tomcat 7, this is in /usr/share/tomcat-7/.  Earlier versions of tomcat may have a different directory arrangement.
+If you have a jetty install (install which is started with the cocoon.sh command), these 3 directories will be found in your cocoon install's subdirectory build/webapp/WEB-INF/ (classes, lib, and lib/core, respectively).
+</div>
+
+<div>
+If you have a tomcat install, the first 2 directories will be in the cocoon directory which was created by the unpacking of the cocoon.war file.   For tomcat 7, this is in /var/lib/tomcat-7/webapps/cocoon/.  The third directory will be part of the tomcat install.  For tomcat 7, this is in either /usr/share/tomcat-7/ or /var/lib/tomcat-7/lib/ (depends on your install).  Earlier versions of tomcat may have a different directory arrangement.
 </div>
 
 
@@ -169,7 +173,7 @@ The directory <i>libdir</i> will need the addition of several jar files and one 
 <div class="subheader">EDIT GLOBAL.JAVA</div>
 
 <div>
-You will also need to edit Global.java to reflect the current installation.
+You will also need to edit src/edu/unl/abbot/vicar/Global.java to reflect the current installation.
 </div>
 <div>
 This is the URL at which Vicar will be located.  It is used by Signin.java, OpenSignin.java and Password.java to redirect after an OpenID signin or send password/registration information to the user.  If you are running it on your own computer that should likely be <a href="http://127.0.0.1:8888">http://127.0.0.1:8888</> for a jetty install and <a href="http://127.0.0.1:8080">http://127.0.0.1:8080</a> for a tomcat install.

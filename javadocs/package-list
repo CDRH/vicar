@@ -1,5 +1,5 @@
-Server
-Server.Convert
-Server.Core
-Server.Signin
-Server.Upload
+edu.unl.abbot.vicar
+edu.unl.abbot.vicar.Convert
+edu.unl.abbot.vicar.Core
+edu.unl.abbot.vicar.Signin
+edu.unl.abbot.vicar.Upload

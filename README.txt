@@ -1,3 +1,9 @@
+Updated 01/24/2013
+The java source code had been moved into a more proper packaging in the 'src' subdirectory.
+All other files (html,xsl,css,js,png etc) are now in the 'resources' subdirectory.
+build.xml now uses a build.local.properties file for server specific information.
+Updated AbbotConvert to use abbot-0.7.1.jar.
+ 
 Updated 12/20/2012
 Significant documentation upgrade  - added AboutVicar.html and VicarSoftware.html as well as javadoc and xsl comments.
 

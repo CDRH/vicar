@@ -3,24 +3,20 @@
 <map:components>
 
 	<map:generators default="file">
-		<map:generator name="testsession" src="Server.Test.TestSession"/>
-<!--
-		<map:generator name="sample" src="Server.Sample.Sample"/>
-		<map:generator name="monitor-server" src="Server.Sample.MonitorServer"/>
--->
+		<map:generator name="testsession" src="edu.unl.abbot.vicar.Test.TestSession"/>
 
-		<map:generator name="opensignin" src="Server.Signin.OpenSignin"/>
-		<map:generator name="signin" src="Server.Signin.Signin"/>
-		<map:generator name="signout" src="Server.Signin.Signout"/>
-		<map:generator name="account" src="Server.Signin.Account"/>
-		<map:generator name="password" src="Server.Signin.Password"/>
+		<map:generator name="opensignin" src="edu.unl.abbot.vicar.Signin.OpenSignin"/>
+		<map:generator name="signin" src="edu.unl.abbot.vicar.Signin.Signin"/>
+		<map:generator name="signout" src="edu.unl.abbot.vicar.Signin.Signout"/>
+		<map:generator name="account" src="edu.unl.abbot.vicar.Signin.Account"/>
+		<map:generator name="password" src="edu.unl.abbot.vicar.Signin.Password"/>
 
-		<map:generator name="vicar" src="Server.Core.Vicar"/>
-		<map:generator name="filedownload" src="Server.Core.FileDownload"/>
+		<map:generator name="vicar" src="edu.unl.abbot.vicar.Core.Vicar"/>
+		<map:generator name="filedownload" src="edu.unl.abbot.vicar.Core.FileDownload"/>
 
-		<map:generator name="ajax-upload" src="Server.Upload.AjaxServer"/>
+		<map:generator name="ajax-upload" src="edu.unl.abbot.vicar.Upload.AjaxServer"/>
 
-		<map:generator name="stream-server" src="Server.Convert.StreamServer"/>
+		<map:generator name="stream-server" src="edu.unl.abbot.vicar.Convert.StreamServer"/>
 	</map:generators>
 
 
@@ -57,16 +53,14 @@
 	<map:redirect-to uri="Vicar.html"/>
 </map:match>
 
-<!--TEST-->
 <map:match pattern="Test/**">
 	<map:match pattern="Test/TestSession.html" >
 		<map:generate type="testsession"/>
-		<map:transform src="Server/Test/TestSession.xsl"/>
+		<map:transform src="resources/Test/TestSession.xsl"/>
 		<map:serialize type="html5"/>
 	</map:match>
 </map:match>
 
-<!--JAVADOC-->
 <map:match pattern="javadocs/**">
 	<map:match pattern="javadocs/**.html" >
 		<map:read mime-type="text/html" src="javadocs/{1}.html" />
@@ -82,36 +76,12 @@
 	</map:match>
 </map:match>
 
-<!--SAMPLE-->
-<!--
-<map:match pattern="Sample/**">
-	<map:match pattern="Sample/Sample.html" >
-		<map:generate type="sample"/>
-		<map:transform src="Server/Sample/Sample.xsl"/>
-		<map:serialize type="html5"/>
-	</map:match>
-	<map:match pattern="Sample/Sample.xml" >
-		<map:generate type="sample"/>
-		<map:serialize type="xml"/>
-	</map:match>
-	<map:match pattern="Sample/Sample.css">
-		<map:read mime-type="text/css" src="Server/Signin/Sample.css"/>
-	</map:match>
-	<map:match pattern="Upload/MonitorServer.xml" >
-		<map:generate type="monitor-server"/>
-		<map:serialize type="xml"/>
-	</map:match>
-</map:match>
--->
-
-<!--MODERNIZR-->
 <map:match pattern="Modernizr/**">
 	<map:match pattern="Modernizr/modernizr.js" >
-		<map:read mime-type="text/javascript" src="Server/Modernizr/modernizr.js" />
+		<map:read mime-type="text/javascript" src="resources/Modernizr/modernizr.js" />
 	</map:match>
 </map:match>
 
-<!--DOWNLOAD-->
 <map:match pattern="Download/**">
 	<map:match pattern="Download/*/*.xml" >
 		<map:generate type="filedownload" />
@@ -134,25 +104,22 @@
 
 <map:match pattern="Utils/**">
 	<map:match pattern="Utils/AjaxClient.js">
-		<map:read mime-type="text/javascript" src="Server/Utils/AjaxClient.js"/>
+		<map:read mime-type="text/javascript" src="resources/Utils/AjaxClient.js"/>
 	</map:match>
 </map:match>
 
-<!--UPLOAD-->
 <map:match pattern="Upload/**">
-
-	<!--MULTIPLE FILE UPLOAD VIA AJAX-->
 	<map:match pattern="Upload/AjaxUpload.js">
-		<map:read mime-type="text/javascript" src="Server/Upload/AjaxUpload.js"/>
+		<map:read mime-type="text/javascript" src="resources/Upload/AjaxUpload.js"/>
 	</map:match>
 	<map:match pattern="Upload/PopupFrame.js">
-		<map:read mime-type="text/javascript" src="Server/Upload/PopupFrame.js"/>
+		<map:read mime-type="text/javascript" src="resources/Upload/PopupFrame.js"/>
 	</map:match>
 	<map:match pattern="Upload/PopupFrame.css">
-		<map:read mime-type="text/css" src="Server/Upload/PopupFrame.css"/>
+		<map:read mime-type="text/css" src="resources/Upload/PopupFrame.css"/>
 	</map:match>
 	<map:match pattern="Upload/AjaxUpload.css">
-		<map:read mime-type="text/css" src="Server/Upload/AjaxUpload.css"/>
+		<map:read mime-type="text/css" src="resources/Upload/AjaxUpload.css"/>
 	</map:match>
 	<map:match pattern="Upload/AjaxServer.xml" >
 		<map:generate type="ajax-upload"/>
@@ -163,21 +130,20 @@
 </map:match>
 
 <map:match pattern="Convert/**">
-	<!--MULTIPLE FILE UPLOAD VIA AJAX-->
 	<map:match pattern="Convert/StreamClient.html">
-		<map:generate src="Server/Convert/StreamClient.xml" />
-		<map:transform src="Server/Convert/StreamClient.xsl">
+		<map:generate src="resources/Convert/StreamClient.xml" />
+		<map:transform src="resources/Convert/StreamClient.xsl">
 			<map:parameter name="use-request-parameters" value="true" />
 		</map:transform>
 		<map:serialize type="html"/>
 	</map:match>
 	<map:match pattern="Convert/StreamClient.js">
-		<map:read mime-type="text/javascript" src="Server/Convert/StreamClient.js"/>
+		<map:read mime-type="text/javascript" src="resources/Convert/StreamClient.js"/>
 	</map:match>
 
 	<map:match pattern="Convert/StreamServer.html" >
 		<map:generate type="stream-server"/>
-		<map:transform src="Server/Convert/StreamServer.xsl" />
+		<map:transform src="resources/Convert/StreamServer.xsl" />
 		<map:serialize type="html"/>
 	</map:match>
 	<map:match pattern="Convert/StreamServer.xml" >
@@ -198,7 +164,7 @@
 
 <map:match pattern="Error.html">
 	<map:match pattern="Error.html">
-		<map:read mime-type="text/html" src="Server/Error.html"/>
+		<map:read mime-type="text/html" src="resources/Error.html"/>
 	</map:match>
 </map:match>
 
@@ -213,70 +179,91 @@
 
 	<map:match pattern="Signin.html" >
 		<map:generate type="signin"/>
-		<map:transform src="Server/Signin/Signin.xsl"/>
+		<map:transform src="resources/Signin/Signin.xsl"/>
 		<map:serialize type="html5"/>
 	</map:match>
 	<map:match pattern="Account.html" >
 		<map:generate type="account"/>
-		<map:transform src="Server/Signin/Account.xsl"/>
+		<map:transform src="resources/Signin/Account.xsl"/>
 		<map:serialize type="html5"/>
 	</map:match>
 	<map:match pattern="Password.html" >
 		<map:generate type="password"/>
-		<map:transform src="Server/Signin/Password.xsl"/>
+		<map:transform src="resources/Signin/Password.xsl"/>
 		<map:serialize type="html5"/>
 	</map:match>
 	<map:match pattern="Signin.css">
-		<map:read mime-type="text/css" src="Server/Signin/Signin.css"/>
+		<map:read mime-type="text/css" src="resources/Signin/Signin.css"/>
 	</map:match>
 	<map:match pattern="OpenSignin.html" >
 		<map:generate type="opensignin"/>
-		<map:transform src="Server/Signin/OpenSignin.xsl"/>
+		<map:transform src="resources/Signin/OpenSignin.xsl"/>
 		<map:serialize type="html5"/>
 	</map:match>
 	<map:match pattern="Signout.html" >
 		<map:generate type="signout"/>
-		<map:transform src="Server/Signin/Signin.xsl"/>
+		<map:transform src="resources/Signin/Signin.xsl"/>
 		<map:serialize type="html5"/>
 	</map:match>
 	<map:match pattern="*.png">
-		<map:read mime-type="image/png" src="Server/Signin/{1}.png" />
+		<map:read mime-type="image/png" src="resources/Signin/{1}.png" />
 	</map:match>
-
 
 	<map:match pattern="Vicar.html" >
 		<map:generate type="vicar"/>
-		<map:transform src="Server/Core/Vicar.xsl"/>
+		<map:transform src="resources/Core/Vicar.xsl"/>
 		<map:serialize type="html5"/>
 	</map:match>
 	<map:match pattern="Vicar.css">
-		<map:read mime-type="text/css" src="Server/Core/Vicar.css"/>
+		<map:read mime-type="text/css" src="resources/Core/Vicar.css"/>
 	</map:match>
 
 	<map:match pattern="SchemaList.js" >
-		<map:read mime-type="text/javascript" src="Server/Core/SchemaList.js"/>
+		<map:read mime-type="text/javascript" src="resources/Core/SchemaList.js"/>
 	</map:match>
-<!--
-	<map:match pattern="modernizr.js" >
-		<map:read mime-type="text/javascript" src="Server/Core/modernizr.js" />
+
+<!--XML ONLY FOR TESTING-->
+	<map:match pattern="Signin.xml" >
+		<map:generate type="signin"/>
+		<map:serialize type="xml"/>
 	</map:match>
--->
+	<map:match pattern="Account.xml" >
+		<map:generate type="account"/>
+		<map:serialize type="xml"/>
+	</map:match>
+	<map:match pattern="Password.xml" >
+		<map:generate type="password"/>
+		<map:serialize type="xml"/>
+	</map:match>
+	<map:match pattern="OpenSignin.xml" >
+		<map:generate type="opensignin"/>
+		<map:serialize type="xml"/>
+	</map:match>
+	<map:match pattern="Vicar.xml" >
+		<map:generate type="vicar"/>
+		<map:serialize type="xml"/>
+	</map:match>
+	<map:match pattern="Signout.xml" >
+		<map:generate type="signout"/>
+		<map:serialize type="xml"/>
+	</map:match>
+
 	<map:redirect-to uri="Error.html"/>
 </map:match>
 
 <map:handle-errors>
 	<map:select type="exception">
 		<map:when test="resourceNotFound">
-			<map:read mime-type="text/html" src="Server/Error.html"/>
+			<map:read mime-type="text/html" src="resources/Error.html"/>
 		</map:when>
 		<map:when test="not-found">
-			<map:read mime-type="text/html" src="Server/Error.html"/>
+			<map:read mime-type="text/html" src="resources/Error.html"/>
 		</map:when>
 		<map:when test="invalid-session">
-			<map:read mime-type="text/html" src="Server/Error.html"/>
+			<map:read mime-type="text/html" src="resources/Error.html"/>
 		</map:when>
 		<map:otherwise>
-			<map:read mime-type="text/html" src="Server/Error.html"/>
+			<map:read mime-type="text/html" src="resources/Error.html"/>
 		</map:otherwise>
 	</map:select>
 </map:handle-errors>
