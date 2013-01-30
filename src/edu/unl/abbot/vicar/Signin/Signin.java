@@ -169,7 +169,6 @@ LogWriter.msg("IP","login"+m_LoginID);
 						AcctMngr am = new AcctMngr();
 						AcctData currad = am.getAcct(m_LoginID);
 						if(currad==null){
-LogWriter.msg("IP","PTA");
 							if(Utils.isValidPassword(m_Password,m_PasswordAlt,6,19)){
 								MD5 md5 = new MD5();
 								m_Password = md5.getMD5(m_Password);
@@ -182,7 +181,7 @@ LogWriter.msg("IP","PTA");
 
 LogWriter.msg("IP","sending ssmail");
 								SendMailSSL sm = new SendMailSSL(Global.GMAIL_ID,Global.GMAIL_PWD);
-								String emailtext="Please click on "+Global.URL_BASE+"/vicar/Signin/Signin.html?act=confirm&signinid="+m_LoginID+"&pwdalt="+confirmpwd+" to complete your registration.";
+								String emailtext="Please click on "+Global.URL_BASE+"/vicar/Signin.html?act=confirm&signinid="+m_LoginID+"&pwdalt="+confirmpwd+" to complete your registration.";
 								sm.SendMail(Global.GMAIL_ID+"@gmail.com",m_LoginID,"Vicar Registration Confirmation",emailtext);
 								messageText = "Please check your email for a confirmation link.";
 								messageCode = 1;
@@ -191,11 +190,9 @@ LogWriter.msg("IP","sending ssmail");
 								messageCode = -1;
 							}
 						}else if(currad.getStatus()==AcctData.STATUS_ACTIVE){
-LogWriter.msg("IP","PTB");
 							messageText = "There is already an account associated with this email address.";
 							messageCode = -1;
 						}else if(currad.getStatus()==AcctData.STATUS_REGISTERED){
-LogWriter.msg("IP","PTC");
 							messageText = "You are already registered.  Please click the confirm link to complete the registration.";
 							messageCode = -1;
 						}else{
@@ -243,15 +240,11 @@ LogWriter.msg("IP","PTC");
 							String confirmpwd = md5.getMD5(m_LoginID.toUpperCase()+ts);
 							AcctData newad = new AcctData(m_LoginID,currad.getPwd(),AcctData.STATUS_ACTIVE,confirmpwd);
 							am.setAcct(newad.getID(),newad);
-LogWriter.msg("IP","PTAA");
+
 							SendMailSSL sm = new SendMailSSL(Global.GMAIL_ID,Global.GMAIL_PWD);
-LogWriter.msg("IP","PTAA");
-							String emailtext="Please click on "+Global.URL_BASE+"/vicar/Signin/Signin.html?act=resetpwdlink&signinid="+m_LoginID+"&pwdalt="+confirmpwd+" to reset your password.";
-LogWriter.msg("IP","PTAA");
+							String emailtext="Please click on "+Global.URL_BASE+"/vicar/Signin.html?act=resetpwdlink&signinid="+m_LoginID+"&pwdalt="+confirmpwd+" to reset your password.";
 							sm.SendMail(Global.GMAIL_ID+"@gmail.com",m_LoginID,"Vicar Password Reset",emailtext);
-LogWriter.msg("IP","PTAA");
 							messageText = "Please check your email for a password reset link.";
-LogWriter.msg("IP","PTAA");
 							messageCode = 1;
 							m_actStr = "resetpwddone";
 						}else{
