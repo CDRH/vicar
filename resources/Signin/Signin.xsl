@@ -7,7 +7,7 @@
 
 
 <xsl:template match="/">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" class="home">
 	<xsl:apply-templates/>
 </html>
 </xsl:template>
@@ -22,15 +22,16 @@
 	<meta name="robots" content="noindex,nofollow" />
 	<meta name="pragma" content="no-cache" />
 	<link rel="stylesheet" type="text/css" href="Signin.css" />
+	<link rel="stylesheet" type="text/css" href="style.css" />
 	<xsl:if test="url/text() !='NONE'">
 		<meta http-equiv="REFRESH" content="{url/@delay};url={url/text()}" />
 	</xsl:if>
 </head>
 <body>
 <xsl:if test="url/text() ='NONE'">
-	<div style="color:blue;font-size:120%;font-weight:bold;margin:1em;position:absolute;top:45%;">
-		<xsl:value-of select="title/text()"/>
-		<a style="color:gray;font-size:60%;margin:0.5em;" href="AboutVicar.html">more info</a>
+	<div class="title">
+		<h1>Abbot</h1>
+		<h2>Text Interoperability Tool</h2>
 	</div>
 
 	<!-- sign in for either first time or in response to a sign out -->
@@ -56,38 +57,78 @@
 				</div>
 			</xsl:if>
 		</div>
-		<div align="right" style="border:0px;margin:8px;padding:0px 25px 0px 0px;">
-			<div style="padding:25px 0px 25px 0px;">
-				<form style="color:blue;text-decoration:none;border:0px;margin:0px;padding:0px;" method="post" action="Signin.html?act=signin">
-					<input type="hidden" value="false" name="jsenabled"/>
-					<span>ID: </span>
-					<input type="text" name="signinid" autocomplete="off" value="" />
-					<span>  Password: </span>
-					<input type="password" name="pwd" />
-					<input class="button" type="submit" name="perform" value="Sign In" />
-				</form>
-			</div>
-			<a name="origsignin" href="Signin.html?act=register" style="text-decoration:none;">
-				<span class="highlightlink">Register</span>
-			</a>
-			<a name="origsignin" href="Signin.html?act=resetpwd" style="text-decoration:none;">
-				<span class="highlightlink">Reset Password</span>
-			</a>
 
-			<div style="padding:35px 0px 5px 0px;">OR</div>
-			<div style="padding:25px 0px 25px 0px;">
-				<a name="signin" href="OpenSignin.html?op=Yahoo" style="color:blue;text-decoration:none;margin:0px;padding:0px;">
-					<img src="YahooOpenID_13.png" height="22px;" alt="Sign In With Yahoo" />
-				</a>
-			</div>
-			<div style="padding:15px 0px 5px 0px;">OR</div>
-			<div style="padding:25px 0px 25px 0px;">
-				<a name="signin" href="OpenSignin.html?op=Google" valign="bottom" style="font-size:60%;font-weight:bold;background:lightgrey;color:#222;border:1px solid #7D7D7D;text-decoration:none;margin:0px;padding:3px 1px 4px 2px;">
-					<img src="GoogleGImage.png" height="17px;" style="margin:0px;padding:0px;vertical-align:middle;" />
-					<span style="margin:4px;padding:0px;">Sign In through Google</span>
-				</a>
-			</div>
-		</div>
+      <!-- KMD added content div for positioning -->
+      <div class="content">
+         <div class="login">
+            <div class="login_container">
+               <form action="Signin.html?act=signin"
+                  method="post" class="login_form">
+                  <input name="jsenabled" value="false" type="hidden" />
+                  <span>
+                     <label for="signinid">ID: </label>
+                     <input value="" autocomplete="off" name="signinid" type="text" />
+                  </span>
+                  <span>
+                     <label for="pwd"> Password: </label>
+                     <input name="pwd" type="password" />
+                  </span>
+                  <input value="Sign In" name="perform" type="submit" class="button" />
+               </form>
+            </div><!-- /login_container -->
+
+            <div class="login_or">OR</div>
+            
+            <!-- KMD Will add images to yahoo and google signons via CSS -->
+            <div class="alternate_login">
+               <a href="OpenSignin.html?op=Yahoo"
+                  name="signin">Sign in through Yahoo</a>
+            </div>
+
+            <div class="alternate_login">
+               <a href="OpenSignin.html?op=Google"
+                  name="signin">Sign In through Google</a>
+            </div>
+
+            <a href="Signin.html?act=resetpwd"
+               name="origsignin">
+               <span class="highlightlink reset">Reset Password</span>
+            </a>
+            <a href="Signin.html?act=register"
+               name="origsignin">
+               <span class="highlightlink register">Register</span>
+            </a>
+
+         </div><!-- /login -->
+         
+         <!-- KMD New div, this text will change, here as placeholder -->
+         <div class="description">
+
+            <p>Vicar is an Andrew Mellon Foundation funded web application which provides
+               researchers with an easy and fast way to convert their data files into a MONK
+               compatible format using Abbot. Vicar was developed by Frank Smutniak at the Center
+               for Digital Research in the Humanities at the University of Nebraska - Lincoln.</p>
+            <p>MONK (Metadata Offer New Knowledge) is a web based system for undertaking text
+               analysis and visualization with large full-text literary archives. These archives are
+               represented in various dialects of the TEI XML schema. Disparate uses and
+               interpretations for the TEI element set has led to complications in the use of MONK
+               for any TEI file.</p>
+            <p>Abbot, a standalone XSLT program written by Brian Pytlik-Zillig, was created to read
+               different files and convert them to a core set of TEI elements named TEI-A such that
+               MONK could use them consistently. Abbot harvests the schema of a collection of
+               submitted files and creates another XSLT program to convert those files to TEI-A for
+               use in MONK or elsewhere. Further work by Stephen Ramsey gave Abbot a clojure wrapper
+               which allows its invocation by Vicar and other software components.</p>
+            <p>
+               <!-- KMD Link to More info page, will style that after -->
+               <a href="AboutVicar.html" class="more_info" >more info</a>
+            </p>
+
+         </div>
+         <!-- /description -->
+      </div>
+      <!-- /content -->
+      <div> </div>
 		<div style="font-size:140%;margin:0.5em;">
 			<xsl:if test="@mode = 0">
 				<div style="color:red;">You have successfuly logged out of your anonymous account.</div>
@@ -98,11 +139,6 @@
 			<xsl:if test="@mode = -2">
 				<div style="color:red;">You have successfuly logged out of this site but this does not log you out of your Yahoo account.</div>
 			</xsl:if>
-<!--
-			<div style="color:blue;font-size:120%;font-weight:bold;position:absolute;top:10px;">
-				<xsl:value-of select="title/text()"/>
-			</div>
--->
 		</div>
 	</xsl:if>
 
@@ -166,16 +202,5 @@
 
 </xsl:stylesheet>
 
-<!--
-			<span>I have read and agree with the Terms Of Service and Privacy Policy.</span>
-			<input type="checkbox" name="consent" />
--->
-<!--
-		<div style="padding:0px 0px 8px 0px;margin:2em 0em;">
-			<a name="signin" href="../Signin/OpenSignin.html?op=Test" style="outline:none;color:blue;text-decoration:none;" title="Anonymous login currently only for testing purposes and is limited to requests from unl.edu IP addresses.">
-				<span style="margin:4px;padding:0px;">Anonymous Sign In</span>
-			</a>
-		</div>
--->
 
 

@@ -10,7 +10,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.MessagingException;
 
-import edu.unl.abbot.vicar.LogWriter;
+//import edu.unl.abbot.vicar.LogWriter;
 
 /**
 * Based on sample code from http://www.mkyong.com/java/javamail-api-sending-email-via-gmail-smtp-example/
@@ -32,8 +32,8 @@ Session m_session;
 			String subj = args[1];
 			String msg = args[2];
 			System.out.println("TO<"+toaddr+"> SUBJ<"+subj+"> MSG<"+msg+">");
-			//SendMailSSL s = new SendMailSSL("vicarregister","[pwd]");
-			//s.SendMail("vicarregister@gmail.com",toaddr,"test","still testing.");
+			SendMailSSL s = new SendMailSSL("vicarregister","[pwd]");
+			s.SendMail("vicarregister@gmail.com",toaddr,"test","still testing.");
 		}
 	}
 
@@ -45,7 +45,7 @@ Session m_session;
 * @param the_pwd The password.
 */
 	public SendMailSSL(final String the_username,final String the_pwd){
-LogWriter.msg("IP","sendmail constructor user<"+the_username+"> pwd<"+the_pwd+">");
+		//LogWriter.msg("IP","sendmail constructor user<"+the_username+"> pwd<"+the_pwd+">");
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.socketFactory.port", "465");
@@ -71,7 +71,7 @@ LogWriter.msg("IP","sendmail constructor user<"+the_username+"> pwd<"+the_pwd+">
 */
 	public void SendMail(String the_sourceaddr,String the_recipient,String the_subject,String the_text){	
 		try {
-LogWriter.msg("IP","endmail start SRC<"+the_sourceaddr+"> TO<"+the_recipient+"> SUB<"+the_subject+">");
+System.out.println("IP endmail start SRC<"+the_sourceaddr+"> TO<"+the_recipient+"> SUB<"+the_subject+">");
 			Message message = new MimeMessage(m_session);
 			message.setFrom(new InternetAddress(the_sourceaddr));
 			message.setRecipients(Message.RecipientType.TO,InternetAddress.parse(the_recipient));
@@ -79,10 +79,8 @@ LogWriter.msg("IP","endmail start SRC<"+the_sourceaddr+"> TO<"+the_recipient+"> 
 			message.setText(the_text);
 			//message.setContent(the_text,"text/html");
 			Transport.send(message);
-LogWriter.msg("IP","endmail end");
 		} catch (MessagingException e) {
 			System.out.println("SENDMAIL ERROR");
-LogWriter.msg("IP","sendmail err");
 			e.printStackTrace();
 			//throw new RuntimeException(e);
 		}

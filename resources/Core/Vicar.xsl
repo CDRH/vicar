@@ -48,29 +48,24 @@
 	<link rel="stylesheet" type="text/css" href="Upload/PopupFrame.css" />
 
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css" />
+	<!--KMD-->
+	<link rel="stylesheet" type="text/css" href="style.css" />
 
 	<script>
 		$(function() {
 			$( "#progressbar" ).progressbar({value:0});
 		});
 	</script>
-<!--
-	<script type="text/javascript">
-		if("files" in DataTransfer.prototype){
-			alert('files');
-		}else{
-			alert('no files');
-		}
-	</script>
--->
 </head>
 
 <body id="bodyid" onload="UploadInit()">
+
 	<!-- top banner with account and signout access -->
-	<div style="padding:0.5em;margin:0.5em;color:blue;background:yellow;">
-		<a href="Account.html">
-			<span>Welcome</span>
-			<span style="font-size:100%;color:blue;">
+<!--KMD-->
+	<div class="identity_box">
+         <!-- KMD Changed the order around a bit -->
+         <span>Welcome</span>
+         <a class="identity_box_name" href="Account.html">
 				<xsl:choose>
 					<xsl:when test="@personname != ''">
 						<xsl:value-of select="@personname" />
@@ -84,10 +79,9 @@
 						<xsl:value-of select="@userid" />
 					</xsl:otherwise>
 				</xsl:choose>
-			</span>
-		</a>
-		<a style="position:relative;float:right;color:blue;" href="Signout.html">Sign out</a>
-	</div>
+	</a>
+         <a href="Signout.html" class="identity_box_email">Sign out</a>
+      </div>
 
 	<!-- main page -->
 	<xsl:apply-templates />
@@ -104,23 +98,28 @@
 
 <!-- display a list of the collections -->
 <xsl:template match="dirs">
-	<table style="margin:10px 5px;padding:0px;">
+<!--KMD-->
+	<table class="collection_selector">
+		<tbody>
 		<tr>
-			<td style="margin:0px;padding:0px;">
-				<span style="font-size:130%;">Collections </span>
+			<td>
+				<span>Collections </span>
 			</td>
+<!--ZZZ_A-->
 			<xsl:if test="@count &lt; @maxcount">
 				<td>
-					<a id="collection_create" style="margin:0em 1em;" href="Vicar.html?dir=new" title="Add New Collection">+</a>
+					<a id="collection_create" href="Vicar.html?dir=new" title="Add New Collection">+</a>
 				</td>
 			</xsl:if>
 			<xsl:if test="@count &gt;= @maxcount">
 				<td>
-					<span style="font-size:130%;color:red;margin:0em 1em;padding:0em;">You have reached the maximum number of directories.  Please remove an old directory to create a new one.</span>
+					<span>You have reached the maximum number of directories.  Please remove an old directory to create a new one.</span>
 				</td>
 			</xsl:if>
+<!--/ZZZ_A-->
 		</tr>
 		<xsl:apply-templates select="dir" />
+		</tbody>
 	</table>
 </xsl:template>
 
@@ -130,12 +129,14 @@
 		<tr>
 			<td></td>
 			<td>
+<!--ZZZ_B-->
 				<a style="font-size:130%;color:blue;text-decoration:none;margin:0em 1em;padding:0em;" href="Vicar.html?dir={@name}" title="Created {@date}">
 					<xsl:value-of select="@name"/>
 					<xsl:text> (</xsl:text>
 					<xsl:value-of select="@count"/>
 					<xsl:text>)</xsl:text>
 				</a>
+<!--/ZZZ_B-->
 			</td>
 		</tr>
 	</xsl:if>
@@ -152,18 +153,18 @@
 
 <!-- display the details of a specific selected selection (subelement to filemanager) -->
 <xsl:template match="collection">
-
 	<!-- show a link back to the listing, show the collection name, offer a chance to delete it -->
-	<table style="margin:10px 5px;padding:0px;">
+	<table class="collection_selector">
+		<tbody>
 		<tr>
-			<td style="margin:0px;padding:0px;">
-				<a style="margin:0px;padding:0px;color:blue;text-decoration:none;" href="Vicar.html">
-					<span style="font-size:130%;">Collections </span>
+			<td>
+				<a href="Vicar.html">
+					<span>Collections </span>
 				</a>
 			</td>
-			<td style="margin:0em 1em;padding:0px;">
-				<span style="color:black;margin:0em 0.25em;font-size:130%;">&gt;</span>
-				<span style="color:black;font-size:130%;margin:0px;padding:0px;">
+			<td>
+				<span>&gt;</span>
+				<span>
 					<xsl:value-of select="@dirname"/>
 				</span>
 				<xsl:if test="@new=0">
@@ -171,18 +172,21 @@
 						<a id="collection_delete" href="Vicar.html?dir={@dirname}&amp;act=del" title="Delete this collection">x</a>
 					</xsl:if>
 					<xsl:if test="../msg/@msgcode &lt; 0">
+<!--ZZZ_C-->
 						<span style="color:red;font-size:130%;">Delete this Collection? </span>
+<!--/ZZZ_C-->
 						<a id="collection_delete" href="Vicar.html?dir={@dirname}&amp;act=delconfirm" title="Delete this collection">Yes</a>
 						<a id="collection_delete" href="Vicar.html?dir={@dirname}&amp;act=delcancel" title="Keep this collection">Cancel</a>
 					</xsl:if>
 				</xsl:if>
 			</td>
 		</tr>
+		</tbody>
 	</table>
 
 	<!-- if this collection is new then request that the user give it a name -->
 	<xsl:if test="@new=1">
-		<form style="padding:10px;margin:10px;" action="Vicar.html?dir={@dirname}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+		<form action="Vicar.html?dir={@dirname}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 			<div>
 				<span>Enter a new name for this collection: </span>
 				<input type="text" name="ren" autocomplete="off" />
@@ -194,74 +198,90 @@
 
 	<!-- allow upload of files to named (non new) collections -->
 	<xsl:if test="@new=0">
+<!--ZZZ_CC-->
 		<div id="nojsmsg">
 			<div style="color:red;margin:10px 0px;">If javascript were enabled you would be able to upload multiple files at once by selecting them or by dragging and dropping them into the drop box.</div>
 		</div>
+<!--/ZZZ_CC-->
 
-		<div style="margin:0.5em 0em 1em 0em;padding:0em;">
-			<div id="upload_msgbox">
-				<span>Drag and drop input and conversion (.rng) files here</span>
-			</div>
+<!--KMD-->
+	    <div class="uploads">
+            <h4>Add files </h4>
+            <div id="upload_msgbox">
+               <form enctype="multipart/form-data" method="post" action="Vicar.html?dir={@dirname}" id="upload_form">
+                  <div class="select_files">
+                     <span>Drag and drop input and conversion (.rng) files here or</span>
+                     <input value="{@dirname}" name="dirname" id="dirname" type="hidden" />
+                     <input title="Navigate or drag/drop files here." multiple="multiple" name="file_upload" id="file_upload" type="file" />
+                  </div><!-- /select_files -->
+                  <input value="Upload" name="perform" id="perform" type="submit" />
+               </form>
 
-			<form id="upload_form" style="padding:0.5em;margin:0.5em;" action="Vicar.html?dir={@dirname}" method="post" enctype="multipart/form-data">
-				<span>Add files </span>
-				<input type="hidden" id="dirname" name="dirname" value="{@dirname}" />
-				<input type="file" id="file_upload" name="file_upload" multiple="multiple" title="Navigate or drag/drop files here."></input>
-				<input type="submit" id="perform" name="perform" value="Upload" />
-			</form>
-			<div id="progressbar" style="height:15px;background:white;"></div>
-		</div>
+               <div id="progressbar"
+                  class="ui-progressbar ui-widget ui-widget-content ui-corner-all"
+                  role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                  <div class="ui-progressbar-value ui-widget-header ui-corner-left"> </div>
+               </div><!-- /progressbar -->
 
+            </div><!-- /upload_msgbox -->
+         </div><!-- /uploads -->
 	</xsl:if>
 
 	<!-- build rest of page -->
-	<hr style="color:blue;width:99%;height:2px;"/>
-	<xsl:if test="@new=0">
-		<xsl:apply-templates select="inputfiles" />
-	</xsl:if>
-	<xsl:if test="( inputfiles/@count &gt; 0 ) and ( @new=0 )">
-		<xsl:apply-templates select="schemalist" />
-	</xsl:if>
+<!--KMD-->
+	<div class="files">
+		<xsl:if test="@new=0">
+			<xsl:apply-templates select="inputfiles" />
+		</xsl:if>
+		<xsl:if test="( inputfiles/@count &gt; 0 ) and ( @new=0 )">
+			<xsl:apply-templates select="schemalist" />
+		</xsl:if>
 
-	<xsl:if test="outputfiles/@count &gt; 0">
-		<xsl:apply-templates select="outputfiles" />
-	</xsl:if>
+		<xsl:if test="outputfiles/@count &gt; 0">
+			<xsl:apply-templates select="outputfiles" />
+		</xsl:if>
+<!--KMD-->
+	</div><!--/filesdiv-->
 </xsl:template>
 
 <!-- show uploaded input files - presentation of 'outercolumn' media selected via CSS -->
 <xsl:template match="inputfiles">
-	<div class="outercolumn">
-		<div class="columnheader">
-			<span class="columntitle">Input Files</span>
-		</div>
-		<xsl:apply-templates select="file"/>
-	</div>
+<!--KMD-->
+            <div class="outercolumn">
+               <!-- KMD Added padding div because of stupid CSS box model -->
+		<div class="paddingdiv">
+                  <!-- KMD Changed this to h4 instead of div for clarity -->
+                  <h4>Input Files</h4>
+		  <xsl:apply-templates select="file"/>
+		</div><!--/paddindiv-->
+            </div><!--/outercolumn-->
+	
 </xsl:template>
 
 
 <!-- show schema files and present conversion button - presentation of 'innercolumn' media selected via CSS -->
 <xsl:template match="schemalist">
 	<div class="innercolumn">
-		<div class="columnheader">
-			<span class="columntitle">Convert With:</span>
-		</div>
+	<!--KMD-->
+	<div class="paddingdiv">
+		<h4>Convert With:</h4>
 		<!--IF JAVASCRIPT IS NOT ENABLED THEN PRESENT THIS AS AN OPTION TO START A CONVERSION-->
 		<div id="nojsmsg">
 		<form id="convert" action="Convert/StreamServer.html?dir={../@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
-			<div style="margin:5px 20px;">
+			<div>
 				<span>Namespace:</span>
 				<input type="text" size="40" name="abbotns" id="abbotns" autocomplete="on" value="http://www.tei-c.org/ns/1.0" />
 			</div>
-			<div style="margin:5px 20px;">
+			<div>
 				<span>Custom:</span>
 				<input type="text" size="40" name="abbotcustom" id="abbotcustom" autocomplete="on" value="http://abbot.unl.edu/abbot_config.xml" />
 			</div>
-			<div style="margin:5px 20px;">
-				<select id="schemaselectnojs" name="conv" style="color:blue;">
+			<div>
+				<select id="schemaselectnojs" name="conv" class="selected">
 					<xsl:apply-templates />
 				</select>
 			</div>
-			<input type="submit" style="color:red;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" title="Generate output files using Abbot - No progress reporting is available since Javascript is disabled" />
+			<input class="process_files_submit" type="submit" style="color:red;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" title="Generate output files using Abbot - No progress reporting is available since Javascript is disabled" />
 		</form>
 		</div>
 
@@ -269,27 +289,29 @@
 		<!--NOTE THAT UNDER NORMAL OPERATION THE onclick EVENT ON THE SUBMIT BUTTON IS USED RATHER THAN THE action ON THE form ELEMENT-->
 		<div id="nojshide">
 		<form id="convert" action="Convert/StreamServer.html?dir={../@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
-			<div style="margin:5px 20px;">
+			<div>
 				<span>Namespace:</span>
 				<input type="text" size="40" name="abbotnsjs" id="abbotnsjs" autocomplete="on" value="http://www.tei-c.org/ns/1.0" />
 			</div>
-			<div style="margin:5px 20px;">
+			<div>
 				<span>Custom:</span>
 				<input type="text" size="40" name="abbotcustomjs" id="abbotcustomjs" autocomplete="on" value="http://abbot.unl.edu/abbot_config.xml" />
 			</div>
-			<div style="margin:5px 20px;">
-				<select id="schemaselect" name="conv" style="color:blue;">
+			<div>
+				<select id="schemaselect" name="conv" class="selected">
 					<xsl:apply-templates />
 				</select>
 			</div>
 		</form>
-		<input type="submit" style="color:green;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" onclick="makeSimpleFrame(this,'Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
+		<input class="process_files_submit" type="submit" name="perform" value="&gt;&gt;&gt;" onclick="makeSimpleFrame(this,'Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
 		</div>
-	</div>
+	</div><!--/paddingdiv-->
+	</div><!--/innercolumn-->
 </xsl:template>
 
 
 <!-- create options for schema select list -->
+<!--ZZZ_D-->
 <xsl:template match="schema">
 	<option value="{@type}{@name}" title="{text()}">
 		<xsl:if test="@current = 1">
@@ -310,27 +332,36 @@
 		<xsl:value-of select="@name" />
 	</option>
 </xsl:template>
+<!--/ZZZ_D-->
 
 
 <!-- show output files - presentation of 'outercolumn' media selected via CSS -->
 <xsl:template match="outputfiles">
 	<div class="outercolumn">
+	<div class="paddingdiv">
+<!--
 		<div class="columnheader">
 			<span class="columntitle">Abbot Generated Results</span>
 		</div>
+-->
+		<h4>Abbot Generated Results</h4>
+		<div class="download">
+			<p>Download all files as:</p>
+			<a href="Download/{@dirname}/{@dirname}.zip">zip file</a>
+			<a href="Download/{@dirname}/{@dirname}.tar.gz">tar.gz file</a>
+		</div>
+<!--
+		<div style="padding:0em 0em 0em 0.3em">
+		</div>
+-->
 		<xsl:apply-templates select="file"/>
-		<div style="padding:0em 0em 0em 0.3em">
-			<a href="Download/{@dirname}/{@dirname}.zip">Download all in a single zip</a>
-		</div>
-		<div style="padding:0em 0em 0em 0.3em">
-			<a href="Download/{@dirname}/{@dirname}.tar.gz">Download all in a single tar.gz</a>
-		</div>
+	</div>
 	</div>
 </xsl:template>
 
 <!-- create display of individual files for use by inputfiles and outputfiles elements-->
 <xsl:template match="file">
-	<div style="margin:5px 20px;">
+	<div>
 		<!-- display files for 'inputfiles' -->
 		<xsl:if test="@op = 0">
 			<span>
@@ -339,7 +370,7 @@
 		</xsl:if>
 		<!-- display files for 'outputfiles' -->
 		<xsl:if test="@op = 1">
-			<a style="color:blue;text-decoration:none;" href="Download/{../@dirname}/{@name}">
+			<a href="Download/{../@dirname}/{@name}">
 				<xsl:value-of select="@name" />
 			</a>
 			<!-- 0 validation errors -->
@@ -356,6 +387,7 @@
 			</xsl:if>
 		</xsl:if>
 		<!-- below used by 'inputfiles' element to ask if an XML file (or not) should be unzipped/untarred/ungzipuntarred -->
+<!--ZZZ_E-->
 		<xsl:if test="@zip = 0">
 			<span style="margin:0px 10px;color:red;">xml?</span>
 		</xsl:if>
@@ -368,6 +400,7 @@
 		<xsl:if test="@zip = 4">
 			<a style="color:blue;text-decoration:none;" href="Vicar.html?act=untargz&amp;dir={../@dirname}&amp;fn={@name}"> Ungzip and Untar this file</a>
 		</xsl:if>
+<!--/ZZZ_E-->
 	</div>
 </xsl:template>
 

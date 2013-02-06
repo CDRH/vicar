@@ -1,14 +1,18 @@
 <project name="Vicar" default="usage" basedir=".">
 	<description> simple example build file </description>
+<!--
 	<property file="build.local.properties"/>
+	<property file="build.tomcat.properties"/>
+-->
+	<property file="build.cocoon.properties"/>
 
 	<path id="CP">
-		<pathelement path="${cocoonlibdir}/excalibur-pool-api-2.1.jar"/>
-		<pathelement path="${cocoonlibdir}/excalibur-datasource-2.1.jar"/>
-		<pathelement path="${cocoonlibdir}/avalon-framework-api-4.3.jar"/>
-		<pathelement path="${cocoonlibdir}/avalon-framework-impl-4.3.jar"/>
-		<pathelement path="${cocoonlibdir}/commons-lang-2.3.jar"/>
-		<pathelement path="${cocoonlibdir}/cocoon-2.1.11.jar"/>
+		<pathelement path="${libdir}/excalibur-pool-api-2.1.jar"/>
+		<pathelement path="${libdir}/excalibur-datasource-2.1.jar"/>
+		<pathelement path="${libdir}/avalon-framework-api-4.3.jar"/>
+		<pathelement path="${libdir}/avalon-framework-impl-4.3.jar"/>
+		<pathelement path="${libdir}/commons-lang-2.3.jar"/>
+		<pathelement path="${libdir}/cocoon-2.1.11.jar"/>
 
 		<!-- commons-compress used by Server.Core.ZipUtil.java-->
 		<pathelement path="${auxlibdir}/commons-compress-1.3.jar"/>
@@ -25,7 +29,7 @@
 		<!-- if using mail.jar then remove ${libdir}/geronimo-spec-javamail-1.3.1-rc5.jar from dir if exists -->
 		<pathelement path="${auxlibdir}/mail.jar"/>
 		<!-- servlet 3.0-->
-		<pathelement path="${tomcatserver}/lib/servlet-api.jar"/>
+		<pathelement path="${servletlibdir}/servlet-api.jar"/>
 	</path>
 
 
