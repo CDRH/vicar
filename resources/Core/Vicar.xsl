@@ -59,9 +59,14 @@
 </head>
 
 <body id="bodyid" onload="UploadInit()">
-
+	<!-- Header -->
+	<div class="title">
+		<h1>Abbot</h1>
+		<h2>Text Interoperability Tool</h2>
+	</div>
+	
 	<!-- top banner with account and signout access -->
-<!--KMD-->
+	
 	<div class="identity_box">
          <!-- KMD Changed the order around a bit -->
          <span>Welcome</span>
