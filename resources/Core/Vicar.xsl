@@ -48,7 +48,10 @@
 	<link rel="stylesheet" type="text/css" href="Upload/PopupFrame.css" />
 
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css" />
-
+	
+	<!-- This needs to link to jquery-ui-1.10.0.custom.css in the KMD resources folder, and will replace the above -->
+	<!--<link rel="stylesheet" href="jquery-ui-1.10.0.custom.css" />-->
+	
 	<link rel="stylesheet" type="text/css" href="style.css" />
 
 	<script>
