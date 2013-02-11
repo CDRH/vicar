@@ -48,7 +48,7 @@
 	<link rel="stylesheet" type="text/css" href="Upload/PopupFrame.css" />
 
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css" />
-	<!--KMD-->
+
 	<link rel="stylesheet" type="text/css" href="style.css" />
 
 	<script>
@@ -68,7 +68,6 @@
 	<!-- top banner with account and signout access -->
 	
 	<div class="identity_box">
-         <!-- KMD Changed the order around a bit -->
          <span>Welcome</span>
          <a class="identity_box_name" href="Account.html">
 				<xsl:choose>
@@ -103,14 +102,13 @@
 
 <!-- display a list of the collections -->
 <xsl:template match="dirs">
-<!--KMD-->
 	<table class="collection_selector">
 		<tbody>
 		<tr>
 			<td>
 				<span>Collections </span>
 			</td>
-<!--ZZZ_A-->
+			<!--ZZZ_A KMD added class directory_warning -->
 			<xsl:if test="@count &lt; @maxcount">
 				<td>
 					<a id="collection_create" href="Vicar.html?dir=new" title="Add New Collection">+</a>
@@ -118,7 +116,7 @@
 			</xsl:if>
 			<xsl:if test="@count &gt;= @maxcount">
 				<td>
-					<span>You have reached the maximum number of directories.  Please remove an old directory to create a new one.</span>
+					<span class="directory_warning">You have reached the maximum number of directories.  Please remove an old directory to create a new one.</span>
 				</td>
 			</xsl:if>
 <!--/ZZZ_A-->
@@ -134,8 +132,8 @@
 		<tr>
 			<td></td>
 			<td>
-<!--ZZZ_B-->
-				<a style="font-size:130%;color:blue;text-decoration:none;margin:0em 1em;padding:0em;" href="Vicar.html?dir={@name}" title="Created {@date}">
+<!--ZZZ_B KMD added class collection_list -->
+				<a class="collection_list" href="Vicar.html?dir={@name}" title="Created {@date}">
 					<xsl:value-of select="@name"/>
 					<xsl:text> (</xsl:text>
 					<xsl:value-of select="@count"/>
@@ -177,8 +175,8 @@
 						<a id="collection_delete" href="Vicar.html?dir={@dirname}&amp;act=del" title="Delete this collection">x</a>
 					</xsl:if>
 					<xsl:if test="../msg/@msgcode &lt; 0">
-<!--ZZZ_C-->
-						<span style="color:red;font-size:130%;">Delete this Collection? </span>
+<!--ZZZ_C KMD added class error-->
+						<span class="error">Delete this Collection? </span>
 <!--/ZZZ_C-->
 						<a id="collection_delete" href="Vicar.html?dir={@dirname}&amp;act=delconfirm" title="Delete this collection">Yes</a>
 						<a id="collection_delete" href="Vicar.html?dir={@dirname}&amp;act=delcancel" title="Keep this collection">Cancel</a>
@@ -191,9 +189,9 @@
 
 	<!-- if this collection is new then request that the user give it a name -->
 	<xsl:if test="@new=1">
-		<form action="Vicar.html?dir={@dirname}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-			<div>
-				<span>Enter a new name for this collection: </span>
+		<form action="Vicar.html?dir={@dirname}" method="post" accept-charset="utf-8" enctype="multipart/form-data" class="new_collection">
+			<div class="new_collection">
+				<span class="new_collection_instructions">Enter a new name for this collection: </span>
 				<input type="text" name="ren" autocomplete="off" />
 				<input type="submit" name="perform" value="Save" />
 				<input type="submit" name="perform" value="Cancel" />
@@ -203,13 +201,12 @@
 
 	<!-- allow upload of files to named (non new) collections -->
 	<xsl:if test="@new=0">
-<!--ZZZ_CC-->
+<!--ZZZ_CC KMD added class nojs_warning-->
 		<div id="nojsmsg">
-			<div style="color:red;margin:10px 0px;">If javascript were enabled you would be able to upload multiple files at once by selecting them or by dragging and dropping them into the drop box.</div>
+			<div class="nojs_warning">If javascript were enabled you would be able to upload multiple files at once by selecting them or by dragging and dropping them into the drop box.</div>
 		</div>
 <!--/ZZZ_CC-->
 
-<!--KMD-->
 	    <div class="uploads">
             <h4>Add files </h4>
             <div id="upload_msgbox">
@@ -233,7 +230,7 @@
 	</xsl:if>
 
 	<!-- build rest of page -->
-<!--KMD-->
+
 	<div class="files">
 		<xsl:if test="@new=0">
 			<xsl:apply-templates select="inputfiles" />
@@ -245,13 +242,13 @@
 		<xsl:if test="outputfiles/@count &gt; 0">
 			<xsl:apply-templates select="outputfiles" />
 		</xsl:if>
-<!--KMD-->
+
 	</div><!--/filesdiv-->
 </xsl:template>
 
 <!-- show uploaded input files - presentation of 'outercolumn' media selected via CSS -->
 <xsl:template match="inputfiles">
-<!--KMD-->
+
             <div class="outercolumn">
                <!-- KMD Added padding div because of stupid CSS box model -->
 		<div class="paddingdiv">
@@ -267,7 +264,6 @@
 <!-- show schema files and present conversion button - presentation of 'innercolumn' media selected via CSS -->
 <xsl:template match="schemalist">
 	<div class="innercolumn">
-	<!--KMD-->
 	<div class="paddingdiv">
 		<h4>Convert With:</h4>
 		<!--IF JAVASCRIPT IS NOT ENABLED THEN PRESENT THIS AS AN OPTION TO START A CONVERSION-->
@@ -286,7 +282,7 @@
 					<xsl:apply-templates />
 				</select>
 			</div>
-			<input class="process_files_submit" type="submit" style="color:red;font-weight:bold;" name="perform" value="&gt;&gt;&gt;" title="Generate output files using Abbot - No progress reporting is available since Javascript is disabled" />
+			<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" title="Generate output files using Abbot - No progress reporting is available since Javascript is disabled" />
 		</form>
 		</div>
 
@@ -308,7 +304,7 @@
 				</select>
 			</div>
 		</form>
-		<input class="process_files_submit" type="submit" name="perform" value="&gt;&gt;&gt;" onclick="makeSimpleFrame(this,'Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
+		<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" onclick="makeSimpleFrame(this,'Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
 		</div>
 	</div><!--/paddingdiv-->
 	</div><!--/innercolumn-->
@@ -316,7 +312,7 @@
 
 
 <!-- create options for schema select list -->
-<!--ZZZ_D-->
+<!--ZZZ_D KMD added classes type_1 and type_2-->
 <xsl:template match="schema">
 	<option value="{@type}{@name}" title="{text()}">
 		<xsl:if test="@current = 1">
@@ -325,13 +321,13 @@
 			</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="@type &lt;= 1">
-			<xsl:attribute name="style">
-				<xsl:text>color:blue;</xsl:text>
+			<xsl:attribute name="class">
+				<xsl:text>type_1</xsl:text>
 			</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="@type &gt;= 2">
-			<xsl:attribute name="style">
-				<xsl:text>color:black;</xsl:text>
+			<xsl:attribute name="class">
+				<xsl:text>type_2</xsl:text>
 			</xsl:attribute>
 		</xsl:if>
 		<xsl:value-of select="@name" />
@@ -392,18 +388,18 @@
 			</xsl:if>
 		</xsl:if>
 		<!-- below used by 'inputfiles' element to ask if an XML file (or not) should be unzipped/untarred/ungzipuntarred -->
-<!--ZZZ_E-->
+<!--ZZZ_E KMD added class error -->
 		<xsl:if test="@zip = 0">
-			<span style="margin:0px 10px;color:red;">xml?</span>
+			<span class="error">xml?</span>
 		</xsl:if>
 		<xsl:if test="@zip = 2">
-			<a style="color:blue;text-decoration:none;" href="Vicar.html?act=unzip&amp;dir={../@dirname}&amp;fn={@name}"> Unzip this file</a>
+			<a class="unzip_or_tar" href="Vicar.html?act=unzip&amp;dir={../@dirname}&amp;fn={@name}"> Unzip this file</a>
 		</xsl:if>
 		<xsl:if test="@zip = 3">
-			<a style="color:blue;text-decoration:none;" href="Vicar.html?act=untar&amp;dir={../@dirname}&amp;fn={@name}"> Untar this file</a>
+			<a class="unzip_or_tar" href="Vicar.html?act=untar&amp;dir={../@dirname}&amp;fn={@name}"> Untar this file</a>
 		</xsl:if>
 		<xsl:if test="@zip = 4">
-			<a style="color:blue;text-decoration:none;" href="Vicar.html?act=untargz&amp;dir={../@dirname}&amp;fn={@name}"> Ungzip and Untar this file</a>
+			<a class="unzip_or_tar" href="Vicar.html?act=untargz&amp;dir={../@dirname}&amp;fn={@name}"> Ungzip and Untar this file</a>
 		</xsl:if>
 <!--/ZZZ_E-->
 	</div>

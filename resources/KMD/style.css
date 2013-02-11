@@ -227,6 +227,10 @@ td { vertical-align: top; }
    HTML and common
    ~~~~~~~~~~~~~~~~~~~ */
 
+html {
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+}
+
 a {
 	color: #62903f;
 }
@@ -252,7 +256,43 @@ h4 {
 }
 
 .error {
-	margin:0px 10px;color:red;
+	margin:0px 10px;
+	color:red;
+}
+
+/*New Styles to incorporate */
+
+.collection_list {
+	font-size:130%;
+	color:blue;
+	text-decoration:none;
+	margin:0em 1em;
+	padding:0em;
+}
+
+.nojs_warning {
+	font-size:130%;
+	color:blue;
+	text-decoration:none;
+	margin:0em 1em;
+	padding:0em;
+}
+
+.type_1 {
+	color:blue;
+}
+
+.type_2 {
+	
+}
+
+.unzip_or_tar {
+	color:blue;
+	text-decoration:none;
+}
+
+.directory_warning {
+	color:red;
 }
 
 
@@ -355,6 +395,7 @@ input#perform {
 	left: 0;
 	width: 100%;
 	margin: 0 0 -1px -1px;
+	height:  20px;
 	border: 1px solid #aaa;
 	-moz-border-radius: 0px;
 	border-radius: 0px;
