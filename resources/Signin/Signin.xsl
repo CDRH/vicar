@@ -104,11 +104,26 @@
          <!-- KMD New div, this text will change, here as placeholder -->
          <div class="description">
 
-         	<p>Abbot is a tool designed to convert dissimilar collections of XML texts into a common interoperable form. Abbot's key feature is the ability to read an XML schema file and output procedures to convert source files into a valid form that is consistent with the target schema. Abbot's schema-harvesting procedures focus on TEI, but is extremely flexible and format agnostic. Abbot makes no particular judgment or demand concerning the type of interoperability sought. It can transform texts into a variety of TEI schema, and accommodates user customization.</p>
-         	
-         	<p>Abbot is more likely than conventional file-conversion methods to spot and deal with problems because it operates consistently and algorithmically across large numbers of texts. Abbot sets its course on an ambitious but sensible path--moving toward total interoperability, while at the same time accepting the uniqueness of individual text collections. Abbot's method allows for different forms of interoperability, from small, one-off instances to the creation of large, permanent digital libraries.</p>
-         	
-         	<p>Abbot was developed at the <a href="http://cdrh.unl.edu">Center for Digital Research in the Humanities</a> by Brian L. Pytlik Zillig, Stephen Ramsay, Martin Mueller, and Frank Smutniak. Support for Abbot was provided by the <a href="http://www.mellon.org/">Andrew W. Mellon Foundation</a>.</p>
+         	        <p>Abbot is a tool designed to convert dissimilar collections of
+ XML texts into a common interoperable form. Abbot's key feature is the 
+ability to read an XML schema file and output procedures to convert 
+source files into a valid form that is consistent with the target 
+schema. Abbot's schema-harvesting procedures focus on TEI, but are 
+extremely flexible and format agnostic. Abbot makes no particular 
+judgment or demand concerning the type of interoperability sought. It 
+can transform texts into a variety of TEI schema, and accommodates user 
+customization.</p>
+        
+        <p>Abbot is more likely than conventional file-conversion 
+methods to spot and deal with problems because it operates consistently 
+and algorithmically across large numbers of texts. Abbot sets its course
+ on an ambitious but sensible path&#8212;moving toward total 
+interoperability, while at the same time accepting the uniqueness of 
+individual text collections. Abbot's method allows for different forms 
+of interoperability, from small, one-off instances to the creation of 
+large, permanent digital libraries.</p>
+        
+        <p>Abbot was developed at the <a href="http://cdrh.unl.edu/">Center for Digital Research in the Humanities</a> by Brian L. Pytlik Zillig, Stephen Ramsay, Martin Mueller, and Frank Smutniak. Support for Abbot was provided by the <a href="http://www.mellon.org/">Andrew W. Mellon Foundation</a>.</p>
             <p>
                
                <a href="AboutVicar.html" class="more_info" >more info</a>
