@@ -79,7 +79,7 @@
 
             <div class="login_or">OR</div>
             
-            <!-- KMD Will add images to yahoo and google signons via CSS -->
+            <!-- Not adding logos because of diverging branding issues, they are not required. -->
             <div class="alternate_login">
                <a href="OpenSignin.html?op=Yahoo"
                   name="signin">Sign in through Yahoo</a>
@@ -104,23 +104,13 @@
          <!-- KMD New div, this text will change, here as placeholder -->
          <div class="description">
 
-            <p>Vicar is an Andrew Mellon Foundation funded web application which provides
-               researchers with an easy and fast way to convert their data files into a MONK
-               compatible format using Abbot. Vicar was developed by Frank Smutniak at the Center
-               for Digital Research in the Humanities at the University of Nebraska - Lincoln.</p>
-            <p>MONK (Metadata Offer New Knowledge) is a web based system for undertaking text
-               analysis and visualization with large full-text literary archives. These archives are
-               represented in various dialects of the TEI XML schema. Disparate uses and
-               interpretations for the TEI element set has led to complications in the use of MONK
-               for any TEI file.</p>
-            <p>Abbot, a standalone XSLT program written by Brian Pytlik-Zillig, was created to read
-               different files and convert them to a core set of TEI elements named TEI-A such that
-               MONK could use them consistently. Abbot harvests the schema of a collection of
-               submitted files and creates another XSLT program to convert those files to TEI-A for
-               use in MONK or elsewhere. Further work by Stephen Ramsey gave Abbot a clojure wrapper
-               which allows its invocation by Vicar and other software components.</p>
+         	<p>Abbot is a tool designed to convert dissimilar collections of XML texts into a common interoperable form. Abbot's key feature is the ability to read an XML schema file and output procedures to convert source files into a valid form that is consistent with the target schema. Abbot's schema-harvesting procedures focus on TEI, but is extremely flexible and format agnostic. Abbot makes no particular judgment or demand concerning the type of interoperability sought. It can transform texts into a variety of TEI schema, and accommodates user customization.</p>
+         	
+         	<p>Abbot is more likely than conventional file-conversion methods to spot and deal with problems because it operates consistently and algorithmically across large numbers of texts. Abbot sets its course on an ambitious but sensible path--moving toward total interoperability, while at the same time accepting the uniqueness of individual text collections. Abbot's method allows for different forms of interoperability, from small, one-off instances to the creation of large, permanent digital libraries.</p>
+         	
+         	<p>Abbot was developed at the <a href="http://cdrh.unl.edu">Center for Digital Research in the Humanities</a> by Brian L. Pytlik Zillig, Stephen Ramsay, Martin Mueller, and Frank Smutniak. Support for Abbot was provided by the <a href="http://www.mellon.org/">Andrew W. Mellon Foundation</a>.</p>
             <p>
-               <!-- KMD Link to More info page, will style that after -->
+               
                <a href="AboutVicar.html" class="more_info" >more info</a>
             </p>
 
@@ -129,24 +119,25 @@
       </div>
       <!-- /content -->
       <div> </div>
-		<div style="font-size:140%;margin:0.5em;">
+		<div class="login_box">
 			<xsl:if test="@mode = 0">
-				<div style="color:red;">You have successfuly logged out of your anonymous account.</div>
+				<div class="login_warning">You have successfuly logged out of your anonymous account.</div>
 			</xsl:if>
 			<xsl:if test="@mode = -1">
-				<div style="color:red;">You have successfuly logged out of this site but this does not log you out of your Google account.</div>
+				<div class="login_warning"">You have successfuly logged out of this site but this does not log you out of your Google account.</div>
 			</xsl:if>
 			<xsl:if test="@mode = -2">
-				<div style="color:red;">You have successfuly logged out of this site but this does not log you out of your Yahoo account.</div>
+				<div class="login_warning"">You have successfuly logged out of this site but this does not log you out of your Yahoo account.</div>
 			</xsl:if>
 		</div>
 	</xsl:if>
 
 	<!-- implements register form -->
 	<xsl:if test="@act = 'register'">
-		<div class="banner">Register</div>
-		<div class="instruct">Enter your email address for ID and then enter a new password twice.</div>
-		<div class="instructsmall">Passwords must contain a more than 5 characters but fewer than 20.</div>
+		<div class="content registration">
+		<h2>Register</h2>
+		<p class="instruct">Enter your email address for ID and then enter a new password twice.</p>
+		<p class="instructsmall">Passwords must contain a more than 5 characters but fewer than 20.</p>
 		<form method="post" action="Signin.html?act=register">
 			<span>ID: </span>
 			<input type="text" name="signinid" autocomplete="off" value="" />
@@ -157,6 +148,7 @@
 			<input class="button" type="submit" name="perform" value="Register" />
 			<input class="button" type="submit" name="perform" value="Cancel" />
 		</form>
+		</div>
 	</xsl:if>
 
 	<xsl:if test="@act = 'confirm'">
@@ -164,14 +156,16 @@
 	</xsl:if>
 
 	<xsl:if test="@act = 'resetpwd'">
-		<div class="banner">Reset Password </div>
-		<div class="instruct">Enter your email address and a password reset link will be sent to you via email.</div>
+		<div class="content registration">
+		<h2>Reset Password </h2>
+		<p class="instruct">Enter your email address and a password reset link will be sent to you via email.</p>
 		<form method="post" action="Signin.html?act=resetpwd">
 			<span class="label">ID: </span>
 			<input type="text" name="signinid" autocomplete="off" value="" />
 			<input class="button" type="submit" name="perform" value="Reset" />
 			<input class="button" type="submit" name="perform" value="Cancel" />
 		</form>
+		</div>
 	</xsl:if>
 
 	<xsl:if test="@act = 'resetpwddone'">
@@ -179,9 +173,10 @@
 	</xsl:if>
 
 	<xsl:if test="@act = 'resetpwdlink'">
-		<div class="banner">Password Reset </div>
-		<div class="instruct">Enter your new password twice.</div>
-		<div class="instructsmall">Passwords must contain a more than 5 characters but fewer than 20.</div>
+		<div class="content registration">
+		<h2>Password Reset </h2>
+		<p class="instruct">Enter your new password twice.</p>
+		<p class="instructsmall">Passwords must contain a more than 5 characters but fewer than 20.</p>
 		<form method="post" action="Signin.html?act=resetpwdlink">
 			<input type="hidden" name="signinid" value="{@ID}" />
 			<span class="label">New Password: </span>
@@ -191,6 +186,7 @@
 			<input class="button" type="submit" name="perform" value="Reset" />
 			<input class="button" type="submit" name="perform" value="Cancel" />
 		</form>
+		</div>
 	</xsl:if>
 
 	<xsl:if test="@act = 'resetpwdlinkdone'">
