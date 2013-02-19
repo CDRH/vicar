@@ -37,6 +37,8 @@ private String m_ConvStr;
 private String m_Namespace;
 private String m_Custom;
 
+private boolean m_isdone = true;
+
 	public AbbotConvert(Session the_session,String the_dir,String the_ConvStr,String the_Namespace,String the_Custom){
 		m_session = the_session;
 		m_dir = the_dir;
@@ -51,6 +53,7 @@ private String m_Custom;
 	}
 
 	public void batchresult(){
+		m_isdone = false;
 		String remoteaddr = (String)m_session.getAttribute("IPADDR");
 		m_OwnerID = (String)m_session.getAttribute("userid");
 		m_OwnerPath = (String)m_session.getAttribute("userpath");
@@ -83,14 +86,19 @@ private String m_Custom;
 				try {
 					//abbot.convert(indir,outdir,convdir+m_ConvStr);
 					//abbot.convert(indir,outdir,m_Custom,m_Namespace,convdir+m_ConvStr);
+					System.out.println("CONVERTING");
 					abbot.convert(indir,outdir,convdir+m_ConvStr,m_Namespace,m_Custom);
 				}catch(Exception ex){
 					String errmsg = ex.getMessage();
+System.out.println("ABBOTERRORMSG<"+errmsg+">");
 					if(errmsg!=null){
 						errmsg = errmsg.replace(","," ");
+						m_session.setAttribute("abbotmsg:",errmsg);
 					}
 					LogWriter.msg(remoteaddr,"CONVERT_ERROR,"+ex.getMessage());
 				}
+				m_isdone = true;
+				System.out.println("DONE CONVERTING");
 
 				LogWriter.msg(remoteaddr,"CORRECTION_BEGIN");
 				Vector<String> outputfiles = listFiles(outdir,".xml");
@@ -113,6 +121,7 @@ private String m_Custom;
 				convList.add("s/Pytlik Zillig,/"+email+"/g");
 				convList.add("s/[ \t]*B.<\\/name> Conversion to TEI/<\\/name> Conversion to TEI/g");
 				pm.cleanup(outputfiles,convList);
+				cleanDirOfSedResidue(outdir);
 
 				LogWriter.msg(remoteaddr,"VALIDATION_BEGIN");
 				JingUtil ju = new JingUtil();
@@ -134,6 +143,9 @@ private String m_Custom;
 		}
 	}
 
+	public boolean isDone(){
+		return m_isdone;
+	}
 
 	public String cleanDir(String the_dirpath){
 		File f = new File(the_dirpath);
@@ -142,6 +154,21 @@ private String m_Custom;
 				File dirlist[] = f.listFiles();
 				for (File userdir : dirlist){
 					boolean ddf = userdir.delete();
+				}
+			}
+		}
+		return the_dirpath;
+	}
+
+	public String cleanDirOfSedResidue(String the_dirpath){
+		File f = new File(the_dirpath);
+		if(f!=null){
+			if(f.isDirectory()){
+				File dirlist[] = f.listFiles();
+				for (File userdir : dirlist){
+					if(userdir.getName().endsWith("_sed")){
+						boolean ddf = userdir.delete();
+					}
 				}
 			}
 		}

@@ -148,8 +148,9 @@ private String m_AbbotCustom;
 				sos.println("<values name='"+topline+"|Abbot'>");
 				sos.flush();
 				int pct = 0;
+				int outputcount = 0;
 				while(pct<100){
-					int outputcount = fileCount(userdir+"/output/");
+					outputcount = fileCount(userdir+"/output/");
 					pct = (int)(100*outputcount)/inputcount;
 					totalpct = pct/2;
 					sos.println(""+totalpct+"|"+pct);
@@ -158,10 +159,20 @@ private String m_AbbotCustom;
 				}
 				pct = 0;
 				sos.println("</values>");
+/****
+				String abbotmsg = (String)m_session.getAttribute("abbotmsg");
+				if(abbotmsg!=null){
+					sos.println("<msg>");
+					sos.println(abbotmsg);
+					sos.println("</msg>");
+					m_session.setAttribute("abbotmsg",null);
+					System.out.println("ABBOT_MSG<"+abbotmsg+">");
+				}
+****/
 				sos.println("<values name='"+topline+"|Validation'>");
 				while(pct<100){
-					int validcount = fileCount(userdir+"/valid/");
-					pct = (int)(100*validcount)/inputcount;
+					int validcount = fileCountValid(userdir+"/valid/");
+					pct = (int)(100*validcount)/outputcount;
 					totalpct = 50+pct/2;
 					sos.println(""+totalpct+"|"+pct);
 					sos.flush();
@@ -236,17 +247,39 @@ private String m_AbbotCustom;
 * @return The number of files.
 */
 	private int fileCount(String the_path){
+System.out.println("NEEDS TO FILTER OUT FILES THAT START WITH '.'");
 		int count = 0;
 		try {
 			File f = new File(the_path);
 			if(f!=null){
-				count = f.listFiles().length;
+				String[] xx = f.list();
+				for(int i=0;i<xx.length;i++){
+					if(xx[i].endsWith(".xml")&&(!xx[i].startsWith("."))){
+						count++;
+					}
+				}
 			}
 		} catch(Exception ex){
 		}
 		return count;
 	}
 
+	private int fileCountValid(String the_path){
+		int count = 0;
+		try {
+			File f = new File(the_path);
+			if(f!=null){
+				String[] xx = f.list();
+				for(int i=0;i<xx.length;i++){
+					if(xx[i].endsWith("html")){
+						count++;
+					}
+				}
+			}
+		} catch(Exception ex){
+		}
+		return count;
+	}
 /**
 * Converts a text representation of an integer into the integer.  If no conversion can be made then 0 is returned.
 * @param the_str The text representation of an integer.
@@ -262,6 +295,25 @@ private String m_AbbotCustom;
 		}
 		return ret;
 	}
+
+        public Vector<String> listFiles(String the_dirpath){
+                Vector<String> dir = new Vector<String>();
+                try {
+                        File f = new File(the_dirpath);
+                        if(f!=null){
+                                String files[] = f.list();
+                                if(files!=null){
+                                        for (int i=0; i<files.length; i++) {
+                                                dir.add(files[i]);
+                                        }
+                                }
+                        }
+                }catch(Exception e){
+                        e.printStackTrace();
+                }
+                return dir;
+        }
+
 }
 
 
