@@ -47,16 +47,11 @@
 	<link rel="stylesheet" type="text/css" href="Upload/AjaxUpload.css" />
 	<link rel="stylesheet" type="text/css" href="Upload/PopupFrame.css" />
 
-
-<!--FSS PER KMD INSTRUCTIONS BELOW-->
-<!--
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css" />
--->
+
 	<!-- This needs to link to jquery-ui-1.10.0.custom.css in the KMD resources folder, and will replace the above -->
-	<link rel="stylesheet" href="jquery-ui-1.10.0.custom.css" />
+	<!--<link rel="stylesheet" href="jquery-ui-1.10.0.custom.css" />-->
 
-
-	
 	<link rel="stylesheet" type="text/css" href="style.css" />
 
 	<script>
@@ -72,9 +67,9 @@
 		<h1>Abbot</h1>
 		<h2>Text Interoperability Tool</h2>
 	</div>
-	
+
 	<!-- top banner with account and signout access -->
-	
+
 	<div class="identity_box">
          <span>Welcome</span>
          <a class="identity_box_name" href="Account.html">
@@ -265,7 +260,7 @@
 		  <xsl:apply-templates select="file"/>
 		</div><!--/paddindiv-->
             </div><!--/outercolumn-->
-	
+
 </xsl:template>
 
 
