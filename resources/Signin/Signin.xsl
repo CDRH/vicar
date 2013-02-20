@@ -139,10 +139,10 @@ large, permanent digital libraries.</p>
 				<div class="login_warning">You have successfuly logged out of your anonymous account.</div>
 			</xsl:if>
 			<xsl:if test="@mode = -1">
-				<div class="login_warning"">You have successfuly logged out of this site but this does not log you out of your Google account.</div>
+				<div class="login_warning">You have successfuly logged out of this site but this does not log you out of your Google account.</div>
 			</xsl:if>
 			<xsl:if test="@mode = -2">
-				<div class="login_warning"">You have successfuly logged out of this site but this does not log you out of your Yahoo account.</div>
+				<div class="login_warning">You have successfuly logged out of this site but this does not log you out of your Yahoo account.</div>
 			</xsl:if>
 		</div>
 	</xsl:if>
