@@ -3,7 +3,6 @@
 
 <xsl:output method="xml" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 
-
 <xsl:template match="/">
 <html lang="en" class="no-js">
 	<xsl:apply-templates />
@@ -47,11 +46,16 @@
 	<link rel="stylesheet" type="text/css" href="Upload/AjaxUpload.css" />
 	<link rel="stylesheet" type="text/css" href="Upload/PopupFrame.css" />
 
+
+<!--FSS PER KMD INSTRUCTIONS BELOW-->
+<!--
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css" />
-
+-->
 	<!-- This needs to link to jquery-ui-1.10.0.custom.css in the KMD resources folder, and will replace the above -->
-	<!--<link rel="stylesheet" href="jquery-ui-1.10.0.custom.css" />-->
+	<link rel="stylesheet" href="jquery-ui-1.10.0.custom.css" />
 
+
+	
 	<link rel="stylesheet" type="text/css" href="style.css" />
 
 	<script>
@@ -67,9 +71,9 @@
 		<h1>Abbot</h1>
 		<h2>Text Interoperability Tool</h2>
 	</div>
-
+	
 	<!-- top banner with account and signout access -->
-
+	
 	<div class="identity_box">
          <span>Welcome</span>
          <a class="identity_box_name" href="Account.html">
@@ -222,11 +226,16 @@
                   <input value="Upload" name="perform" id="perform" type="submit" />
                </form>
 
+<!--FSS-->
+	<div id="progressbar" style="height:15px;background:white;"></div>
+<!--
                <div id="progressbar"
                   class="ui-progressbar ui-widget ui-widget-content ui-corner-all"
-                  role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                  role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30">
                   <div class="ui-progressbar-value ui-widget-header ui-corner-left"> </div>
-               </div><!-- /progressbar -->
+               </div>
+-->
+<!-- /progressbar -->
 
             </div><!-- /upload_msgbox -->
          </div><!-- /uploads -->
@@ -260,7 +269,7 @@
 		  <xsl:apply-templates select="file"/>
 		</div><!--/paddindiv-->
             </div><!--/outercolumn-->
-
+	
 </xsl:template>
 
 
