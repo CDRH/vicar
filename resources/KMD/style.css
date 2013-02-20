@@ -792,6 +792,7 @@ input#perform, input.process_files_submit, .download a {
 .login {
 	width: 25%;
 	background: RGBA(255, 255, 255, .7);
+	background-image: url(white_70.png);
 	display: block;
 	float: left;
 	padding: 15px;
@@ -906,6 +907,9 @@ span.highlightlink {
 
 .registration {
 	/*padding: 0 33%;*/
+	padding: 20px 30px;
+	background: RGBA(255, 255, 255, .7);
+	background-image: url(white_70.png);
 }
 
 /* Description */
@@ -917,6 +921,7 @@ span.highlightlink {
 	overflow: auto;
 	display: block;
 	background: RGBA(255, 255, 255, .7);
+	background-image: url(white_70.png);
 	padding: 15px;
 }
 

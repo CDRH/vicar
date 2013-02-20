@@ -17,6 +17,8 @@
 	<meta http-equiv="Cache-Control" content="no-cache" />
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta name="robots" content="noindex,nofollow" />
+	<!-- KMD Add google font link -->
+	<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
 	<xsl:if test="url/text() !='null'">
 		<meta http-equiv="REFRESH" content="{url/@delay};url={url/text()}" />
 	</xsl:if>
@@ -32,6 +34,8 @@
 	<meta http-equiv="Cache-Control" content="no-cache" />
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta name="robots" content="noindex,nofollow" />
+	<!-- KMD Add google font link -->
+	<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
 	<!--unicode 160 gets past some odd bug that prevents the html5 serializer from working with these script lines-->
 	<!--no-js class is found in the modernizr.js file - this is used to detect and work around browsers which have javascript turned off - see http://modernizr.com for more information-->
 	<script type="text/javascript" language="JavaScript" src="Modernizr/modernizr.js">&#160;</script>
