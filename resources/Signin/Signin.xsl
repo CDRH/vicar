@@ -21,6 +21,8 @@
 	<meta name="description" content="Sign In" />
 	<meta name="robots" content="noindex,nofollow" />
 	<meta name="pragma" content="no-cache" />
+	<!-- KMD Add google font link -->
+	<link href="http://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" type="text/css" href="Signin.css" />
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<xsl:if test="url/text() !='NONE'">
