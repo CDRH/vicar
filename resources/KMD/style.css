@@ -419,6 +419,7 @@ html {
 
 a {
 	color: #62903f;
+	margin: 0;
 }
 
 a:visited {

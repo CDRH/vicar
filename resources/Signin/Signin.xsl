@@ -127,6 +127,7 @@ large, permanent digital libraries.</p>
         
         <p>Abbot was developed at the <a href="http://cdrh.unl.edu/">Center for Digital Research in the Humanities</a> by Brian L. Pytlik Zillig, Stephen Ramsay, Martin Mueller, and Frank Smutniak. Support for Abbot was provided by the <a href="http://www.mellon.org/">Andrew W. Mellon Foundation</a>.</p>
             <p>
+            	<p>Power users may want to try the command-line version of Abbot, <a href="http://abbot.unl.edu/downloads/abbot/">available here</a>.</p>
                
                <a href="AboutVicar.html" class="more_info" >more info</a>
             </p>
