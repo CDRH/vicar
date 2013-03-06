@@ -586,6 +586,9 @@ h4 {
 	margin: 0;
 	color: #af8c1e;
 	float: left;
+	font-weight: normal;
+	font-style: normal;
+	font-weight:400;
 }
 
 .title h2 {
@@ -597,6 +600,9 @@ h4 {
 	float: left;
 	width: 2em;
 	line-height: 1.1;
+	font-weight: normal;
+	font-style: normal;
+	font-weight:400;
 }
 
 /* Identity and Collection */
