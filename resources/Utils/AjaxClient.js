@@ -41,6 +41,7 @@ HTTP.newRequest = function() {
 	return null;
 };
 
+//Used by Upload/AjaxUpload.js -NOT CURRENTLY USED
 HTTP.watchFiles = function(url){
         var httpRequest = HTTP.newRequest();
         httpRequest.onreadystatechange = function(){getReturnWatch(httpRequest);};
@@ -49,6 +50,7 @@ HTTP.watchFiles = function(url){
         return false;
 };
 
+//Used by Upload/AjaxUpload.js
 HTTP.sendXML = function(url,xmltxt){
 	var httpRequest = HTTP.newRequest();
 	httpRequest.onreadystatechange = function(){getReturnXML(httpRequest);};
@@ -57,14 +59,16 @@ HTTP.sendXML = function(url,xmltxt){
 	return false;
 };
 
-HTTP.sendXMLSingleFile = function(url,xmltxt){
-	var httpRequest = HTTP.newRequest();
-	httpRequest.onreadystatechange = function(){getReturnXML(httpRequest);};
-	httpRequest.open('POST', url, true);
-	httpRequest.send(xmltxt);
-	return false;
-};
 
+//HTTP.sendXMLSingleFile = function(url,xmltxt){
+//	var httpRequest = HTTP.newRequest();
+//	httpRequest.onreadystatechange = function(){getReturnXML(httpRequest);};
+//	httpRequest.open('POST', url, true);
+//	httpRequest.send(xmltxt);
+//	return false;
+//};
+
+//Used by Convert/StreamClient.js
 HTTP.doGet = function(url){
         var httpRequest = HTTP.newRequest();
         httpRequest.onreadystatechange = function(){getReturnText(httpRequest);};

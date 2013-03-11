@@ -114,6 +114,7 @@ private String m_AbbotCustom;
 			ServletOutputStream sos = ((HttpResponse)response).getOutputStream();
 			//((HttpResponse)response).setContentType("xml");
 
+		if((m_ActStr!=null)&&(!m_ActStr.equals("test"))){
 			if(m_ConvStr==null){
 				m_ConvStr = (String)m_session.getAttribute("SAVE:schema:"+m_DirStr);
 			}else{
@@ -128,6 +129,7 @@ private String m_AbbotCustom;
 				sos.close();
 				return;
 			}
+		}
 
 			if(m_ActStr==null){
 				//CALLED BY StreamClient.html WHEN JAVASCRIPT IS ENABLED
@@ -183,6 +185,35 @@ private String m_AbbotCustom;
 				sos.println("</values>");
 				sos.flush();
 	
+				sos.println("</datastream>");
+				sos.flush();
+				sos.close();
+			}else if(m_ActStr.equals("test")){
+System.out.println("PTA");
+				int pauseval = 200;
+				sos.println("<datastream>");
+				sos.flush();
+				Thread.sleep(pauseval);
+System.out.println("PTB");
+				int totalpct = 0;
+				for(int part=1;part<5;part++){
+System.out.println("PTC");
+					sos.println("<values name='TOTAL TEST|PART TEST"+part+"'>");
+					sos.flush();
+					for(int partpct=0;partpct<=100;partpct+=5){
+						totalpct += partpct/40;
+						sos.println(""+totalpct+"|"+partpct);
+						sos.flush();
+						Thread.sleep(pauseval);
+					}
+					if(part>=5){	
+						sos.println("100|100");
+						sos.flush();
+					}
+					sos.println("</values>");
+					sos.flush();
+				}
+
 				sos.println("</datastream>");
 				sos.flush();
 				sos.close();

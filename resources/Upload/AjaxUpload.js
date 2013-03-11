@@ -91,6 +91,10 @@ var dirname;
 				}else{
 					//location.replace('FileManager.html?dir='+dirname);
 					//window.location.href='FileManager.html?dir='+dirname;
+					//alert('DONE WITH UPLOAD');
+					//alert('READY TO RELOAD');
+					$("#progressbar").progressbar('value',100);
+pausecomp(4000);
 					window.location.href='Vicar.html?dir='+dirname;
 				}
 			}else{
@@ -108,5 +112,13 @@ var dirname;
 			}
 		}
 	}
+
+function pausecomp(millis) {
+var date = new Date();
+var curDate = null;
+
+do { curDate = new Date(); } 
+	while(curDate-date < millis);
+} 
 
 
