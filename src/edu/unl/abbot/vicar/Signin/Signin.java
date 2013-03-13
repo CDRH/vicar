@@ -156,6 +156,7 @@ LogWriter.msg("IP","signin setup");
 					messageText = "Invalid email format. Please try again.";
 					messageCode = -1;
 				}
+				System.out.println("MSG CODE<"+messageCode+"> TEXT<"+messageText+">");
 			}else if(m_actStr.equalsIgnoreCase("register")){
 LogWriter.msg("IP","register");
 				m_session.setAttribute("PWDRESET","false");
@@ -196,7 +197,12 @@ LogWriter.msg("IP","sending ssmail");
 							messageText = "You are already registered.  Please click the confirm link to complete the registration.";
 							messageCode = -1;
 						}else{
+							messageText = "Unknown registration error.";
+							messageCode = -1;
 						}
+					}else{
+						messageText = "Invalid email format";
+						messageCode = -1;
 					}
 				}
 			}else if(m_actStr.equalsIgnoreCase("confirm")){

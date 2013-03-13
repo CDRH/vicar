@@ -149,11 +149,24 @@ large, permanent digital libraries.</p>
 			</xsl:if>
 		</div>
 	</xsl:if>
-
 	<!-- implements register form -->
 	<xsl:if test="@act = 'register'">
 		<div class="content registration">
 		<h2>Register</h2>
+<!--FSS_start-->
+		<xsl:if test="msg/@code = 0">
+			<div class="infomsg">
+				<span> </span>
+			</div>
+		</xsl:if>
+		<xsl:if test="msg/@code &lt; 0">
+			<div class="warnmsg">
+				<span>
+					<xsl:value-of select="msg/text()"/>
+				</span>
+			</div>
+		</xsl:if>
+<!--FSS_end-->
 		<p class="instruct">Enter your email address for ID and then enter a new password twice.</p>
 		<p class="instructsmall">Passwords must contain a more than 5 characters but fewer than 20.</p>
 		<form method="post" action="Signin.html?act=register">
@@ -170,6 +183,10 @@ large, permanent digital libraries.</p>
 	</xsl:if>
 
 	<xsl:if test="@act = 'confirm'">
+<!--FSS_start-->
+		<p class="instruct">Your registration is almost complete!</p>
+		<p class="instructsmall">Please check your email for a confirmation link.  Once that has been clicked then you may sign in.</p>
+<!--FSS_end-->
 		<a href="Signin.html?act=signin">Sign In</a>
 	</xsl:if>
 
