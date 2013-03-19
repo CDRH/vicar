@@ -79,24 +79,24 @@
 	<!-- top banner with account and signout access -->
 	
 	<div class="identity_box">
-         <span>Welcome</span>
-         <a class="identity_box_name" href="Account.html">
-				<xsl:choose>
-					<xsl:when test="@personname != ''">
-						<xsl:value-of select="@personname" />
-							<xsl:if test="@userid!= ''">
-							<xsl:text> (</xsl:text>
-							<xsl:value-of select="@userid" />
-							<xsl:text>)</xsl:text>
-						</xsl:if>
-					</xsl:when>
-					<xsl:otherwise>
+		<span>Welcome</span>
+		<a class="identity_box_name" href="Account.html">
+			<xsl:choose>
+				<xsl:when test="@personname != ''">
+					<xsl:value-of select="@personname" />
+						<xsl:if test="@userid!= ''">
+						<xsl:text> (</xsl:text>
 						<xsl:value-of select="@userid" />
-					</xsl:otherwise>
-				</xsl:choose>
-	</a>
-         <a href="Signout.html" class="identity_box_email">Sign out</a>
-      </div>
+						<xsl:text>)</xsl:text>
+					</xsl:if>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="@userid" />
+				</xsl:otherwise>
+			</xsl:choose>
+		</a>
+		<a href="Signout.html" class="identity_box_email">Sign out</a>
+	</div>
 
 	<!-- main page -->
 	<xsl:apply-templates />
@@ -115,24 +115,24 @@
 <xsl:template match="dirs">
 	<table class="collection_selector">
 		<tbody>
-		<tr>
-			<td>
-				<span>Collections </span>
-			</td>
-			<!--ZZZ_A KMD added class directory_warning -->
-			<xsl:if test="@count &lt; @maxcount">
+			<tr>
 				<td>
-					<a id="collection_create" href="Vicar.html?dir=new" title="Add New Collection">+</a>
+					<span>Collections </span>
 				</td>
-			</xsl:if>
-			<xsl:if test="@count &gt;= @maxcount">
-				<td>
-					<span class="directory_warning">You have reached the maximum number of directories.  Please remove an old directory to create a new one.</span>
-				</td>
-			</xsl:if>
+				<!--ZZZ_A KMD added class directory_warning -->
+				<xsl:if test="@count &lt; @maxcount">
+					<td>
+						<a id="collection_create" href="Vicar.html?dir=new" title="Add New Collection">+</a>
+					</td>
+				</xsl:if>
+				<xsl:if test="@count &gt;= @maxcount">
+					<td>
+						<span class="directory_warning">You have reached the maximum number of directories.  Please remove an old directory to create a new one.</span>
+					</td>
+				</xsl:if>
 <!--/ZZZ_A-->
-		</tr>
-		<xsl:apply-templates select="dir" />
+			</tr>
+			<xsl:apply-templates select="dir" />
 		</tbody>
 	</table>
 </xsl:template>
@@ -218,31 +218,31 @@
 		</div>
 <!--/ZZZ_CC-->
 
-	    <div class="uploads">
-            <h4>Add files </h4>
-            <div id="upload_msgbox">
-               <form enctype="multipart/form-data" method="post" action="Vicar.html?dir={@dirname}" id="upload_form">
-                  <div class="select_files">
-                     <span>Drag and drop input and conversion (.rng) files here or</span>
-                     <input value="{@dirname}" name="dirname" id="dirname" type="hidden" />
-                     <input title="Navigate or drag/drop files here." multiple="multiple" name="file_upload" id="file_upload" type="file" />
-                  </div><!-- /select_files -->
-                  <input value="Upload" name="perform" id="perform" type="submit" />
-               </form>
+		<div class="uploads">
+			<h4>Add files </h4>
+			<div id="upload_msgbox">
+				<form enctype="multipart/form-data" method="post" action="Vicar.html?dir={@dirname}" id="upload_form">
+					<div class="select_files">
+						<span>Drag and drop input and conversion (.rng) files here or</span>
+						<input value="{@dirname}" name="dirname" id="dirname" type="hidden" />
+						<input title="Navigate or drag/drop files here." multiple="multiple" name="file_upload" id="file_upload" type="file" />
+					</div><!-- /select_files -->
+					<input value="Upload" name="perform" id="perform" type="submit" />
+				</form>
 
 <!--FSS-->
-	<div id="progressbar" style="height:15px;background:white;"></div>
+				<div id="progressbar" style="height:15px;background:white;"></div>
 <!--
-               <div id="progressbar"
-                  class="ui-progressbar ui-widget ui-widget-content ui-corner-all"
-                  role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30">
-                  <div class="ui-progressbar-value ui-widget-header ui-corner-left"> </div>
-               </div>
+				<div id="progressbar"
+						class="ui-progressbar ui-widget ui-widget-content ui-corner-all"
+						role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30">
+					<div class="ui-progressbar-value ui-widget-header ui-corner-left"> </div>
+				</div>
 -->
 <!-- /progressbar -->
 
-            </div><!-- /upload_msgbox -->
-         </div><!-- /uploads -->
+			</div><!-- /upload_msgbox -->
+		</div><!-- /uploads -->
 	</xsl:if>
 
 	<!-- build rest of page -->
@@ -258,71 +258,69 @@
 		<xsl:if test="outputfiles/@count &gt; 0">
 			<xsl:apply-templates select="outputfiles" />
 		</xsl:if>
-
 	</div><!--/filesdiv-->
 </xsl:template>
 
 <!-- show uploaded input files - presentation of 'outercolumn' media selected via CSS -->
 <xsl:template match="inputfiles">
 
-            <div class="outercolumn">
-               <!-- KMD Added padding div because of stupid CSS box model -->
+	<div class="outercolumn">
+		<!-- KMD Added padding div because of stupid CSS box model -->
 		<div class="paddingdiv">
-                  <!-- KMD Changed this to h4 instead of div for clarity -->
-                  <h4>Input Files</h4>
-		  <xsl:apply-templates select="file"/>
+			<!-- KMD Changed this to h4 instead of div for clarity -->
+			<h4>Input Files</h4>
+			<xsl:apply-templates select="file"/>
 		</div><!--/paddindiv-->
-            </div><!--/outercolumn-->
-	
+	</div><!--/outercolumn-->
 </xsl:template>
 
 
 <!-- show schema files and present conversion button - presentation of 'innercolumn' media selected via CSS -->
 <xsl:template match="schemalist">
 	<div class="innercolumn">
-	<div class="paddingdiv">
-		<h4>Convert With:</h4>
-		<!--IF JAVASCRIPT IS NOT ENABLED THEN PRESENT THIS AS AN OPTION TO START A CONVERSION-->
-		<div id="nojsmsg">
-		<form id="convert" action="Convert/StreamServer.html?dir={../@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
-			<div>
-				<span>Namespace:</span>
-				<input type="text" size="40" name="abbotns" id="abbotns" autocomplete="on" value="http://www.tei-c.org/ns/1.0" />
+		<div class="paddingdiv">
+			<h4>Convert With:</h4>
+			<!--IF JAVASCRIPT IS NOT ENABLED THEN PRESENT THIS AS AN OPTION TO START A CONVERSION-->
+			<div id="nojsmsg">
+				<form id="convert" action="Convert/StreamServer.html?dir={../@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
+					<div>
+						<span>Namespace:</span>
+						<input type="text" size="40" name="abbotns" id="abbotns" autocomplete="on" value="http://www.tei-c.org/ns/1.0" />
+					</div>
+					<div>
+						<span>Custom:</span>
+						<input type="text" size="40" name="abbotcustom" id="abbotcustom" autocomplete="on" value="http://abbot.unl.edu/abbot_config.xml" />
+					</div>
+					<div>
+						<select id="schemaselectnojs" name="conv" class="selected">
+							<xsl:apply-templates />
+						</select>
+					</div>
+					<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" title="Generate output files using Abbot - No progress reporting is available since Javascript is disabled" />
+				</form>
 			</div>
-			<div>
-				<span>Custom:</span>
-				<input type="text" size="40" name="abbotcustom" id="abbotcustom" autocomplete="on" value="http://abbot.unl.edu/abbot_config.xml" />
-			</div>
-			<div>
-				<select id="schemaselectnojs" name="conv" class="selected">
-					<xsl:apply-templates />
-				</select>
-			</div>
-			<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" title="Generate output files using Abbot - No progress reporting is available since Javascript is disabled" />
-		</form>
-		</div>
 
-		<!--HIDE THE FOLLOWING IF THERE IS NO JAVASCRIPT ENABLED ELSE SHOW IT AS IT IS THE NORMAL WAY TO START A CONVERSION-->
-		<!--NOTE THAT UNDER NORMAL OPERATION THE onclick EVENT ON THE SUBMIT BUTTON IS USED RATHER THAN THE action ON THE form ELEMENT-->
-		<div id="nojshide">
-		<form id="convert" action="Convert/StreamServer.html?dir={../@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
-			<div>
-				<span>Namespace:</span>
-				<input type="text" size="40" name="abbotnsjs" id="abbotnsjs" autocomplete="on" value="http://www.tei-c.org/ns/1.0" />
+			<!--HIDE THE FOLLOWING IF THERE IS NO JAVASCRIPT ENABLED ELSE SHOW IT AS IT IS THE NORMAL WAY TO START A CONVERSION-->
+			<!--NOTE THAT UNDER NORMAL OPERATION THE onclick EVENT ON THE SUBMIT BUTTON IS USED RATHER THAN THE action ON THE form ELEMENT-->
+			<div id="nojshide">
+				<form id="convert" action="Convert/StreamServer.html?dir={../@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
+					<div>
+						<span>Namespace:</span>
+						<input type="text" size="40" name="abbotnsjs" id="abbotnsjs" autocomplete="on" value="http://www.tei-c.org/ns/1.0" />
+					</div>
+					<div>
+						<span>Custom:</span>
+						<input type="text" size="40" name="abbotcustomjs" id="abbotcustomjs" autocomplete="on" value="http://abbot.unl.edu/abbot_config.xml" />
+					</div>
+					<div>
+						<select id="schemaselect" name="conv" class="selected">
+							<xsl:apply-templates />
+						</select>
+					</div>
+				</form>
+				<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" onclick="makeSimpleFrame(this,'Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
 			</div>
-			<div>
-				<span>Custom:</span>
-				<input type="text" size="40" name="abbotcustomjs" id="abbotcustomjs" autocomplete="on" value="http://abbot.unl.edu/abbot_config.xml" />
-			</div>
-			<div>
-				<select id="schemaselect" name="conv" class="selected">
-					<xsl:apply-templates />
-				</select>
-			</div>
-		</form>
-		<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" onclick="makeSimpleFrame(this,'Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
-		</div>
-	</div><!--/paddingdiv-->
+		</div><!--/paddingdiv-->
 	</div><!--/innercolumn-->
 </xsl:template>
 
@@ -355,24 +353,15 @@
 <!-- show output files - presentation of 'outercolumn' media selected via CSS -->
 <xsl:template match="outputfiles">
 	<div class="outercolumn">
-	<div class="paddingdiv">
-<!--
-		<div class="columnheader">
-			<span class="columntitle">Abbot Generated Results</span>
+		<div class="paddingdiv">
+			<h4>Abbot Generated Results</h4>
+			<div class="download">
+				<p>Download all files as:</p>
+				<a href="Download/{@dirname}/{@dirname}.zip">zip file</a>
+				<a href="Download/{@dirname}/{@dirname}.tar.gz">tar.gz file</a>
+			</div>
+			<xsl:apply-templates select="file"/>
 		</div>
--->
-		<h4>Abbot Generated Results</h4>
-		<div class="download">
-			<p>Download all files as:</p>
-			<a href="Download/{@dirname}/{@dirname}.zip">zip file</a>
-			<a href="Download/{@dirname}/{@dirname}.tar.gz">tar.gz file</a>
-		</div>
-<!--
-		<div style="padding:0em 0em 0em 0.3em">
-		</div>
--->
-		<xsl:apply-templates select="file"/>
-	</div>
 	</div>
 </xsl:template>
 

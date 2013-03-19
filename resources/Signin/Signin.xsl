@@ -60,53 +60,46 @@
 			</xsl:if>
 		</div>
 
-      <!-- KMD added content div for positioning -->
-      <div class="content">
-         <div class="login">
-            <div class="login_container">
-               <form action="Signin.html?act=signin"
-                  method="post" class="login_form">
-                  <input name="jsenabled" value="false" type="hidden" />
-                  <span>
-                     <label for="signinid">ID: </label>
-                     <input value="" autocomplete="off" name="signinid" type="text" />
-                  </span>
-                  <span>
-                     <label for="pwd"> Password: </label>
-                     <input name="pwd" type="password" />
-                  </span>
-                  <input value="Sign In" name="perform" type="submit" class="button" />
-               </form>
-            </div><!-- /login_container -->
+		<!-- KMD added content div for positioning -->
+		<div class="content">
+			<div class="login">
+				<div class="login_container">
+					<form action="Signin.html?act=signin" method="post" class="login_form">
+						<input name="jsenabled" value="false" type="hidden" />
+						<span>
+							<label for="signinid">ID: </label>
+							<input value="" autocomplete="off" name="signinid" type="text" />
+						</span>
+						<span>
+							<label for="pwd"> Password: </label>
+							<input name="pwd" type="password" />
+						</span>
+						<input value="Sign In" name="perform" type="submit" class="button" />
+					</form>
+				</div><!-- /login_container -->
+				<div class="login_or">OR</div>
+				<!-- Not adding logos because of diverging branding issues, they are not required. -->
+				<div class="alternate_login">
+					<a href="OpenSignin.html?op=Yahoo" name="signin">Sign in through Yahoo</a>
+				</div>
 
-            <div class="login_or">OR</div>
-            
-            <!-- Not adding logos because of diverging branding issues, they are not required. -->
-            <div class="alternate_login">
-               <a href="OpenSignin.html?op=Yahoo"
-                  name="signin">Sign in through Yahoo</a>
-            </div>
+				<div class="alternate_login">
+					<a href="OpenSignin.html?op=Google" name="signin">Sign In through Google</a>
+				</div>
 
-            <div class="alternate_login">
-               <a href="OpenSignin.html?op=Google"
-                  name="signin">Sign In through Google</a>
-            </div>
+				<a href="Signin.html?act=resetpwd" name="origsignin">
+					<span class="highlightlink reset">Reset Password</span>
+				</a>
+				<a href="Signin.html?act=register" name="origsignin">
+					<span class="highlightlink register">Register</span>
+				</a>
 
-            <a href="Signin.html?act=resetpwd"
-               name="origsignin">
-               <span class="highlightlink reset">Reset Password</span>
-            </a>
-            <a href="Signin.html?act=register"
-               name="origsignin">
-               <span class="highlightlink register">Register</span>
-            </a>
-
-         </div><!-- /login -->
+			</div><!-- /login -->
          
-         <!-- KMD New div, this text will change, here as placeholder -->
-         <div class="description">
+			<!-- KMD New div, this text will change, here as placeholder -->
+			<div class="description">
 
-         	        <p>Abbot is a tool designed to convert dissimilar collections of
+				<p>Abbot is a tool designed to convert dissimilar collections of
  XML texts into a common interoperable form. Abbot's key feature is the 
 ability to read an XML schema file and output procedures to convert 
 source files into a valid form that is consistent with the target 
@@ -116,7 +109,7 @@ judgment or demand concerning the type of interoperability sought. It
 can transform texts into a variety of TEI schema, and accommodates user 
 customization.</p>
         
-        <p>Abbot is more likely than conventional file-conversion 
+				<p>Abbot is more likely than conventional file-conversion 
 methods to spot and deal with problems because it operates consistently 
 and algorithmically across large numbers of texts. Abbot sets its course
  on an ambitious but sensible path&#8212;moving toward total 
@@ -125,18 +118,16 @@ individual text collections. Abbot's method allows for different forms
 of interoperability, from small, one-off instances to the creation of 
 large, permanent digital libraries.</p>
         
-        <p>Abbot was developed at the <a href="http://cdrh.unl.edu/">Center for Digital Research in the Humanities</a> by Brian L. Pytlik Zillig, Stephen Ramsay, Martin Mueller, and Frank Smutniak. Support for Abbot was provided by the <a href="http://www.mellon.org/">Andrew W. Mellon Foundation</a>.</p>
-            <p>
-            	<p>Power users may want to try the command-line version of Abbot, <a href="http://abbot.unl.edu/downloads/abbot/">available here</a>.</p>
+				<p>Abbot was developed at the <a href="http://cdrh.unl.edu/">Center for Digital Research in the Humanities</a> by Brian L. Pytlik Zillig, Stephen Ramsay, Martin Mueller, and Frank Smutniak. Support for Abbot was provided by the <a href="http://www.mellon.org/">Andrew W. Mellon Foundation</a>.</p>
+				<p>
+					<p>Power users may want to try the command-line version of Abbot, <a href="http://abbot.unl.edu/downloads/abbot/">available here</a>.</p>
                
-               <a href="AboutVicar.html" class="more_info" >more info</a>
-            </p>
+					<a href="AboutVicar.html" class="more_info" >more info</a>
+				</p>
 
-         </div>
-         <!-- /description -->
-      </div>
-      <!-- /content -->
-      <div> </div>
+			</div> <!-- /description -->
+		</div> <!-- /content -->
+		<div> </div>
 		<div class="login_box">
 			<xsl:if test="@mode = 0">
 				<div class="login_warning">You have successfuly logged out of your anonymous account.</div>
