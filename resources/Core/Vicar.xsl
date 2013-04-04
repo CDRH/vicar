@@ -144,7 +144,7 @@
 			<td></td>
 			<td>
 <!--ZZZ_B KMD added class collection_list -->
-				<a class="collection_list" href="Vicar.html?dir={@name}" title="Created {@date}">
+				<a id="coll_{@name}" class="collection_list" href="Vicar.html?dir={@name}" title="Created {@date}">
 					<xsl:value-of select="@name"/>
 					<xsl:text> (</xsl:text>
 					<xsl:value-of select="@count"/>
@@ -172,7 +172,7 @@
 		<tbody>
 		<tr>
 			<td>
-				<a href="Vicar.html">
+				<a href="Vicar.html" id="collection_list">
 					<span>Collections </span>
 				</a>
 			</td>
@@ -189,8 +189,8 @@
 <!--ZZZ_C KMD added class error-->
 						<span class="error">Delete this Collection? </span>
 <!--/ZZZ_C-->
-						<a id="collection_delete" href="Vicar.html?dir={@dirname}&amp;act=delconfirm" title="Delete this collection">Yes</a>
-						<a id="collection_delete" href="Vicar.html?dir={@dirname}&amp;act=delcancel" title="Keep this collection">Cancel</a>
+						<a id="collection_deleteyes" href="Vicar.html?dir={@dirname}&amp;act=delconfirm" title="Delete this collection">Yes</a>
+						<a id="collection_deleteno" href="Vicar.html?dir={@dirname}&amp;act=delcancel" title="Keep this collection">Cancel</a>
 					</xsl:if>
 				</xsl:if>
 			</td>
@@ -293,10 +293,21 @@
 					</div>
 					<div>
 						<select id="schemaselectnojs" name="conv" class="selected">
+							<!--
+							<xsl:if test="count(schema) &lt; 1">
+								<option value="No Available Schemas" title="No Available Schemas" selected="selected" style="color:red;">No Available Schemas</option>
+							</xsl:if>
+							-->
 							<xsl:apply-templates />
 						</select>
 					</div>
-					<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" title="Generate output files using Abbot - No progress reporting is available since Javascript is disabled" />
+					<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" title="Generate output files using Abbot - No progress reporting is available since Javascript is disabled" >
+						<xsl:if test="count(schema) &lt; 1">
+							<xsl:attribute name="disabled">
+								<xsl:text>disabled</xsl:text>
+							</xsl:attribute>
+						</xsl:if>
+					</input>
 				</form>
 			</div>
 
@@ -314,11 +325,24 @@
 					</div>
 					<div>
 						<select id="schemaselect" name="conv" class="selected">
+							<!--
+							<xsl:if test="count(schema) &lt; 1">
+								<option value="No Available Schemas" title="No Available Schemas" selected="selected" style="color:red;">No Available Schemas</option>
+							</xsl:if>
+							-->
 							<xsl:apply-templates />
 						</select>
 					</div>
 				</form>
-				<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" onclick="makeSimpleFrame(this,'Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" />
+				<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" onclick="makeSimpleFrame(this,'Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" >
+					<!--
+					<xsl:if test="count(schema) &lt; 1">
+						<xsl:attribute name="disabled">
+							<xsl:text>disabled</xsl:text>
+						</xsl:attribute>
+					</xsl:if>
+					-->
+				</input>
 			</div>
 		</div><!--/paddingdiv-->
 	</div><!--/innercolumn-->
@@ -357,8 +381,8 @@
 			<h4>Abbot Generated Results</h4>
 			<div class="download">
 				<p>Download all files as:</p>
-				<a href="Download/{@dirname}/{@dirname}.zip">zip file</a>
-				<a href="Download/{@dirname}/{@dirname}.tar.gz">tar.gz file</a>
+				<a href="Download/{@dirname}/{@dirname}.zip" id="download_zip">zip file</a>
+				<a href="Download/{@dirname}/{@dirname}.tar.gz" id="download_targz">tar.gz file</a>
 			</div>
 			<xsl:apply-templates select="file"/>
 		</div>
@@ -376,18 +400,18 @@
 		</xsl:if>
 		<!-- display files for 'outputfiles' -->
 		<xsl:if test="@op = 1">
-			<a href="Download/{../@dirname}/{@name}">
+			<a href="Download/{../@dirname}/{@name}" id="download_{@name}">
 				<xsl:value-of select="@name" />
 			</a>
 			<!-- 0 validation errors -->
 			<xsl:if test="@errors &lt;= 0">
-				<a target="_validation" class="error_report_green" href="valid/{../@dirname}/{@vname}" title="This conversion contains no errors.">
+				<a target="_validation" class="error_report_green" href="valid/{../@dirname}/{@vname}" id="errors_{@name}" title="This conversion contains no errors.">
 					<xsl:text>OK</xsl:text>
 				</a>
 			</xsl:if>
 			<!-- 1 or more validation errors -->
 			<xsl:if test="@errors &gt; 0">
-				<a target="_validation" class="error_report_red" href="valid/{../@dirname}/{@vname}" title="This conversion encountered {@errors} errors!">
+				<a target="_validation" class="error_report_red" href="valid/{../@dirname}/{@vname}" id="errors_{@name}" title="This conversion encountered {@errors} errors!">
 					<xsl:value-of select="@errors" />
 				</a>
 			</xsl:if>

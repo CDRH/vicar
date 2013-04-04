@@ -68,7 +68,8 @@ public class SchemaList {
 		String defaultcomment = "In a future iteration Brian will be able to put an appropriate comment here that tells something about this particular schema";
 		String url = "";
 
-System.out.println("THERE ARE BETTER WAYS TO DO THIS RATHER THAN LOOK UP THE FILE EACH TIME WE NEED A LIST BUT THIS IS OK FOR NOW");
+		//System.out.println("THERE ARE BETTER WAYS TO DO THIS RATHER THAN LOOK UP THE FILE EACH TIME WE NEED A LIST BUT THIS IS OK FOR NOW");
+		//System.out.println("THEN AGAIN THIS IS NOT MUCH WORSE THAN STORING AN IN MEMORY COPY FOR EACH COLLECTION");
 		Properties prop = new Properties();
 		boolean commentsvalid = true;
 		try {
