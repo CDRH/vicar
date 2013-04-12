@@ -16,10 +16,16 @@
 	<title>Simple structure for testing components</title>
 </head>
 <body>
+<!--
 	<h2>
 		<xsl:text>IP:</xsl:text>
 		<xsl:value-of select="@IP" />
 	</h2>
+-->
+<div>Click several times on the first URL which includes 'cocoon/' and note that the session ID does not change with each click.  Then click multiple times on the second link which drop
+s the 'cocoon/' and note that the session ID changes with each click.  Click back on the first URL and you will see that this URL will use the session last created by the second UR
+L.  The JSESSIONID seems to be persistent for the first URL but not the second.  The second URL presumably sees no JSESSIONID and creates a new one.
+</div>
 	<h2>
 		<xsl:text>SESSION:</xsl:text>
 		<xsl:value-of select="@SessionID" />
