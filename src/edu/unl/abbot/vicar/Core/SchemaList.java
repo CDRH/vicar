@@ -65,6 +65,15 @@ public class SchemaList {
 
 		//LIST ALL SYSTEM SUPPLIED SCHEMAS
 		Vector<String> standardSchemaList = listFiles(Global.SCHEMA_DIR,".rng");
+		//TEMPORARILY FILTER OUT SELECTED SCHEMAS PER BZRIANS APRIL 12 2013 EMAIL
+		//for(String schemaName : standardSchemaList){
+		for(int i=0;i<standardSchemaList.size();i++){
+			String schemaName = (String)standardSchemaList.get(i);
+			if((schemaName.equals("tei_its.rng"))||(schemaName.equals("tei_tite.rng"))||(schemaName.equals("tei_odds.rng"))
+					||(schemaName.equals("tei_math.rng"))||(schemaName.equals("tei_svg.rng"))||(schemaName.equals("tei_xinclude.rng"))){
+				standardSchemaList.remove(i);
+			}
+		}
 		String defaultcomment = "In a future iteration Brian will be able to put an appropriate comment here that tells something about this particular schema";
 		String url = "";
 

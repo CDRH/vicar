@@ -4,9 +4,9 @@
 
 	<map:generators default="file">
 		<map:generator name="testsession" src="edu.unl.abbot.vicar.Test.TestSession"/>
-<!--
+<!--x-->
 		<map:generator name="upload-server" src="edu.unl.abbot.vicar.UploadFiles.UploadServer"/>
--->
+<!--x-->
 
 		<map:generator name="opensignin" src="edu.unl.abbot.vicar.Signin.OpenSignin"/>
 		<map:generator name="signin" src="edu.unl.abbot.vicar.Signin.Signin"/>
@@ -132,7 +132,7 @@
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
 
-<!--
+<!--x-->
 <map:match pattern="UploadFiles/**">
 	<map:match pattern="UploadFiles/Test.html">
 		<map:generate src="resources/UploadFiles/Test.xml" />
@@ -191,7 +191,7 @@
 
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
--->
+<!--x-->
 
 <map:match pattern="Convert/**">
 	<map:match pattern="Convert/StreamClient.html">
@@ -310,18 +310,18 @@
 		<map:serialize type="xml"/>
 	</map:match>
 
-<!--KMD-->
+<!--CSS-->
 	<map:match pattern="style.css">
-		<map:read mime-type="text/css" src="resources/KMD/style.css"/>
+		<map:read mime-type="text/css" src="resources/CSS/style.css"/>
 	</map:match>
 	<map:match pattern="jquery-ui-1.10.0.custom.css">
-		<map:read mime-type="text/css" src="resources/KMD/jquery-ui-1.10.0.custom.css"/>
+		<map:read mime-type="text/css" src="resources/CSS/jquery-ui-1.10.0.custom.css"/>
 	</map:match>
 	<map:match pattern="*.jpg">
-		<map:read mime-type="text/css" src="resources/KMD/{1}.jpg"/>
+		<map:read mime-type="text/css" src="resources/CSS/{1}.jpg"/>
 	</map:match>
 	<map:match pattern="*.png">
-		<map:read mime-type="text/css" src="resources/KMD/{1}.png"/>
+		<map:read mime-type="text/css" src="resources/CSS/{1}.png"/>
 	</map:match>
 
 	<map:redirect-to uri="Error.html"/>
