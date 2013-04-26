@@ -108,7 +108,7 @@ public class SchemaList {
 		//LIST ALL USER SUPPLIED SCHEMAS
 		if(the_DirStr!=null){
 			String userschemaDir = Global.BASE_USER_DIR+"/"+the_OwnerPath+"/"+the_DirStr+"/convert/";
-			System.out.println("SCHEMALIST <"+userschemaDir+">");
+			//System.out.println("SCHEMALIST <"+userschemaDir+">");
 			Vector<String> userSchemaList = listFiles(userschemaDir,".rng");
 			String comment = "";
 			url = "";

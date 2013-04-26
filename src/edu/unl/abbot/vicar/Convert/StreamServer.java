@@ -101,7 +101,7 @@ private String m_AbbotCustom;
 		m_ActStr = request.getParameter("act");
 		m_AbbotNS = request.getParameter("abbotns");
 		m_AbbotCustom = request.getParameter("abbotcustom");
-		System.out.println("ABBOT NAMESPACE<"+m_AbbotNS+"> CUSTOM<"+m_AbbotCustom+"> ACT<"+m_ActStr+">");
+		//System.out.println("ABBOT NAMESPACE<"+m_AbbotNS+"> CUSTOM<"+m_AbbotCustom+"> ACT<"+m_ActStr+">");
 	}
 
 /**
@@ -189,15 +189,12 @@ private String m_AbbotCustom;
 				sos.flush();
 				sos.close();
 			}else if(m_ActStr.equals("test")){
-System.out.println("PTA");
 				int pauseval = 200;
 				sos.println("<datastream>");
 				sos.flush();
 				Thread.sleep(pauseval);
-System.out.println("PTB");
 				int totalpct = 0;
 				for(int part=1;part<5;part++){
-System.out.println("PTC");
 					sos.println("<values name='TOTAL TEST|PART TEST"+part+"'>");
 					sos.flush();
 					for(int partpct=0;partpct<=100;partpct+=5){
@@ -278,7 +275,6 @@ System.out.println("PTC");
 * @return The number of files.
 */
 	private int fileCount(String the_path){
-System.out.println("NEEDS TO FILTER OUT FILES THAT START WITH '.'");
 		int count = 0;
 		try {
 			File f = new File(the_path);

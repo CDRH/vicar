@@ -156,7 +156,7 @@ LogWriter.msg("IP","signin setup");
 					messageText = "Invalid email format. Please try again.";
 					messageCode = -1;
 				}
-				System.out.println("MSG CODE<"+messageCode+"> TEXT<"+messageText+">");
+				//System.out.println("MSG CODE<"+messageCode+"> TEXT<"+messageText+">");
 			}else if(m_actStr.equalsIgnoreCase("register")){
 LogWriter.msg("IP","register");
 				m_session.setAttribute("PWDRESET","false");

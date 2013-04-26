@@ -10,7 +10,7 @@ package edu.unl.abbot.vicar;
 public class Global {
 
 /** The base directory where vicar will store all of its files.  New installations should verify it is writeable by Vicar.*/
-public static String BASE_USER_DIR = "/var/vicar";
+public static String BASE_USER_DIR = "/var/vicar/userdata";
 
 /** The directory where system provided Abbot schema files reside.*/
 public static String SCHEMA_DIR = "/users/franksmutniak/Desktop/abbottestdata/schema/";

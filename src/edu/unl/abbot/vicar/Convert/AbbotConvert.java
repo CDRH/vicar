@@ -84,13 +84,15 @@ private boolean m_isdone = true;
 					m_ConvStr = m_ConvStr.substring(1);
 				}
 				try {
+					//OLD VERSIONS OF ABBOT
 					//abbot.convert(indir,outdir,convdir+m_ConvStr);
 					//abbot.convert(indir,outdir,m_Custom,m_Namespace,convdir+m_ConvStr);
-					System.out.println("CONVERTING");
+
+					//System.out.println("CONVERTING");
 					abbot.convert(indir,outdir,convdir+m_ConvStr,m_Namespace,m_Custom);
 				}catch(Exception ex){
 					String errmsg = ex.getMessage();
-System.out.println("ABBOTERRORMSG<"+errmsg+">");
+					//System.out.println("ABBOTERRORMSG<"+errmsg+">");
 					if(errmsg!=null){
 						errmsg = errmsg.replace(","," ");
 						m_session.setAttribute("abbotmsg:",errmsg);
@@ -98,7 +100,7 @@ System.out.println("ABBOTERRORMSG<"+errmsg+">");
 					LogWriter.msg(remoteaddr,"CONVERT_ERROR,"+ex.getMessage());
 				}
 				m_isdone = true;
-				System.out.println("DONE CONVERTING");
+				//System.out.println("DONE CONVERTING");
 
 				LogWriter.msg(remoteaddr,"CORRECTION_BEGIN");
 				Vector<String> outputfiles = listFiles(outdir,".xml");

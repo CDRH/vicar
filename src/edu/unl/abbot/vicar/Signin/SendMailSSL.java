@@ -71,7 +71,7 @@ Session m_session;
 */
 	public void SendMail(String the_sourceaddr,String the_recipient,String the_subject,String the_text){	
 		try {
-System.out.println("IP endmail start SRC<"+the_sourceaddr+"> TO<"+the_recipient+"> SUB<"+the_subject+">");
+			//System.out.println("IP endmail start SRC<"+the_sourceaddr+"> TO<"+the_recipient+"> SUB<"+the_subject+">");
 			Message message = new MimeMessage(m_session);
 			message.setFrom(new InternetAddress(the_sourceaddr));
 			message.setRecipients(Message.RecipientType.TO,InternetAddress.parse(the_recipient));
