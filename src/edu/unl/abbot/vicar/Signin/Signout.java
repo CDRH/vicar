@@ -42,7 +42,7 @@ private Session m_session;
 private String m_OwnerID;
 private String m_SessionID = "";
 
-private int m_delay = 0;
+private int m_delay = 5;
 private int m_msgcode = 0;
 private String m_msgtext = null;
 
@@ -76,7 +76,7 @@ private String m_msgtext = null;
 			RemoteAddr = ForwardFor;
 		}
 		m_session.setAttribute("IPADDR",RemoteAddr);
-		String SessionID = m_session.getId();
+		m_SessionID = m_session.getId();
 
 		m_OwnerID = null;
 		m_session.setAttribute("userid",null);

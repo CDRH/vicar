@@ -4,6 +4,7 @@ package edu.unl.abbot.vicar.Signin;
 import edu.unl.abbot.vicar.Global;
 import edu.unl.abbot.vicar.LogWriter;
 
+import java.nio.file.Paths;
 import java.util.Vector;
 import java.util.Map;
 import java.util.HashSet;
@@ -54,12 +55,14 @@ private Session m_session;
 private String m_OwnerID;
 private String m_SessionID = "";
 
-private int m_delay = 0;
+private int m_delay = 5;
 private int m_msgcode = 0;
 private String m_msgtext = null;
 
 private OpenIdManager oimanager;
 private String m_op = null;
+
+private String m_diag = "";
 
 @Override
 	public void dispose() {
@@ -99,9 +102,11 @@ private String m_op = null;
 		}
 		m_session.setAttribute("IPADDR",RemoteAddr);
 		//String RemoteHost = m_request.getRemoteHost();
-		String SessionID = m_session.getId();
+		m_SessionID = m_session.getId();
 		String m_url = null;
 
+		//LogWriter.msg(Paths.get("/var/vicar/frank.log"),RemoteAddr,"OwnerID:"+m_OwnerID+"SessionID:"+m_SessionID);
+		m_diag = "OWNER:"+m_OwnerID;
 		if(m_OwnerID==null){
 			//System.out.println("NOT LOGGED IN");
 			//System.out.println("OP<"+m_op+">");
@@ -109,15 +114,18 @@ private String m_op = null;
 				//System.out.println("NONCE<"+m_nonce+">");
 				int nn = checkNonce(m_request.getParameter("openid.response_nonce"));
 				if(nn>0){
+					m_diag += "AAA";
 					String op_id = m_request.getParameter("openid.identity"); //CONSISTENT ACROSS ALL LOGINS
 					String op_sig = m_request.getParameter("openid.sig");	//CHANGES EACH SESSION
 					String op_signed = m_request.getParameter("openid.signed"); //VALUES RETURNED FROM IDENTITY PROVIDER
 					//System.out.println("OPID<"+op_id+"> OPSIG<"+op_sig+"> OPSIGNED<"+op_signed+">");
+					//LogWriter.msg(Paths.get("/var/vicar/frank.log"),RemoteAddr,"OPID:"+op_id+" OPSIG:"+op_sig+" OPSIGNED:"+op_signed);
 					String alias = (String) m_session.getAttribute(ATTR_ALIAS);
 					String op_firstname = m_request.getParameter("openid."+alias+".value.firstname");
 					String op_lastname = m_request.getParameter("openid."+alias+".value.lastname");
 					String op_email = m_request.getParameter("openid."+alias+".value.email");
 					String op_lang = m_request.getParameter("openid."+alias+".value.language");
+					//LogWriter.msg(Paths.get("/var/vicar/frank.log"),RemoteAddr,"OPFN:"+op_firstname+" OPLN:"+op_lastname+" OPEM:"+op_email+" OPLANG:"+op_lang);
 
 					if(op_email==null){
 						m_OwnerID = "ANONYMOUS";
@@ -127,6 +135,7 @@ private String m_op = null;
 
 					m_session.setAttribute("newlogin","1");
 					m_session.setAttribute("userid",m_OwnerID);
+					//LogWriter.msg(Paths.get("/var/vicar/frank.log"),RemoteAddr,"USERID"+m_OwnerID);
 					m_session.setAttribute("userpath",m_OwnerID.replace("@","__"));
 
 					String fn = "";
@@ -136,21 +145,34 @@ private String m_op = null;
 					if(op_lastname!=null){
 						fn += " "+op_lastname;
 					}
+					//LogWriter.msg(Paths.get("/var/vicar/frank.log"),RemoteAddr,"PERSONNAME"+fn);
 					m_session.setAttribute("personname",fn);
 					m_url = Global.URL_APPL;
+					//LogWriter.msg(Paths.get("/var/vicar/frank.log"),RemoteAddr,"OPEMAIL"+op_email);
 					LogWriter.msg(RemoteAddr,"LOGIN,"+op_email);
 				}
 			}else if(m_op.equals("Google")||m_op.equals("Yahoo")){
 				try {
+					//CLEAR OLD SESSION
+					m_OwnerID = null;
+					m_session.setAttribute("userid",null);
+					m_session.setAttribute("userpath",null);
+					m_session.invalidate();
+					m_session = m_request.getSession(true);
+
+					m_diag += "BBB";
+					//LogWriter.msg(Paths.get("/var/vicar/frank.log"),RemoteAddr,"FSS START");
 					Endpoint endpoint = oimanager.lookupEndpoint(m_op);
 					Association association = oimanager.lookupAssociation(endpoint);
 					m_session.setAttribute(ATTR_MAC, association.getRawMacKey());
 					m_session.setAttribute(ATTR_ALIAS, endpoint.getAlias());
+					//LogWriter.msg(Paths.get("/var/vicar/frank.log"),RemoteAddr,"FSS"+m_op.toLowerCase());
 					m_session.setAttribute("openid",m_op.toLowerCase());
 					m_url = oimanager.getAuthenticationUrl(endpoint, association);
 					m_msgcode = 0;
 					m_msgtext = null;
 				}catch(Exception ex){
+					//LogWriter.msg(Paths.get("/var/vicar/frank.log"),RemoteAddr,"FSS ERR");
 					m_OwnerID = null;
 					m_session.setAttribute("userid",null);
 					m_session.setAttribute("userpath",null);
@@ -164,12 +186,16 @@ private String m_op = null;
 					}else if(m_op.equals("Yahoo")){
 						m_msgtext += "Yahoo";
 					}
+					m_diag += "CCC";
 				}
 			}
 		}else{
 			//System.out.println("LOGGED IN");
+					m_diag += "DDD";
+					m_url = Global.URL_APPL;
 		}
 		int dispose = 0;
+		//SigninXML.generateSigninXML(contentHandler,"ID",m_SessionID,"ACT",null,m_delay,m_url,m_msgcode,m_msgtext,"",dispose,m_diag);
 		SigninXML.generateSigninXML(contentHandler,"ID","ACT",null,m_delay,m_url,m_msgcode,m_msgtext,"",dispose);
 	}
 

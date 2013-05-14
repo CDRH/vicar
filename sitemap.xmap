@@ -4,9 +4,8 @@
 
 	<map:generators default="file">
 		<map:generator name="testsession" src="edu.unl.abbot.vicar.Test.TestSession"/>
-<!--x-->
+
 		<map:generator name="upload-server" src="edu.unl.abbot.vicar.UploadFiles.UploadServer"/>
-<!--x-->
 
 		<map:generator name="opensignin" src="edu.unl.abbot.vicar.Signin.OpenSignin"/>
 		<map:generator name="signin" src="edu.unl.abbot.vicar.Signin.Signin"/>

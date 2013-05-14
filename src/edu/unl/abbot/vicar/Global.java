@@ -13,18 +13,18 @@ public class Global {
 public static String BASE_USER_DIR = "/var/vicar/userdata";
 
 /** The directory where system provided Abbot schema files reside.*/
-public static String SCHEMA_DIR = "/users/franksmutniak/Desktop/abbottestdata/schema/";
+public static String SCHEMA_DIR = "/var/www/localhost/htdocs/";
 
 /** The file which contains descriptions of Abbot schema files.*/
 public static String SCHEMA_DESC = "/var/vicar/schemadescription.properties";
 
 /** The path to the <i>sed</i> unix command used by {@link Server.Convert.ProcMngr} for modifying information in abbot generated files.  */
-public static String SED_PATH = "/usr/bin/sed";
+public static String SED_PATH = "/bin/sed";
 
 /**
 The base URL at which vicar will be located.  It is used by Signin.java, OpenSignin.java and Password.java to redirect after an OpenID signin or send password/registration information to the user.  If you are running it on your own computer that should likely be <i>http://127.0.0.1:8888</i> for a jetty install and <i>http://127.0.0.1:8080</i> for a tomcat install.
 */
-public static String URL_BASE = "http://127.0.0.1:8888";
+public static String URL_BASE = "http://abbot.unl.edu:8080/cocoon";
 
 
 /**The file into which log information is written by {@link LogWriter}.*/

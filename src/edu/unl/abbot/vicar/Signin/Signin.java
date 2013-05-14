@@ -51,6 +51,7 @@ private String m_Password = null;
 private String m_PasswordAlt;
 private boolean m_consent = false;
 
+private String m_sessionID = null;
 private String m_hostPage = null;
 private String m_referringPage = null;
 private String m_remoteAddr = null;
@@ -81,7 +82,9 @@ private String m_mode = "";
 			String src, Parameters par) {
 		Request request = ObjectModelHelper.getRequest(objectModel);
 		m_session = request.getSession(true);
+		//m_session = request.getSession();
 
+		m_sessionID = m_session.getId();
 		m_hostPage = request.getHeader("Host");
 		m_referringPage = request.getHeader("Referer");
 		m_remoteAddr = request.getRemoteAddr();

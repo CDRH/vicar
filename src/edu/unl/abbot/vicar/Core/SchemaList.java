@@ -65,7 +65,7 @@ public class SchemaList {
 
 		//LIST ALL SYSTEM SUPPLIED SCHEMAS
 		Vector<String> standardSchemaList = listFiles(Global.SCHEMA_DIR,".rng");
-		//TEMPORARILY FILTER OUT SELECTED SCHEMAS PER BZRIANS APRIL 12 2013 EMAIL
+		//TEMPORARILY FILTER OUT SELECTED SCHEMAS PER BRIANS APRIL 12 2013 EMAIL
 		//for(String schemaName : standardSchemaList){
 		for(int i=0;i<standardSchemaList.size();i++){
 			String schemaName = (String)standardSchemaList.get(i);

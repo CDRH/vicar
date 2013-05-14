@@ -39,26 +39,30 @@ private static Path destpath = Paths.get(Global.LOGFILE_PATH);
 * @return the timestamp of the message unless there is an error in which case -1 is returned.
 */
 	public static long msg(String the_ipaddr,String the_msg){
+		return msg(destpath,the_ipaddr,the_msg);
+	}
+
+	public static long msg(Path the_destpath,String the_ipaddr,String the_msg){
 		Date d = new Date();
 		long ts = d.getTime();
 		the_msg = the_ipaddr+","+d+","+ts+","+the_msg;
-		if(!Files.exists(destpath.getParent())){
+		if(!Files.exists(the_destpath.getParent())){
 			try{
-				Path p = Files.createDirectories(destpath.getParent());
+				Path p = Files.createDirectories(the_destpath.getParent());
 			}catch(IOException ioex){
 				ioex.printStackTrace();
 				return -1;
 			}
 		}
-		if(Files.exists(destpath)){
-			try(BufferedWriter writer = Files.newBufferedWriter(destpath,StandardCharsets.UTF_8,StandardOpenOption.APPEND,StandardOpenOption.DSYNC)){
+		if(Files.exists(the_destpath)){
+			try(BufferedWriter writer = Files.newBufferedWriter(the_destpath,StandardCharsets.UTF_8,StandardOpenOption.APPEND,StandardOpenOption.DSYNC)){
 				writer.write(the_msg+"\n");
 			}catch(IOException ioex){
 				ioex.printStackTrace();
 				return -1;
 			}
 		}else{
-			try(BufferedWriter writer = Files.newBufferedWriter(destpath,StandardCharsets.UTF_8,StandardOpenOption.CREATE,StandardOpenOption.DSYNC)){
+			try(BufferedWriter writer = Files.newBufferedWriter(the_destpath,StandardCharsets.UTF_8,StandardOpenOption.CREATE,StandardOpenOption.DSYNC)){
 				writer.write(the_msg+"\n");
 			}catch(IOException ioex){
 				ioex.printStackTrace();
