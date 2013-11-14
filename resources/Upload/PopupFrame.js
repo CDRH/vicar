@@ -29,6 +29,22 @@ function makeSimpleFrame(obj,url){
         show(clickedobj,t);
 }
 
+function MAmakeSimpleFrame(obj,url){
+	clickedobj = obj;
+	var schsel = document.getElementById('macorpusselect');
+	var mausechoice = document.getElementById('mausechoicejs').value;
+	var ssval = schsel.options[schsel.selectedIndex].value;
+	//alert('SELE '+ssval+' MAUSE'+mausechoice);
+	var pos = getPos(obj);
+	var srcurl = url+"&macorpus="+ssval+"&mausechoice="+mausechoice;
+        var t = "<div class='innerpopup' style='width:400px;border:3px solid red;'>\n";
+        t += "<iframe id='"+((new Date()).getTime())+"' width='99%' height='90px' style='border:0px;' src='"+srcurl+"'></iframe>";
+	//alert(srcurl);
+	//alert(t);
+        t += "</div>";
+        show(clickedobj,t);
+}
+
 function hideForum(obj,url) {
 	if(semaph==true){
 		var mydivX = document.getElementById('mydiv');

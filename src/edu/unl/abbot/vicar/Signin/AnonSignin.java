@@ -69,6 +69,7 @@ private String m_op = null;
 		m_op = m_request.getParameter("op");
 		m_OwnerID = (String)m_session.getAttribute("userid");
 		//m_loginstatus = 0;
+		m_delay = 0;
 	}
 
 

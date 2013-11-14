@@ -1,0 +1,15 @@
+/****
+* This file is part of the internet server components of the Abbot project.
+* It is written and maintained by Frank Smutniak for the
+* Center for Digital Research in the Humanities at the
+* University of Nebraska-Lincoln.
+*
+* Last Modified: Mon Feb 25, 2013
+*
+* Copyright © 2011-2013 Board of Regents of the University of Nebraska-Lincoln.
+* See LICENSE for details.
+*
+* Abbot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+* See LICENSE for more details.
+****/

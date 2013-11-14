@@ -190,6 +190,7 @@ private Part m_filePart;
 		Vector<String> convertfiles = null;
 		Vector<String> outputfiles = null;
 		Vector<String> validfiles = null;
+		Vector<String> adornfiles = null;
 		if(m_DirStr==null){ //LIST ALL COLLECTIONS FOR USER OwnerPath
 			mydirs = listDirs(Global.BASE_USER_DIR+"/"+m_OwnerPath);
 		}else if(m_DirStr.equalsIgnoreCase("new")){
@@ -202,6 +203,7 @@ private Part m_filePart;
 					convertfiles = listFiles(dirpath+"convert");
 					outputfiles = listFiles(dirpath+"output",".xml");
 					validfiles = listFiles(dirpath+"valid");
+					adornfiles = listFiles(dirpath+"adorn",".xml");
 					m_isnew = 1;
 				}else{
 					String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath;
@@ -237,6 +239,7 @@ private Part m_filePart;
 					convertfiles = listFiles(dirpath+"convert");
 					outputfiles = listFiles(dirpath+"output",".xml");
 					validfiles = listFiles(dirpath+"valid");
+					adornfiles = listFiles(dirpath+"adorn",".xml");
 				}else{ //CANCEL NEW COLLECTION NAME
 					String dirpath = Global.BASE_USER_DIR+"/"+m_OwnerPath;
 					String resp = removeDir(dirpath+"/"+m_DirStr);
@@ -282,6 +285,7 @@ private Part m_filePart;
 			convertfiles = listFiles(dirpath+"convert");
 			outputfiles = listFiles(dirpath+"output",".xml");
 			validfiles = listFiles(dirpath+"valid");
+			adornfiles = listFiles(dirpath+"adorn",".xml");
 		}
 
 		int maxcount = 10;
@@ -386,6 +390,31 @@ private Part m_filePart;
 							contentHandler.endElement("","outputfiles","outputfiles");
 						}
 
+						//THIS DIR ONLY CONTAINS ADORNED ABBOT OUTPUT SO SHOULD ALWAYS BE .xml FILES
+						if(adornfiles!=null){
+							@SuppressWarnings("unchecked")
+							Vector<Integer> errorlist = (Vector<Integer>)m_session.getAttribute("SAVE:validationerrors:"+m_DirStr);
+							AttributesImpl adornfilesAttr = new AttributesImpl();
+							adornfilesAttr.addAttribute("","dirname","dirname","CDATA",""+m_DirStr);
+							adornfilesAttr.addAttribute("","count","count","CDATA",""+adornfiles.size());
+							adornfilesAttr.addAttribute("","new","new","CDATA",""+m_isnew);
+							contentHandler.startElement("","adornfiles","adornfiles",adornfilesAttr);
+							int count = 0;
+							for(String filename : adornfiles){
+								AttributesImpl fileAttr = new AttributesImpl();
+								fileAttr.addAttribute("","name","name","CDATA",""+filename);
+								fileAttr.addAttribute("","vname","vname","CDATA",""+filename.replace(".xml",".html"));
+								fileAttr.addAttribute("","op","op","CDATA","2");
+								//if((errorlist!=null)&&(count < errorlist.size())){
+								//	fileAttr.addAttribute("","errors","errors","CDATA",""+errorlist.get(count));
+								//}
+								contentHandler.startElement("","file","file",fileAttr);
+								contentHandler.endElement("","file","file");
+								count++;
+							}
+							contentHandler.endElement("","adornfiles","adornfiles");
+						}
+
 						contentHandler.endElement("","collection","collection");
 					}
 				}
@@ -408,6 +437,7 @@ private Part m_filePart;
 			b = new File(the_dirpath+"/convert/").mkdirs();
 			b = new File(the_dirpath+"/output/").mkdirs();
 			b = new File(the_dirpath+"/valid/").mkdirs();
+			b = new File(the_dirpath+"/adorn/").mkdirs();
 		}catch(SecurityException se){
 			se.printStackTrace();
 		}
@@ -471,6 +501,7 @@ private Part m_filePart;
 						//System.out.println("DIR<"+userdir.getName()+">");
 						int inputcnt = 0;
 						int outputcnt = 0;
+						int adorncnt = 0;
 						File subdirlist[] = userdir.listFiles();
 						for (File subdir : subdirlist){
 							//System.out.println("\tSUBDIR<"+subdir.getName()+">");
@@ -479,6 +510,8 @@ private Part m_filePart;
 								inputcnt = subfiles.length;
 							}else if(subdir.getName().equalsIgnoreCase("output")){
 								outputcnt = subfiles.length;
+							}else if(subdir.getName().equalsIgnoreCase("adorn")){
+								adorncnt = subfiles.length;
 							}
 						}
 						dir.add(new FileData(m_OwnerPath,userdir.getName(),inputcnt,""+(new Date(userdir.lastModified()))));

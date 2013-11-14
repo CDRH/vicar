@@ -55,7 +55,7 @@ private Session m_session;
 private String m_OwnerID;
 private String m_SessionID = "";
 
-private int m_delay = 5;
+private int m_delay = 0;
 private int m_msgcode = 0;
 private String m_msgtext = null;
 
@@ -91,6 +91,7 @@ private String m_diag = "";
 		m_session = m_request.getSession();
 		m_op = m_request.getParameter("op");
 		m_OwnerID = (String)m_session.getAttribute("userid");
+		m_delay = 0;
 	}
 
 @Override

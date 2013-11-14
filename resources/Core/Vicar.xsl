@@ -259,6 +259,61 @@
 			<xsl:apply-templates select="outputfiles" />
 		</xsl:if>
 	</div><!--/filesdiv-->
+	<div class="files">
+		<div class="paddingdiv">
+			<h4>Adorn:</h4>
+			<!--IF JAVASCRIPT IS NOT ENABLED THEN PRESENT THIS AS AN OPTION TO START A CONVERSION-->
+			<div id="nojsmsg">
+				<form id="convert" action="Adorn/MAStreamServer.html?dir={@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
+					<div>
+						<span>Corpus:</span>
+						<select id="macorpusselectnojs" name="macorpus" class="selected">
+							<option value="eme" title="Early Modern English" selected="selected">Early Modern English</option>
+							<option value="ece" title="Eighteenth Century English">Eighteenth Century English</option>
+							<option value="ncf" title="Nineteenth Century Fiction">Nineteenth Century Fiction</option>
+						</select>
+						<div>
+							<input type="checkbox" name="mausechoice" id="mausechoice" checked="checked"> Use choice structure to emit standard spelling</input>
+						</div>
+					</div>
+					<input class="process_files_submit" type="submit" name="perform" value="Adorn Files &gt;&gt;&gt;" title="Adorn output files using Northwestern University's MorphAdorner - No progress reporting is available since Javascript is disabled" >
+						<!--SET IT UP SO IT CHECKS FOR NO OUTPUT FILES BEFORE SETTING DISABLED TO TRUE-->
+						<!--
+						<xsl:if test="count(schema) &lt; 1">
+							<xsl:attribute name="disabled">
+								<xsl:text>disabled</xsl:text>
+							</xsl:attribute>
+						</xsl:if>
+						-->
+					</input>
+				</form>
+			</div>
+
+			<!--HIDE THE FOLLOWING IF THERE IS NO JAVASCRIPT ENABLED ELSE SHOW IT AS IT IS THE NORMAL WAY TO START A CONVERSION-->
+			<!--NOTE THAT UNDER NORMAL OPERATION THE onclick EVENT ON THE SUBMIT BUTTON IS USED RATHER THAN THE action ON THE form ELEMENT-->
+			<div id="nojshide">
+				<form id="convert" action="Adorn/MAStreamServer.html?dir={@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
+					<div>
+						<span>Corpus:</span>
+						<select id="macorpusselect" name="macorpus" class="selected">
+							<option value="eme" title="Early Modern English" selected="selected">Early Modern English</option>
+							<option value="ece" title="Eighteenth Century English">Eighteenth Century English</option>
+							<option value="ncf" title="Nineteenth Century Fiction">Nineteenth Century Fiction</option>
+						</select>
+					</div>
+					<div>
+						<input type="checkbox" name="mausechoicejs" id="mausechoicejs" checked="checked"> Use choice structure to emit standard spelling</input>
+					</div>
+				</form>
+<!--MAmakeSimpleFrame is responsible for pulling in parameters for the form-->
+				<input class="process_files_submit" type="submit" name="perform" value="Adorn Files &gt;&gt;&gt;" onclick="MAmakeSimpleFrame(this,'Adorn/MAStreamClient.html?dir={@dirname}');" title="Adorn output files using Northwestern University's MorphAdorner" >
+				</input>
+			</div>
+		</div>
+		<xsl:if test="adornfiles/@count &gt; 0">
+			<xsl:apply-templates select="adornfiles" />
+		</xsl:if>
+	</div>
 </xsl:template>
 
 <!-- show uploaded input files - presentation of 'outercolumn' media selected via CSS -->
@@ -334,7 +389,8 @@
 						</select>
 					</div>
 				</form>
-				<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" onclick="makeSimpleFrame(this,'Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot with progress reporting" >
+<!--makeSimpleFrame is responsible for pulling in parameters for the form-->
+				<input class="process_files_submit" type="submit" name="perform" value="Process Files &gt;&gt;&gt;" onclick="makeSimpleFrame(this,'Convert/StreamClient.html?dir={../@dirname}');" title="Generate output files using Abbot" >
 					<!--
 					<xsl:if test="count(schema) &lt; 1">
 						<xsl:attribute name="disabled">
@@ -381,14 +437,27 @@
 			<h4>Abbot Generated Results</h4>
 			<div class="download">
 				<p>Download all files as:</p>
-				<a href="Download/{@dirname}/{@dirname}.zip" id="download_zip">zip file</a>
-				<a href="Download/{@dirname}/{@dirname}.tar.gz" id="download_targz">tar.gz file</a>
+				<a href="Download/{@dirname}/output/{@dirname}.zip" id="download_zip">zip file</a>
+				<a href="Download/{@dirname}/output/{@dirname}.tar.gz" id="download_targz">tar.gz file</a>
 			</div>
 			<xsl:apply-templates select="file"/>
 		</div>
 	</div>
 </xsl:template>
 
+<xsl:template match="adornfiles">
+	<div>
+		<div class="paddingdiv">
+			<h4>Adorned files</h4>
+			<div class="download">
+				<p>Download all files as:</p>
+				<a href="Download/{@dirname}/adorn/{@dirname}_adorn.zip" id="download_adorn_zip">zip file</a>
+				<a href="Download/{@dirname}/adorn/{@dirname}_adorn.tar.gz" id="download_adorn_targz">tar.gz file</a>
+			</div>
+			<xsl:apply-templates select="file"/>
+		</div>
+	</div>
+</xsl:template>
 <!-- create display of individual files for use by inputfiles and outputfiles elements-->
 <xsl:template match="file">
 	<div>
@@ -415,6 +484,11 @@
 					<xsl:value-of select="@errors" />
 				</a>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="@op = 2">
+			<a href="Download/{../@dirname}/adorn/{@name}" id="download_adorn_{@name}">
+				<xsl:value-of select="@name" />
+			</a>
 		</xsl:if>
 		<!-- below used by 'inputfiles' element to ask if an XML file (or not) should be unzipped/untarred/ungzipuntarred -->
 <!--ZZZ_E KMD added class error -->

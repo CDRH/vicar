@@ -24,7 +24,7 @@ public static String SED_PATH = "/usr/bin/sed";
 /**
 The base URL at which vicar will be located.  It is used by Signin.java, OpenSignin.java and Password.java to redirect after an OpenID signin or send password/registration information to the user.  If you are running it on your own computer that should likely be <i>http://127.0.0.1:8888</i> for a jetty install and <i>http://127.0.0.1:8080</i> for a tomcat install.
 */
-public static String URL_BASE = "http://127.0.0.1:8888";
+public static String URL_BASE = "http://127.0.0.1:8080/cocoon";
 
 
 /**The file into which log information is written by {@link LogWriter}.*/

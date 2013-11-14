@@ -3,6 +3,7 @@
 <!--
 	<property file="build.local.properties"/>
 	<property file="build.tomcat.properties"/>
+	<property file="../build.abbot.properties"/>
 -->
 	<property file="build.cocoon.properties"/>
 
@@ -55,7 +56,7 @@
 	</target>
 
 	<target name="build" depends="clean">
-		<javac deprecation="on" srcdir="src" destdir="${builddir}" includeantruntime="false">
+		<javac deprecation="on" debug="true" srcdir="src" destdir="${builddir}" includeantruntime="false">
 			<classpath refid = "CP"/>
 			<exclude name="**/package-info.java" />
 		</javac>

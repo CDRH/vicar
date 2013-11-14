@@ -5,6 +5,7 @@
 	<map:generators default="file">
 		<map:generator name="testsession" src="edu.unl.abbot.vicar.Test.TestSession"/>
 
+<!--This directory is a proposed replacement for the current file upload scheme.-->
 		<map:generator name="upload-server" src="edu.unl.abbot.vicar.UploadFiles.UploadServer"/>
 
 		<map:generator name="opensignin" src="edu.unl.abbot.vicar.Signin.OpenSignin"/>
@@ -18,7 +19,8 @@
 
 		<map:generator name="ajax-upload" src="edu.unl.abbot.vicar.Upload.AjaxServer"/>
 
-		<map:generator name="stream-server" src="edu.unl.abbot.vicar.Convert.StreamServer"/>
+		<map:generator name="abbot-stream-server" src="edu.unl.abbot.vicar.Convert.StreamServer"/>
+		<map:generator name="adorn-stream-server" src="edu.unl.abbot.vicar.Adorn.MAStreamServer"/>
 	</map:generators>
 
 
@@ -85,19 +87,19 @@
 </map:match>
 
 <map:match pattern="Download/**">
-	<map:match pattern="Download/*/*.xml" >
+	<map:match pattern="Download/**/*.xml" >
 		<map:generate type="filedownload" />
 		<map:serialize type="xml" mime-type="application/octet-stream" />
 	</map:match>
-	<map:match pattern="Download/*/*.zip" >
+	<map:match pattern="Download/**/*.zip" >
 		<map:generate type="filedownload" />
 		<map:serialize type="zip" mime-type="application/octet-stream" />
 	</map:match>
-	<map:match pattern="Download/*/*.tar" >
+	<map:match pattern="Download/**/*.tar" >
 		<map:generate type="filedownload" />
 		<map:serialize mime-type="application/octet-stream" />
 	</map:match>
-	<map:match pattern="Download/*/*.tar.gz" >
+	<map:match pattern="Download/**/*.tar.gz" >
 		<map:generate type="filedownload" />
 		<map:serialize mime-type="application/octet-stream" />
 	</map:match>
@@ -132,6 +134,7 @@
 </map:match>
 
 <!--x-->
+<!--This directory is a proposed replacement for the current file upload scheme.-->
 <map:match pattern="UploadFiles/**">
 	<map:match pattern="UploadFiles/Test.html">
 		<map:generate src="resources/UploadFiles/Test.xml" />
@@ -163,35 +166,6 @@
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
 
-<map:match pattern="Progress/**">
-	<map:match pattern="Progress/StreamClient.html">
-		<map:generate src="resources/Progress/StreamClient.xml" />
-		<map:transform src="resources/Progress/StreamClient.xsl">
-			<map:parameter name="use-request-parameters" value="true" />
-		</map:transform>
-		<map:serialize type="html"/>
-	</map:match>
-	<map:match pattern="Progress/StreamClient.js">
-		<map:read mime-type="text/javascript" src="resources/Progress/StreamClient.js"/>
-	</map:match>
-	<map:match pattern="Progress/StreamClient.css">
-		<map:read mime-type="text/css" src="resources/Progress/StreamClient.css"/>
-	</map:match>
-
-	<map:match pattern="Progress/StreamServer.html" >
-		<map:generate type="stream-server"/>
-		<map:transform src="resources/Progress/StreamServer.xsl" />
-		<map:serialize type="html"/>
-	</map:match>
-	<map:match pattern="Progress/StreamServer.xml" >
-		<map:generate type="stream-server"/>
-		<map:serialize type="xml"/>
-	</map:match>
-
-	<map:redirect-to uri="../Error.html"/>
-</map:match>
-<!--x-->
-
 <map:match pattern="Convert/**">
 	<map:match pattern="Convert/StreamClient.html">
 		<map:generate src="resources/Convert/StreamClient.xml" />
@@ -205,12 +179,37 @@
 	</map:match>
 
 	<map:match pattern="Convert/StreamServer.html" >
-		<map:generate type="stream-server"/>
+		<map:generate type="abbot-stream-server"/>
 		<map:transform src="resources/Convert/StreamServer.xsl" />
 		<map:serialize type="html"/>
 	</map:match>
 	<map:match pattern="Convert/StreamServer.xml" >
-		<map:generate type="stream-server"/>
+		<map:generate type="abbot-stream-server"/>
+		<map:serialize type="xml"/>
+	</map:match>
+
+	<map:redirect-to uri="../Error.html"/>
+</map:match>
+
+<map:match pattern="Adorn/**">
+	<map:match pattern="Adorn/MAStreamClient.html">
+		<map:generate src="resources/Adorn/MAStreamClient.xml" />
+		<map:transform src="resources/Adorn/MAStreamClient.xsl">
+			<map:parameter name="use-request-parameters" value="true" />
+		</map:transform>
+		<map:serialize type="html"/>
+	</map:match>
+	<map:match pattern="Adorn/MAStreamClient.js">
+		<map:read mime-type="text/javascript" src="resources/Adorn/MAStreamClient.js"/>
+	</map:match>
+
+	<map:match pattern="Adorn/MAStreamServer.html" >
+		<map:generate type="adorn-stream-server"/>
+		<map:transform src="resources/Adorn/MAStreamServer.xsl" />
+		<map:serialize type="html"/>
+	</map:match>
+	<map:match pattern="Adorn/MAStreamServer.xml" >
+		<map:generate type="adorn-stream-server"/>
 		<map:serialize type="xml"/>
 	</map:match>
 
@@ -237,9 +236,11 @@
 	<map:match pattern="AboutVicar.html" >
 		<map:read mime-type="text/html" src="AboutVicar.html" />
 	</map:match>
+<!--
 	<map:match pattern="VicarSoftware.html" >
 		<map:read mime-type="text/html" src="VicarSoftware.html" />
 	</map:match>
+-->
 
 	<map:match pattern="Signin.html" >
 		<map:generate type="signin"/>

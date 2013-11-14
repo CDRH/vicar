@@ -98,6 +98,16 @@
          
 			<!-- KMD New div, this text will change, here as placeholder -->
 			<div class="description">
+			   
+			   <p>The <a href="http://cdrh.unl.edu">Center for Digital Research in the Humanities</a> at
+			      the University of Nebraska and Northwestern University's <a
+			         href="http://www.it.northwestern.edu/about/departments/at/">Academic and Academic
+			         Research Technologies</a> are pleased to announce the first fruits of a collaboration
+			      between the Abbot and EEBO-MorphAdorner projects: the
+			      release of some 2,000 18th century texts from the TCP-ECCO collections in a TEI-P5
+			      format and with linguistic annotation. More texts will follow shortly, subject to the
+			      access restrictions that will govern the use of TCP texts for the remainder of this
+			      decade. Read the full announcement or download the 2,000 ECCO  texts <a href="http://abbot.unl.edu/abbot-morphadorner/index.html">here</a>.</p>
 
 				<p>Abbot is a tool designed to convert dissimilar collections of
  XML texts into a common interoperable form. Abbot's key feature is the 
@@ -121,6 +131,8 @@ large, permanent digital libraries.</p>
 				<p>Abbot was developed at the <a href="http://cdrh.unl.edu/">Center for Digital Research in the Humanities</a> by Brian L. Pytlik Zillig, Stephen Ramsay, Martin Mueller, and Frank Smutniak. Support for Abbot was provided by the <a href="http://www.mellon.org/">Andrew W. Mellon Foundation</a>.</p>
 				<p>
 					<p>Power users may want to try the command-line version of Abbot, <a href="http://abbot.unl.edu/downloads/abbot/">available here</a>.</p>
+				   
+				   <p>Please see the Abbot software <a href="http://abbot.unl.edu/downloads/abbot/license.txt">license</a>.</p>
                
 					<a href="AboutVicar.html" class="more_info" >more info</a>
 				</p>

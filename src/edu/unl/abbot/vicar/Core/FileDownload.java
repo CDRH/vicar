@@ -53,6 +53,7 @@ private String m_OwnerID;
 private String m_OwnerPath;
 private Session m_session;
 private String m_DirStr;
+private String m_ResultStr;
 private String m_FilenameStr;
 
 /****
@@ -103,6 +104,17 @@ private String m_FilenameStr;
 
 		m_FilenameStr = urlpartList.get(0);
 		m_DirStr = urlpartList.get(1);
+		m_ResultStr = "";
+		if(m_DirStr==null){
+			System.out.println("SHOULD NEVER HAPPEN");
+		}else if(m_DirStr.equals("adorn")){
+			m_ResultStr = "adorn";
+			m_DirStr = urlpartList.get(2);
+		}else if(m_DirStr.equals("output")){
+			m_ResultStr = "output";
+			m_DirStr = urlpartList.get(2);
+		}
+		System.out.println("FILEDOWNLOAD DIRSTR<"+m_DirStr+"> FILENAME<"+m_FilenameStr+">");
 	}
 
 /**
@@ -121,8 +133,18 @@ private String m_FilenameStr;
 				res.setContentType("text/html");
 				sos.println("<html><head><title>Filename Needed</title></head><body><h2>Filename Needed</h2></body></html>");
 			}else{
+				String downloadfiledir = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/";;
 				res.setContentType("xml");
-				String downloadfiledir = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr+"/output/";
+				if(m_ResultStr==null){
+					downloadfiledir += m_DirStr+"/output/";
+				}else if(m_ResultStr.equals("adorn")){
+					downloadfiledir += m_DirStr+"/adorn/";
+				}else if(m_ResultStr.equals("")){
+					downloadfiledir += m_DirStr+"/output/";
+				}else if(m_ResultStr.equals("output")){
+					downloadfiledir += m_DirStr+"/output/";
+				}
+System.out.println("DFD<"+downloadfiledir+">");
 				String downloadfilename = downloadfiledir+m_FilenameStr;
 				if(m_FilenameStr.endsWith(".zip")){
 					if(m_DirStr!=null){
