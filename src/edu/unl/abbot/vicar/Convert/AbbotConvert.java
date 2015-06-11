@@ -88,11 +88,12 @@ private boolean m_isdone = true;
 					//abbot.convert(indir,outdir,convdir+m_ConvStr);
 					//abbot.convert(indir,outdir,m_Custom,m_Namespace,convdir+m_ConvStr);
 
-					//System.out.println("CONVERTING");
+					System.out.println("CONVERTING INDIR<"+indir+"> OUTDIR<"+outdir+"> CONVDIR<"+(convdir+m_ConvStr)+"> NS<"+m_Namespace+"> CUSTOM<"+m_Custom+">");
 					abbot.convert(indir,outdir,convdir+m_ConvStr,m_Namespace,m_Custom);
+					System.out.println("CONVERSION DONE");
 				}catch(Exception ex){
 					String errmsg = ex.getMessage();
-					//System.out.println("ABBOTERRORMSG<"+errmsg+">");
+					System.out.println("ABBOTERRORMSG<"+errmsg+">");
 					if(errmsg!=null){
 						errmsg = errmsg.replace(","," ");
 						m_session.setAttribute("abbotmsg:",errmsg);

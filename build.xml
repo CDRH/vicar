@@ -1,11 +1,11 @@
 <project name="Vicar" default="usage" basedir=".">
 	<description> simple example build file </description>
 <!--
-	<property file="build.local.properties"/>
-	<property file="build.tomcat.properties"/>
 	<property file="../build.abbot.properties"/>
--->
 	<property file="build.cocoon.properties"/>
+	<property file="build.local.properties"/>
+-->
+	<property file="build.tomcat.properties"/>
 
 	<path id="CP">
 		<pathelement path="${libdir}/excalibur-pool-api-2.1.jar"/>
@@ -30,7 +30,23 @@
 		<!-- if using mail.jar then remove ${libdir}/geronimo-spec-javamail-1.3.1-rc5.jar from dir if exists -->
 		<pathelement path="${auxlibdir}/mail.jar"/>
 		<!-- servlet 3.0-->
-		<pathelement path="${servletlibdir}/servlet-api.jar"/>
+		<pathelement path="${auxlibdir}/servlet-api.jar"/>
+
+<!--OPENIDCONNECT-->
+                <pathelement path="${libdir}/httpcore-4.0.1.jar"/>
+                <pathelement path="${libdir}/httpcore-4.0.1-sources.jar"/>
+                <pathelement path="${libdir}/google-oauth-client-1.17.0-rc.jar"/>
+                <pathelement path="${libdir}/google-api-client-1.17.0-rc.jar"/>
+                <pathelement path="${libdir}/google-http-client-1.17.0-rc.jar"/>
+                <pathelement path="${libdir}/google-http-client-jackson-1.17.0-rc.jar"/>
+                <pathelement path="${libdir}/google-api-services-plus-v1-rev104-1.17.0-rc.jar"/>
+                <pathelement path="${libdir}/google-api-services-plus-v1-rev104-1.17.0-rc-javadoc.jar"/>
+                <pathelement path="${libdir}/google-api-services-plus-v1-rev104-1.17.0-rc-sources.jar"/>
+                <pathelement path="${libdir}/gson-2.1.jar"/>
+                <pathelement path="${libdir}/gson-2.1-sources.jar"/>
+                <pathelement path="${libdir}/google-http-client-gson-1.17.0-rc.jar"/>
+<!--OPENIDCONNECT-->
+
 	</path>
 
 
@@ -63,7 +79,10 @@
 	</target>
 
 	<target name="archive">
+<!--
                 <tar destfile="Archive.tar" basedir="." includes="build.xml,build.local.properties,sitemap.xmap,README.txt,AboutVicar.html,VicarSoftware.html,src/**,resources/**,javadocs/**,lib/*" />
+-->
+                <tar destfile="Archive.tar" basedir="." includes="build.xml,build.local.properties,sitemap.xmap,README.txt,AboutVicar.html,VicarSoftware.html,src/**,resources/**" />
 	</target>
 
 	<target name="javadocs" description="javadoc generation excluding Sample and Test directories">

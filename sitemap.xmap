@@ -3,11 +3,14 @@
 <map:components>
 
 	<map:generators default="file">
+<!--
 		<map:generator name="testsession" src="edu.unl.abbot.vicar.Test.TestSession"/>
-
+-->
 <!--This directory is a proposed replacement for the current file upload scheme.-->
 		<map:generator name="upload-server" src="edu.unl.abbot.vicar.UploadFiles.UploadServer"/>
-
+<!--OPENIDCONNECT-->
+		<map:generator name="oasignin" src="edu.unl.abbot.vicar.Signin.OASignin"/>
+<!--OPENIDCONNECT-->
 		<map:generator name="opensignin" src="edu.unl.abbot.vicar.Signin.OpenSignin"/>
 		<map:generator name="signin" src="edu.unl.abbot.vicar.Signin.Signin"/>
 		<map:generator name="signout" src="edu.unl.abbot.vicar.Signin.Signout"/>
@@ -56,7 +59,7 @@
 <map:match pattern="index.html" >
 	<map:redirect-to uri="Vicar.html"/>
 </map:match>
-
+<!--
 <map:match pattern="Test/**">
 	<map:match pattern="Test/TestSession.html" >
 		<map:generate type="testsession"/>
@@ -64,6 +67,7 @@
 		<map:serialize type="html5"/>
 	</map:match>
 </map:match>
+-->
 
 <map:match pattern="javadocs/**">
 	<map:match pattern="javadocs/**.html" >
@@ -166,6 +170,38 @@
 	<map:redirect-to uri="../Error.html"/>
 </map:match>
 
+<!--Progress IS A SIMILATION OF A BETTER PROGRESS DISPLAY?-->
+<!--
+<map:match pattern="Progress/**">
+	<map:match pattern="Progress/StreamClient.html">
+		<map:generate src="resources/Progress/StreamClient.xml" />
+		<map:transform src="resources/Progress/StreamClient.xsl">
+			<map:parameter name="use-request-parameters" value="true" />
+		</map:transform>
+		<map:serialize type="html"/>
+	</map:match>
+	<map:match pattern="Progress/StreamClient.js">
+		<map:read mime-type="text/javascript" src="resources/Progress/StreamClient.js"/>
+	</map:match>
+	<map:match pattern="Progress/StreamClient.css">
+		<map:read mime-type="text/css" src="resources/Progress/StreamClient.css"/>
+	</map:match>
+
+	<map:match pattern="Progress/StreamServer.html" >
+		<map:generate type="abbot-stream-server"/>
+		<map:transform src="resources/Progress/StreamServer.xsl" />
+		<map:serialize type="html"/>
+	</map:match>
+	<map:match pattern="Progress/StreamServer.xml" >
+		<map:generate type="abbot-stream-server"/>
+		<map:serialize type="xml"/>
+	</map:match>
+
+	<map:redirect-to uri="../Error.html"/>
+</map:match>
+-->
+<!--x-->
+
 <map:match pattern="Convert/**">
 	<map:match pattern="Convert/StreamClient.html">
 		<map:generate src="resources/Convert/StreamClient.xml" />
@@ -242,6 +278,49 @@
 	</map:match>
 -->
 
+<!--OPENIDCONNECT-->
+	<map:match pattern="oauth" >
+		<map:generate type="oasignin" />
+		<map:transform src="resources/Signin/OASignin.xsl"/>
+		<map:serialize type="html5"/>
+	</map:match>
+	<map:match pattern="oaapp">
+		<map:generate type="oasignin"/>
+		<map:transform src="resources/Signin/OAApp.xsl"/>
+		<map:serialize type="html5"/>
+	</map:match>
+
+	<map:match pattern="oauth.xml" >
+		<map:generate type="oasignin" />
+		<map:serialize type="xml"/>
+	</map:match>
+
+	<map:match pattern="oaapp.xml" >
+		<map:generate type="oasignin" />
+		<map:serialize type="xml"/>
+	</map:match>
+
+	<map:match pattern="oauth_helper.js">
+		<map:read mime-type="text/javascript" src="resources/Signin/oauth_helper.js"/>
+	</map:match>
+
+	<map:match pattern="connect" >
+		<map:generate type="oasignin"/>
+		<map:serialize type="text"/>
+	</map:match>
+
+	<map:match pattern="disconnect" >
+		<map:generate type="oasignin"/>
+		<map:serialize type="text"/>
+	</map:match>
+
+	<map:match pattern="vicar_redir" >
+		<map:generate type="oasignin"/>
+		<map:serialize type="html5"/>
+	</map:match>
+<!--OPENIDCONNECT-->
+
+
 	<map:match pattern="Signin.html" >
 		<map:generate type="signin"/>
 		<map:transform src="resources/Signin/Signin.xsl"/>
@@ -283,6 +362,9 @@
 	<map:match pattern="SchemaList.js" >
 		<map:read mime-type="text/javascript" src="resources/Core/SchemaList.js"/>
 	</map:match>
+	<map:match pattern="js_karin.js" >
+		<map:read mime-type="text/javascript" src="resources/Core/js_karin.js"/>
+	</map:match>
 
 <!--XML ONLY FOR TESTING-->
 	<map:match pattern="Signin.xml" >
@@ -316,6 +398,9 @@
 	</map:match>
 	<map:match pattern="jquery-ui-1.10.0.custom.css">
 		<map:read mime-type="text/css" src="resources/CSS/jquery-ui-1.10.0.custom.css"/>
+	</map:match>
+	<map:match pattern="jquery-ui-1.css">
+		<map:read mime-type="text/css" src="resources/CSS/jquery-ui-1.css"/>
 	</map:match>
 	<map:match pattern="*.jpg">
 		<map:read mime-type="text/css" src="resources/CSS/{1}.jpg"/>

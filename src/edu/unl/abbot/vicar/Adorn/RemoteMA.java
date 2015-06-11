@@ -1,5 +1,7 @@
 package edu.unl.abbot.vicar.Adorn;
 
+import edu.unl.abbot.vicar.Global;
+
 import java.io.*;
 import java.nio.file.*;
 import java.util.List;
@@ -13,10 +15,12 @@ final String end = "\r\n";
 final String twoHyphens = "--";
 final String boundary = "*****++++++************++++++++++++";
 private static String DEFAULT_CORPUS = "eme";
-//private static String DEFAULT_URL = "http://127.0.0.1:8888/";
-//private static String DEFAULT_URL = "http://127.0.0.1:8182/teiadorner";
-//public static String DEFAULT_URL = "http://devadorner.northwestern.edu/maserver/teiadorner";
-public static String DEFAULT_URL = "http://abbot.unl.edu:8080/maserver/teiadorner";
+
+//BELOW NOW IN GLOBAL.JAVA
+//public static String ADORN_URL = "http://127.0.0.1:8888/";
+//public static String ADORN_URL = "http://127.0.0.1:8182/teiadorner";
+//public static String ADORN_URL = "http://devadorner.northwestern.edu/maserver/teiadorner";
+//public static String ADORN_URL = "http://abbot.unl.edu:8080/maserver/teiadorner";
 
 	public static void main(String[] args) {
 		RemoteMA p = new RemoteMA();
@@ -24,7 +28,7 @@ public static String DEFAULT_URL = "http://abbot.unl.edu:8080/maserver/teiadorne
 		String DestFilePath = null;
 		String UseChoice = "false";
 		String CorpusConfig = DEFAULT_CORPUS;
-		String URL = DEFAULT_URL;
+		String URL = Global.ADORN_URL;
 /****/
 		//String USERDIR= "/var/vicar/userdata/fsmutniak__gmail.com/eee/";
 		//p.uploadDirs(URL,CorpusConfig,UseChoice,USERDIR+"output/",USERDIR+"adorn/");

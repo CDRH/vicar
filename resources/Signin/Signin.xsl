@@ -28,6 +28,16 @@
 	<xsl:if test="url/text() !='NONE'">
 		<meta http-equiv="REFRESH" content="{url/@delay};url={url/text()}" />
 	</xsl:if>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-23044707-2', 'unl.edu');
+  ga('send', 'pageview');
+
+</script>
 </head>
 <body>
 <xsl:if test="url/text() ='NONE'">
@@ -82,10 +92,18 @@
 				<div class="alternate_login">
 					<a href="OpenSignin.html?op=Yahoo" name="signin">Sign in through Yahoo</a>
 				</div>
-
+<!--
 				<div class="alternate_login">
 					<a href="OpenSignin.html?op=Google" name="signin">Sign In through Google</a>
 				</div>
+-->
+<!--OPENIDCONNECT-->
+<!--
+				<div class="alternate_login">
+					<a href="oauth" name="signin">Sign In through Google Plus</a>
+				</div>
+-->
+<!--OPENIDCONNECT-->
 
 				<a href="Signin.html?act=resetpwd" name="origsignin">
 					<span class="highlightlink reset">Reset Password</span>
@@ -93,12 +111,15 @@
 				<a href="Signin.html?act=register" name="origsignin">
 					<span class="highlightlink register">Register</span>
 				</a>
+				<div style="margin:0.5em 0em;font-size:75%;">Google sign-in to Abbot has been removed.</div>
 
 			</div><!-- /login -->
          
 			<!-- KMD New div, this text will change, here as placeholder -->
 			<div class="description">
-			   
+<!--
+			  	<p style="font-size:24px;color:red;">This site is currently down for maintenance.</p>
+--> 
 			   <p>The <a href="http://cdrh.unl.edu">Center for Digital Research in the Humanities</a> at
 			      the University of Nebraska and Northwestern University's <a
 			         href="http://www.it.northwestern.edu/about/departments/at/">Academic and Academic
@@ -127,11 +148,16 @@ interoperability, while at the same time accepting the uniqueness of
 individual text collections. Abbot's method allows for different forms 
 of interoperability, from small, one-off instances to the creation of 
 large, permanent digital libraries.</p>
-        
-				<p>Abbot was developed at the <a href="http://cdrh.unl.edu/">Center for Digital Research in the Humanities</a> by Brian L. Pytlik Zillig, Stephen Ramsay, Martin Mueller, and Frank Smutniak. Support for Abbot was provided by the <a href="http://www.mellon.org/">Andrew W. Mellon Foundation</a>.</p>
+
+<!--
+				<p>Abbot was developed at the <a href="http://cdrh.unl.edu/">Center for Digital Research in the Humanities</a> by Brian L. Pytlik Zillig, Stephen Ramsay, Martin Mueller, and <a href="oauth" name="signin" style="color:black;text-decoration:none;">Frank Smutniak</a>. Support for Abbot was provided by the <a href="http://www.mellon.org/">Andrew W. Mellon Foundation</a>.</p>
+-->
+				<p>Abbot was developed at the <a href="http://cdrh.unl.edu/">Center for Digital Research in the Humanities</a> by Brian L. Pytlik Zillig, Stephen Ramsay, Martin Mueller, and <a href="oauth" name="signin" style="color:black;text-decoration:none;">Frank Smutniak</a>. Support for Abbot was provided by the <a href="http://www.mellon.org/">Andrew W. Mellon Foundation</a>.</p>
+
 				<p>
 					<p>Power users may want to try the command-line version of Abbot, <a href="http://abbot.unl.edu/downloads/abbot/">available here</a>.</p>
-				   
+					<p>For further information please contact us at <a href="mailto:cdrh@unl.edu">cdrh@unl.edu</a>.</p>
+
 				   <p>Please see the Abbot software <a href="http://abbot.unl.edu/downloads/abbot/license.txt">license</a>.</p>
                
 					<a href="AboutVicar.html" class="more_info" >more info</a>

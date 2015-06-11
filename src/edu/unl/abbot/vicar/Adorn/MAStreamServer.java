@@ -144,7 +144,7 @@ private String m_mausechoice;
 			//MAKE ADORN DIRECTORY
 			String userdir = Global.BASE_USER_DIR+"/"+m_OwnerPath+"/"+m_DirStr;
 			new File(userdir+"/adorn/").mkdirs();
-			System.out.println("RETROFIT CREATION OF ADORN DIRECTORY");
+			System.out.println("RETROFIT CREATION OF ADORN DIRECTORY IN<"+userdir+">");
 			if(m_ActStr==null){
 				RemoteMA rma = new RemoteMA();
 				Vector<String> fileList = rma.listFiles(userdir+"/output/",".xml");
@@ -157,7 +157,7 @@ private String m_mausechoice;
 					int cnt = 0;
 					for(String fileName : fileList){
 						//System.out.println("STARTING<"+fileName+">");
-						rma.upload(RemoteMA.DEFAULT_URL,m_macorpus,m_mausechoice,userdir+"/output/"+fileName,userdir+"/adorn/"+fileName);
+						rma.upload(Global.ADORN_URL,m_macorpus,m_mausechoice,userdir+"/output/"+fileName,userdir+"/adorn/"+fileName);
 						cnt++;
 						int pct = (int)((100*cnt)/total);
 						//System.out.println("\tPCT<"+pct+">");
@@ -173,7 +173,7 @@ private String m_mausechoice;
 				sos.close();
 			}else if(m_ActStr.equals("test")){
 				//RemoteMA rma = new RemoteMA();
-				//rma.upload(RemoteMA.DEFAULT_URL,m_macorpus,userdir+"/output/",userdir+"/adorn/");
+				//rma.upload(Global.ADORN_URL,m_macorpus,userdir+"/output/",userdir+"/adorn/");
 				sos.println("<datastream>");
 				String topline = "File Adornment with MACORPUS<"+m_macorpus+"> MAUSECHOICE<"+m_mausechoice+">";
 				sos.println("<values name='"+topline+"'>");
@@ -243,7 +243,7 @@ private String m_mausechoice;
 					int cnt = 0;
 					for(String fileName : fileList){
 						//System.out.println("STARTING<"+fileName+">");
-						rma.upload(RemoteMA.DEFAULT_URL,m_macorpus,m_mausechoice,userdir+"/output/"+fileName,userdir+"/adorn/"+fileName);
+						rma.upload(Global.ADORN_URL,m_macorpus,m_mausechoice,userdir+"/output/"+fileName,userdir+"/adorn/"+fileName);
 						cnt++;
 						int pct = (int)((100*cnt)/total);
 						//System.out.println("\tPCT<"+pct+">");

@@ -8,12 +8,18 @@ package edu.unl.abbot.vicar;
 */
 
 public class Global {
+/** Morphadorner URL**/
+//public static String ADORN_URL = "http://127.0.0.1:8888/";
+public static String ADORN_URL = "http://127.0.0.1:8182/teiadorner";
+//public static String ADORN_URL = "http://devadorner.northwestern.edu/maserver/teiadorner";
+//public static String ADORN_URL = "http://abbot.unl.edu:8080/maserver/teiadorner";
+
 
 /** The base directory where vicar will store all of its files.  New installations should verify it is writeable by Vicar.*/
 public static String BASE_USER_DIR = "/var/vicar/userdata";
 
 /** The directory where system provided Abbot schema files reside.*/
-public static String SCHEMA_DIR = "/users/franksmutniak/Desktop/Vicar/abbottestdata/schema/";
+public static String SCHEMA_DIR = "/Users/franksmutniak/Desktop/Vicar/abbottestdata/schema/";
 
 /** The file which contains descriptions of Abbot schema files.*/
 public static String SCHEMA_DESC = "/var/vicar/schemadescription.properties";
@@ -48,13 +54,6 @@ public static String URL_APPL = "Vicar.html";
 /** The URL suffix needed by OpenSignin.java for a redirect. This is brittle as the first part is also found in sitemap.xmap and needs to be made less brittle.*/
 public static String URL_LOGIN_SFX = "/vicar/OpenSignin.html";
 
-/** The gmail.com user id by which email messages from Vicar will be sent to users.*/
-public static String GMAIL_ID = "vicarregister";
-
-/** The gmail.com password for GMAIL_ID by which email messages from Vicar will be send to users.
-* This value should be hidden before posting to github or any public location!
-*/
-public static String GMAIL_PWD = "";
 }
 
 

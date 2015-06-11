@@ -1,6 +1,7 @@
 package edu.unl.abbot.vicar.Signin;
 
 import edu.unl.abbot.vicar.Global;
+import edu.unl.abbot.vicar.Private;
 
 import java.io.InputStream;
 import java.sql.*;
@@ -123,9 +124,9 @@ private String m_remoteAddr = null;
 							String pwdnew = md5.getMD5(m_PasswordNew);
 							AcctData newad = new AcctData(m_OwnerID,pwdnew,AcctData.STATUS_ACTIVE,null);
 							am.setAcct(newad.getID(),newad);
-							SendMailSSL sm = new SendMailSSL(Global.GMAIL_ID,Global.GMAIL_PWD);
+							SendMailSSL sm = new SendMailSSL(Private.GMAIL_ID,Private.GMAIL_PWD);
 							String emailtext = "Your Vicar password has been changed.  If you did not make this change please reply to this email.";
-							sm.SendMail(Global.GMAIL_ID+"@gmail.com",m_OwnerID,"Vicar Password Change",emailtext);
+							sm.SendMail(Private.GMAIL_ID+"@gmail.com",m_OwnerID,"Vicar Password Change",emailtext);
 							messageText = "Your password has been changed.";
 							messageCode = 1;
 						}else{

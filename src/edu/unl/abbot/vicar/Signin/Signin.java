@@ -3,6 +3,7 @@ package edu.unl.abbot.vicar.Signin;
 import edu.unl.abbot.vicar.LogWriter;
 //import Server.Global;
 import edu.unl.abbot.vicar.Global;
+import edu.unl.abbot.vicar.Private;
 
 import java.io.InputStream;
 import java.sql.*;
@@ -184,9 +185,9 @@ LogWriter.msg("IP","login"+m_LoginID);
 								m_actStr = "confirm";
 
 LogWriter.msg("IP","sending ssmail");
-								SendMailSSL sm = new SendMailSSL(Global.GMAIL_ID,Global.GMAIL_PWD);
+								SendMailSSL sm = new SendMailSSL(Private.GMAIL_ID,Private.GMAIL_PWD);
 								String emailtext="Please click on "+Global.URL_BASE+"/vicar/Signin.html?act=confirm&signinid="+m_LoginID+"&pwdalt="+confirmpwd+" to complete your registration.";
-								sm.SendMail(Global.GMAIL_ID+"@gmail.com",m_LoginID,"Vicar Registration Confirmation",emailtext);
+								sm.SendMail(Private.GMAIL_ID+"@gmail.com",m_LoginID,"Vicar Registration Confirmation",emailtext);
 								messageText = "Please check your email for a confirmation link.";
 								messageCode = 1;
 							}else{
@@ -250,9 +251,9 @@ LogWriter.msg("IP","sending ssmail");
 							AcctData newad = new AcctData(m_LoginID,currad.getPwd(),AcctData.STATUS_ACTIVE,confirmpwd);
 							am.setAcct(newad.getID(),newad);
 
-							SendMailSSL sm = new SendMailSSL(Global.GMAIL_ID,Global.GMAIL_PWD);
+							SendMailSSL sm = new SendMailSSL(Private.GMAIL_ID,Private.GMAIL_PWD);
 							String emailtext="Please click on "+Global.URL_BASE+"/vicar/Signin.html?act=resetpwdlink&signinid="+m_LoginID+"&pwdalt="+confirmpwd+" to reset your password.";
-							sm.SendMail(Global.GMAIL_ID+"@gmail.com",m_LoginID,"Vicar Password Reset",emailtext);
+							sm.SendMail(Private.GMAIL_ID+"@gmail.com",m_LoginID,"Vicar Password Reset",emailtext);
 							messageText = "Please check your email for a password reset link.";
 							messageCode = 1;
 							m_actStr = "resetpwddone";

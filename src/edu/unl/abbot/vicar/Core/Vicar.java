@@ -58,6 +58,7 @@ public class Vicar extends ServiceableGenerator implements Disposable {
 private Session m_session;
 
 private String m_OwnerID;
+private String m_OpenID;
 private String m_OwnerPath;
 private String m_PersonName = null;
 //private String m_PersonEmail = null;
@@ -96,6 +97,7 @@ private Part m_filePart;
 		Request request = ObjectModelHelper.getRequest(objectModel);
 		m_session = request.getSession();
 		m_OwnerID = (String)m_session.getAttribute("userid");
+		m_OpenID = (String)m_session.getAttribute("openid");
 		m_OwnerPath = (String)m_session.getAttribute("userpath");
 		if(m_OwnerID!=null){
 			m_PersonName = (String)m_session.getAttribute("personname");
@@ -293,6 +295,7 @@ private Part m_filePart;
 			contentHandler.startDocument();
 				AttributesImpl filemanagerAttr = new AttributesImpl();
 				filemanagerAttr.addAttribute("","userid","userid","CDATA",""+m_OwnerID);
+				filemanagerAttr.addAttribute("","openid","openid","CDATA",""+m_OpenID);
 				filemanagerAttr.addAttribute("","personname","personname","CDATA",""+m_PersonName);
 				//filemanagerAttr.addAttribute("","personemail","personemail","CDATA",""+m_PersonEmail);
 				contentHandler.startElement("","filemanager","filemanager",filemanagerAttr);

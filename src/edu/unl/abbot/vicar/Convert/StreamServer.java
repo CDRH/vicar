@@ -152,6 +152,7 @@ private String m_AbbotCustom;
 				int pct = 0;
 				int outputcount = 0;
 				while(pct<100){
+System.out.println("PTA<"+pct+">");
 					outputcount = fileCount(userdir+"/output/");
 					pct = (int)(100*outputcount)/inputcount;
 					totalpct = pct/2;

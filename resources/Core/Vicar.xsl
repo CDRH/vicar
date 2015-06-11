@@ -22,6 +22,16 @@
 	<xsl:if test="url/text() !='null'">
 		<meta http-equiv="REFRESH" content="{url/@delay};url={url/text()}" />
 	</xsl:if>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-23044707-2', 'unl.edu');
+  ga('send', 'pageview');
+
+</script>
 </head>
 </xsl:template>
 
@@ -46,6 +56,9 @@
 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">&#160;</script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js">&#160;</script>
+
+	<script type="text/javascript" language="JavaScript" src="js_karin.js">&#160;</script>
+
 	<link rel="stylesheet" type="text/css" href="Vicar.css" />
 	<link rel="stylesheet" type="text/css" href="Upload/AjaxUpload.css" />
 	<link rel="stylesheet" type="text/css" href="Upload/PopupFrame.css" />
@@ -56,7 +69,10 @@
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css" />
 -->
 	<!-- This needs to link to jquery-ui-1.10.0.custom.css in the KMD resources folder, and will replace the above -->
+<!--
 	<link rel="stylesheet" href="jquery-ui-1.10.0.custom.css" />
+-->
+	<link rel="stylesheet" href="jquery-ui-1.css" />
 
 
 	
@@ -67,6 +83,16 @@
 			$( "#progressbar" ).progressbar({value:0});
 		});
 	</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-23044707-2', 'unl.edu');
+  ga('send', 'pageview');
+
+</script>
 </head>
 
 <body id="bodyid" onload="UploadInit()">
@@ -84,7 +110,7 @@
 			<xsl:choose>
 				<xsl:when test="@personname != ''">
 					<xsl:value-of select="@personname" />
-						<xsl:if test="@userid!= ''">
+					<xsl:if test="@userid!= ''">
 						<xsl:text> (</xsl:text>
 						<xsl:value-of select="@userid" />
 						<xsl:text>)</xsl:text>
@@ -95,18 +121,34 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</a>
+		<xsl:if test="@openid != 'googleplus'">
+			<a href="Signout.html" class="identity_box_email">Sign out</a>
+		</xsl:if>
+		<xsl:if test="@openid = 'googleplus'">
+			<a href="oaapp" class="identity_box_email">Sign out</a>
+		</xsl:if>
+<!--
 		<a href="Signout.html" class="identity_box_email">Sign out</a>
+		<a href="oaapp" class="identity_box_email">OASign out</a>
+		<xsl:if test="@openid != ''">
+			<xsl:text> (</xsl:text>
+			<xsl:value-of select="@openid" />
+			<xsl:text>)</xsl:text>
+		</xsl:if>
+-->
 	</div>
 
 	<!-- main page -->
 	<xsl:apply-templates />
 
 	<!-- footer which displays detected screen size - will be commented out in released version -->
+	<!--
 	<div style="margin:0.6em;font-size:100%;font-weight:bold;color:orange;position:fixed;bottom:20px;right:20px;">
 		<div id="smartphonesize">smart phone sized screen</div>
 		<div id="tabletsize">tablet sized screen</div>
 		<div id="computersize">computer sized screen</div>
 	</div>
+	-->
 </body>
 </xsl:template>
 
@@ -223,7 +265,7 @@
 			<div id="upload_msgbox">
 				<form enctype="multipart/form-data" method="post" action="Vicar.html?dir={@dirname}" id="upload_form">
 					<div class="select_files">
-						<span>Drag and drop input and conversion (.rng) files here or</span>
+						<span>Drag and drop input (.xml) and, optionally, schema (.rng) files here or</span>
 						<input value="{@dirname}" name="dirname" id="dirname" type="hidden" />
 						<input title="Navigate or drag/drop files here." multiple="multiple" name="file_upload" id="file_upload" type="file" />
 					</div><!-- /select_files -->
@@ -259,10 +301,10 @@
 			<xsl:apply-templates select="outputfiles" />
 		</xsl:if>
 	</div><!--/filesdiv-->
+<!--
 	<div class="files">
 		<div class="paddingdiv">
 			<h4>Adorn:</h4>
-			<!--IF JAVASCRIPT IS NOT ENABLED THEN PRESENT THIS AS AN OPTION TO START A CONVERSION-->
 			<div id="nojsmsg">
 				<form id="convert" action="Adorn/MAStreamServer.html?dir={@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
 					<div>
@@ -277,20 +319,15 @@
 						</div>
 					</div>
 					<input class="process_files_submit" type="submit" name="perform" value="Adorn Files &gt;&gt;&gt;" title="Adorn output files using Northwestern University's MorphAdorner - No progress reporting is available since Javascript is disabled" >
-						<!--SET IT UP SO IT CHECKS FOR NO OUTPUT FILES BEFORE SETTING DISABLED TO TRUE-->
-						<!--
 						<xsl:if test="count(schema) &lt; 1">
 							<xsl:attribute name="disabled">
 								<xsl:text>disabled</xsl:text>
 							</xsl:attribute>
 						</xsl:if>
-						-->
 					</input>
 				</form>
 			</div>
 
-			<!--HIDE THE FOLLOWING IF THERE IS NO JAVASCRIPT ENABLED ELSE SHOW IT AS IT IS THE NORMAL WAY TO START A CONVERSION-->
-			<!--NOTE THAT UNDER NORMAL OPERATION THE onclick EVENT ON THE SUBMIT BUTTON IS USED RATHER THAN THE action ON THE form ELEMENT-->
 			<div id="nojshide">
 				<form id="convert" action="Adorn/MAStreamServer.html?dir={@dirname}&amp;act=noblock" method="post" enctype="multipart/form-data">
 					<div>
@@ -305,7 +342,6 @@
 						<input type="checkbox" name="mausechoicejs" id="mausechoicejs" checked="checked"> Use choice structure to emit standard spelling</input>
 					</div>
 				</form>
-<!--MAmakeSimpleFrame is responsible for pulling in parameters for the form-->
 				<input class="process_files_submit" type="submit" name="perform" value="Adorn Files &gt;&gt;&gt;" onclick="MAmakeSimpleFrame(this,'Adorn/MAStreamClient.html?dir={@dirname}');" title="Adorn output files using Northwestern University's MorphAdorner" >
 				</input>
 			</div>
@@ -314,6 +350,7 @@
 			<xsl:apply-templates select="adornfiles" />
 		</xsl:if>
 	</div>
+-->
 </xsl:template>
 
 <!-- show uploaded input files - presentation of 'outercolumn' media selected via CSS -->
@@ -430,9 +467,9 @@
 <!--/ZZZ_D-->
 
 
-<!-- show output files - presentation of 'outercolumn' media selected via CSS -->
+<!-- show output files - presentation of 'outercolumn abbotresults' media selected via CSS -->
 <xsl:template match="outputfiles">
-	<div class="outercolumn">
+	<div class="outercolumn abbotresults">
 		<div class="paddingdiv">
 			<h4>Abbot Generated Results</h4>
 			<div class="download">
@@ -442,11 +479,78 @@
 			</div>
 			<xsl:apply-templates select="file"/>
 		</div>
+
+<!--YYY-->
+            <!-- Create new div with padding div inside outercolumn -KMD -->
+            <div class="othertransformations"> <!-- I am not actually using "othertransformations" yet, but might want to in the future -KMD  -->
+               <div class="paddingdiv">
+                  <h3>Other transformations</h3>
+                  
+                  <!-- Start accordion - javascript grabs the "accordion" class -KMD -->
+                  <div class="morphadorner accordion">
+<!--
+                     <h3>Convert with MorphAdorner:</h3>
+-->
+                     <h3 class="ui-accordion-header">Convert with MorphAdorner:</h3>
+                     <div>
+
+
+                     <div id="nojsmsg">
+                        <form enctype="multipart/form-data" method="post" action="Adorn/MAStreamServer.html?dir={@dirname}&amp;act=noblock" id="convert">
+                           <div>
+                              <span>Corpus:</span>
+                              <select class="selected" name="macorpus" id="macorpusselectnojs">
+                                 <option selected="selected" title="Early Modern English" value="eme">Early Modern English</option>
+                                 <option title="Eighteenth Century English" value="ece">Eighteenth Century English</option>
+                                 <option title="Nineteenth Century Fiction" value="ncf">Nineteenth Century Fiction</option>
+                              </select>
+                              <div>
+                                 <input checked="checked" id="mausechoice" name="mausechoice" type="checkbox"> Use choice structure to emit standard spelling</input>
+                              </div>
+                           </div>
+                           <input title="Adorn output files using Northwestern University's MorphAdorner - No progress reporting is available since Javascript is disabled" value="Adorn Files &gt;&gt;&gt;" name="perform" class="process_files_submit" type="submit" />
+                        </form>
+                     </div>
+
+                     <div id="nojshide">
+                        <form enctype="multipart/form-data" method="post" action="Adorn/MAStreamServer.html?dir={@dirname}&amp;act=noblock" id="convert">
+                           <div>
+                              <span>Corpus:</span>
+                              <select class="selected" name="macorpus" id="macorpusselect">
+                                 <option selected="selected" title="Early Modern English" value="eme">Early Modern English</option>
+                                 <option title="Eighteenth Century English" value="ece">Eighteenth Century English</option>
+                                 <option title="Nineteenth Century Fiction" value="ncf">Nineteenth Century Fiction</option>
+                              </select>
+                           </div>
+                           <div>
+                              <input checked="checked" id="mausechoicejs" name="mausechoicejs" type="checkbox"> Use choice structure to emit standard spelling</input>
+                           </div>
+                        </form>
+                        <input title="Adorn output files using Northwestern University's MorphAdorner" onclick="MAmakeSimpleFrame(this,'Adorn/MAStreamClient.html?dir={@dirname}');" value="Adorn Files &gt;&gt;&gt;" name="perform" class="process_files_submit" type="submit" />
+                     </div>
+
+
+                     <p><a href="http://morphadorner.northwestern.edu/">MorphAdorner</a> created by Northwestern University.</p>
+			<xsl:if test="../adornfiles/@count &gt; 0">
+				<xsl:apply-templates select="../adornfiles" />
+			</xsl:if>
+                     </div>
+<!--
+                     <h3 class="ui-accordion-header">two</h3>
+                     <div class="ui-accordion-content">asfdjhsadkjf</div>
+                     <h3 class="ui-accordion-header">three</h3>
+                     <div class="ui-accordion-content">sflasf skjdlfhlk asd klasdhjflk asdhjf</div>
+-->
+                  </div>
+               </div>
+            </div>
+<!--YYY-->
+
 	</div>
 </xsl:template>
 
 <xsl:template match="adornfiles">
-	<div>
+	<div class="adornresults">
 		<div class="paddingdiv">
 			<h4>Adorned files</h4>
 			<div class="download">
@@ -458,6 +562,7 @@
 		</div>
 	</div>
 </xsl:template>
+
 <!-- create display of individual files for use by inputfiles and outputfiles elements-->
 <xsl:template match="file">
 	<div>
@@ -469,6 +574,9 @@
 		</xsl:if>
 		<!-- display files for 'outputfiles' -->
 		<xsl:if test="@op = 1">
+			<xsl:attribute name="class">
+				<xsl:text>result</xsl:text>
+			</xsl:attribute>
 			<a href="Download/{../@dirname}/{@name}" id="download_{@name}">
 				<xsl:value-of select="@name" />
 			</a>
@@ -486,6 +594,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="@op = 2">
+			<xsl:attribute name="class">
+				<xsl:text>af_result</xsl:text>
+			</xsl:attribute>
 			<a href="Download/{../@dirname}/adorn/{@name}" id="download_adorn_{@name}">
 				<xsl:value-of select="@name" />
 			</a>

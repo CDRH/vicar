@@ -75,6 +75,8 @@ var donebutton;
 				$("#progressbar").progressbar('value',100);
 				$("#progressbar1").progressbar('value',100);
 				contentlen = 0;
+				cancelbutton.disabled=true;
+				donebutton.disabled=false;
 			}else{
 				//alert("httpRequest status error:"+httpRequest.status);
 			}
