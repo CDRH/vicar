@@ -92,18 +92,12 @@
 				<div class="alternate_login">
 					<a href="OpenSignin.html?op=Yahoo" name="signin">Sign in through Yahoo</a>
 				</div>
-<!--
+<!--FSS_NEW-->
+				<div>This action requires the use of a popup for Google+</div>
 				<div class="alternate_login">
-					<a href="OpenSignin.html?op=Google" name="signin">Sign In through Google</a>
+					<iframe style="border:0px;min-height:20px;" src="/cocoon/vicar/oauth"></iframe>
 				</div>
--->
-<!--OPENIDCONNECT-->
-<!--
-				<div class="alternate_login">
-					<a href="oauth" name="signin">Sign In through Google Plus</a>
-				</div>
--->
-<!--OPENIDCONNECT-->
+<!--FSS_NEW-->
 
 				<a href="Signin.html?act=resetpwd" name="origsignin">
 					<span class="highlightlink reset">Reset Password</span>

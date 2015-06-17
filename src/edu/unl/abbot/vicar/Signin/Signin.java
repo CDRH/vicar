@@ -320,7 +320,7 @@ LogWriter.msg("IP","sending ssmail");
 			System.out.println("SIGNIN ERROR");
 			e.printStackTrace();
 		}
-		SigninXML.generateSigninXML(contentHandler,m_LoginID,m_actStr,Global.TITLE,0,m_url,messageCode,messageText,m_mode,dispose);
+		SigninXML.generateSigninXML(contentHandler,m_LoginID,m_actStr,Global.TITLE,0,m_url,messageCode,messageText,m_mode,dispose,Private.CLIENT_ID,Private.CLIENT_SECRET);
 	}
 }
 

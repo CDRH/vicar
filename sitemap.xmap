@@ -107,7 +107,7 @@
 		<map:generate type="filedownload" />
 		<map:serialize mime-type="application/octet-stream" />
 	</map:match>
-	<map:redirect-to uri="../Error.html"/>
+	<map:redirect-to uri="Error.html"/>
 </map:match>
 
 <map:match pattern="Utils/**">
@@ -409,7 +409,7 @@
 		<map:read mime-type="text/css" src="resources/CSS/{1}.png"/>
 	</map:match>
 
-	<map:redirect-to uri="Error.html"/>
+	<map:redirect-to uri="/cocoon/vicar/Error.html"/>
 </map:match>
 
 <map:handle-errors>

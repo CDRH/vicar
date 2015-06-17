@@ -96,7 +96,7 @@ private String m_msgtext = null;
 			m_url = Global.URL_SIGNIN+"?mode=-2";
 		}
 		m_session.invalidate();
-		SigninXML.generateSigninXML(contentHandler,"ID","ACT",Global.TITLE,m_delay,m_url,m_msgcode,m_msgtext,"",0);
+		SigninXML.generateSigninXML(contentHandler,"ID","ACT",Global.TITLE,m_delay,m_url,m_msgcode,m_msgtext,"",0,null,null);
 	}
 }
 

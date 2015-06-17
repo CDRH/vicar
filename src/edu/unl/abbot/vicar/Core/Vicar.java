@@ -135,7 +135,7 @@ private Part m_filePart;
 @Override
 	public void generate() throws SAXException, ProcessingException {
 		if(m_OwnerID == null){
-			SigninXML.generateSigninXML(contentHandler,"","","",0,Global.URL_SIGNIN,0,"","",0);
+			SigninXML.generateSigninXML(contentHandler,"","","",0,Global.URL_SIGNIN,0,"","",0,null,null);
 			return;
 		}
 		//GET commands

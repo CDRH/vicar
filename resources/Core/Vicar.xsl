@@ -32,6 +32,7 @@
   ga('send', 'pageview');
 
 </script>
+
 </head>
 </xsl:template>
 
@@ -77,6 +78,15 @@
 
 	
 	<link rel="stylesheet" type="text/css" href="style.css" />
+<!--FSS_NEW-->
+<script>
+	function toTop() {
+		if(top.location != location){
+			top.location.href = document.location.href;
+		}
+	}
+</script>
+<!--FSS_NEW-->
 
 	<script>
 		$(function() {
@@ -95,7 +105,9 @@
 </script>
 </head>
 
-<body id="bodyid" onload="UploadInit()">
+<!--FSS_NEW-->
+<body id="bodyid" onload="toTop();UploadInit()">
+<!--FSS_NEW-->
 	<!-- Header -->
 	<div class="title">
 		<h1>Abbot</h1>

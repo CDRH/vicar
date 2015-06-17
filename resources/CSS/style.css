@@ -859,6 +859,14 @@ div.alternate_login a {
 	display: block;
 }
 
+<!--FSS-->
+div.alternate_login iframe {
+	color: #000;
+	padding: 0px;
+	display: block;
+}
+<!--FSS-->
+
 span.highlightlink {
 	border: none;
 	text-align: right;
@@ -867,7 +875,6 @@ span.highlightlink {
 	display: block;
 	line-height: 1;
 }
-
 
 
 .reset {

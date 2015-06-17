@@ -9,12 +9,12 @@ package edu.unl.abbot.vicar;
 
 public class Private {
 /** The gmail.com user id by which email messages from Vicar will be sent to users.*/
-public static String GMAIL_ID = "[NEED GMAIL ACCOUNT - JUST THE PART BEFORE THE @";
+public static String GMAIL_ID = "[emailaddress prefix (without the @gmail.com]";
 
 /** The gmail.com password for GMAIL_ID by which email messages from Vicar will be send to users.
 * This value should be hidden before posting to github or any public location!
 */
-public static String GMAIL_PWD = "[NEED PASSWORD]";
+public static String GMAIL_PWD = "[email password]";
 
 /** The Google Plus OAuth ID and SECRET for this application.
 * This is specific to the hosting url and set at http://console.developers.com.
@@ -22,14 +22,14 @@ public static String GMAIL_PWD = "[NEED PASSWORD]";
 
 /****
 //ABBOT
-public static final String CLIENT_ID = "[NEED CLIENT ID]";
-public static final String CLIENT_SECRET = "[NEED CLIENT SECRET]";
+public static final String CLIENT_ID = "[client id]";
+public static final String CLIENT_SECRET = "[client secret]";
 ****/
 
 /****/
 //LOCAL
-public static final String CLIENT_ID = "[NEED CLIENT ID]";
-public static final String CLIENT_SECRET = "[NEED CLIENT SECRET]";
+public static final String CLIENT_ID = "[client id]";
+public static final String CLIENT_SECRET = "[client secret]";
 /****/
 
 }

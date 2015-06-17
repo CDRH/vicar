@@ -2,6 +2,8 @@ package edu.unl.abbot.vicar.Signin;
 
 
 import edu.unl.abbot.vicar.Global;
+import edu.unl.abbot.vicar.Private;
+;
 import edu.unl.abbot.vicar.LogWriter;
 
 import java.nio.file.Paths;
@@ -197,7 +199,7 @@ private String m_diag = "";
 		}
 		int dispose = 0;
 		//SigninXML.generateSigninXML(contentHandler,"ID",m_SessionID,"ACT",null,m_delay,m_url,m_msgcode,m_msgtext,"",dispose,m_diag);
-		SigninXML.generateSigninXML(contentHandler,"ID","ACT",null,m_delay,m_url,m_msgcode,m_msgtext,"",dispose);
+		SigninXML.generateSigninXML(contentHandler,"ID","ACT",null,m_delay,m_url,m_msgcode,m_msgtext,"",dispose,null,null);
 	}
 
 	public long generateKey() {

@@ -24,7 +24,9 @@
 
 <!-- JavaScript specific to this application that is not related to API calls -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" >&#160;</script>
+	<link rel="stylesheet" type="text/css" href="style.css" />
 
+<!--
 	<style>
 		#customBtn {
 			width: 155px;
@@ -37,6 +39,7 @@
 			border-radius: 5px;
 		}
 	</style>
+-->
 </head>
 
 <body>
@@ -68,13 +71,12 @@ function disconnectServer() {
 </script>
 
 </xsl:template>
-<xsl:template match="signin">
-	<input type="button" id="customBtn" onClick="disconnectServer()" alt="Sign Out+" value="stuff"></input>
-</xsl:template>
 
 <xsl:template match="signout">
 	<div>Signing out of abbot does not sign you out of your Google Plus account!  That must be done separately.</div>
-	<input type="button" id="customBtn" onClick="disconnectServer()" alt="Sign Out+" value="Sign Out"></input>
+	<div class="alternate_login">
+		<a onClick="disconnectServer()" href="#" value="Sign Out">Sign Out</a>
+	</div>
 </xsl:template>
 
 

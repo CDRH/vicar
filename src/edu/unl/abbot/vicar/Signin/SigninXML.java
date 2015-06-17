@@ -14,7 +14,7 @@ import org.apache.cocoon.ProcessingException;
 */
 public class SigninXML {
 
-	public static void generateSigninXML(ContentHandler contentHandler,String the_ID,String the_actStr,String the_title,int the_delay,String the_url,int the_msgcode,String the_msgtext,String the_mode,int the_dispose)
+	public static void generateSigninXML(ContentHandler contentHandler,String the_ID,String the_actStr,String the_title,int the_delay,String the_url,int the_msgcode,String the_msgtext,String the_mode,int the_dispose,String the_clientID,String the_state)
 				throws SAXException, ProcessingException {
 		try {
 			contentHandler.startDocument();
@@ -47,6 +47,13 @@ public class SigninXML {
 				contentHandler.characters(the_title.toCharArray(),0,the_title.length());
 			}
 			contentHandler.endElement("","title","title");
+
+//OAUTH
+			AttributesImpl oauthAttr = new AttributesImpl();
+			oauthAttr.addAttribute("","clientid","clientid","CDATA",""+the_clientID);
+			oauthAttr.addAttribute("","state","state","CDATA",""+the_state);
+			contentHandler.startElement("","oauth","oauth",oauthAttr);
+			contentHandler.endElement("","oauth","oauth");
 
 			contentHandler.endElement("","signin","signin");
 			contentHandler.endDocument();

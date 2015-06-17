@@ -117,7 +117,7 @@ private String m_op = null;
 			//System.out.println("LOGGED IN");
 		}
 		int dispose = 0;
-		SigninXML.generateSigninXML(contentHandler,"ID","ACT",null,m_delay,m_url,m_msgcode,m_msgtext,"",dispose);
+		SigninXML.generateSigninXML(contentHandler,"ID","ACT",null,m_delay,m_url,m_msgcode,m_msgtext,"",dispose,null,null);
 	}
 
 	public boolean isValidIP(String the_IP){
