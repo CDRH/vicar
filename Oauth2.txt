@@ -1,0 +1,25 @@
+For an Oauth2 application to use an Identity Provider (IdP) the application's URL must be registered with that provider.  Registration begets a Client ID and a Client Secret from the OAuth2 IdP.
+
+For the test app a URL of http://localhost:8080 is assumed.
+
+For Google, sign into console.developers.google.com/project (firefox works better than safari for this)
+Click on 'Create Project' and enter a project name.
+Click on your newly created project.
+Click on 'APIs & Auth' > 'Credentials'
+Click on 'Create new Client ID'
+Select the 'Web application' application type.
+
+Enter into the 'Authorized JavaScript origins' text area the URL;
+        http://127.0.0.1:8080
+
+Enter into the 'Authorized redirect URIs' text area the URL;
+        http://127.0.0.1:8080/users/auth/google_oauth2/callback
+
+
+Click 'Create Client ID' which will take you to your list of Client IDs.
+
+The 'Client ID' and 'Client secret' shown on that page will be used by your application to gain access to gmail.com for identity purposes.
+
+
+Note that there is a distinction between 'http://127.0.0.1' and 'http://localhost' so be consistent with the URL used for testing locally.
+
