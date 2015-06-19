@@ -93,7 +93,7 @@
 					<a href="OpenSignin.html?op=Yahoo" name="signin">Sign in through Yahoo</a>
 				</div>
 <!--FSS_NEW-->
-				<div>This action requires the use of a popup for Gmail</div>
+				<div>This action requires the use of a popup for Google+</div>
 <!--
 				<div class="alternate_login">
 					<iframe style="border:0px;min-height:20px;" src="/cocoon/vicar/oauth">
@@ -101,7 +101,7 @@
 				</div>
 -->
 				<div class="alternate_login">
-					<a href="/cocoon/vicar/oauth" name="signin">Sign in through Gmail</a>
+					<a href="/cocoon/vicar/oauth" name="signin">Sign in through Google+</a>
 				</div>
 <!--FSS_NEW-->
 
