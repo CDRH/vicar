@@ -93,9 +93,15 @@
 					<a href="OpenSignin.html?op=Yahoo" name="signin">Sign in through Yahoo</a>
 				</div>
 <!--FSS_NEW-->
-				<div>This action requires the use of a popup for Google+</div>
+				<div>This action requires the use of a popup for Gmail</div>
+<!--
 				<div class="alternate_login">
-					<iframe style="border:0px;min-height:20px;" src="/cocoon/vicar/oauth"></iframe>
+					<iframe style="border:0px;min-height:20px;" src="/cocoon/vicar/oauth">
+					</iframe>
+				</div>
+-->
+				<div class="alternate_login">
+					<a href="/cocoon/vicar/oauth" name="signin">Sign in through Gmail</a>
 				</div>
 <!--FSS_NEW-->
 
@@ -105,8 +111,9 @@
 				<a href="Signin.html?act=register" name="origsignin">
 					<span class="highlightlink register">Register</span>
 				</a>
+<!--
 				<div style="margin:0.5em 0em;font-size:75%;">Google sign-in to Abbot has been removed.</div>
-
+-->
 			</div><!-- /login -->
          
 			<!-- KMD New div, this text will change, here as placeholder -->

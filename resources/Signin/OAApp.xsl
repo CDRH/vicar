@@ -73,7 +73,7 @@ function disconnectServer() {
 </xsl:template>
 
 <xsl:template match="signout">
-	<div>Signing out of abbot does not sign you out of your Google Plus account!  That must be done separately.</div>
+	<div>Signing out of abbot does not sign you out of your Google account!  That must be done separately.</div>
 	<div class="alternate_login">
 		<a onClick="disconnectServer()" href="#" value="Sign Out">Sign Out</a>
 	</div>

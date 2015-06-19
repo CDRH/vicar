@@ -5,6 +5,7 @@ For the test app a URL of http://localhost:8080 is assumed.
 For Google, sign into console.developers.google.com/project (firefox works better than safari for this)
 Click on 'Create Project' and enter a project name.
 Click on your newly created project.
+Click on APIs and enable the Gmail api.
 Click on 'APIs & Auth' > 'Credentials'
 Click on 'Create new Client ID'
 Select the 'Web application' application type.
